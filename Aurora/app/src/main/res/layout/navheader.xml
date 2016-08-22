@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navheader_height"
+    android:background="?attr/colorPrimaryDark"
+    android:padding="@dimen/md_keylines">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="@dimen/md_keylines"
+        android:src="@drawable/profile"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="2dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/profile_image"
+        android:layout_below="@id/profile_image"
+        android:layout_marginTop="@dimen/md_keylines"
+        android:text="竹轩听雨"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/day_night_mode_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/md_keylines"
+        android:src="@drawable/ic_brightness_3_black_24dp"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="2dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/message_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@id/day_night_mode_image"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:layout_marginTop="@dimen/md_keylines"
+        android:src="@drawable/ic_email_black_24dp"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="2dp" />
+
+</RelativeLayout>

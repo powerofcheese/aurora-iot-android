@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/menu_item_search"
+        android:title="搜索"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_more"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        android:tint="@color/dark_grey"
+        android:title="更多"
+        android:orderInCategory="100"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/color_picker_btn"
+                android:icon="@drawable/ic_color_lens_black_24dp"
+                android:tint="@color/white"
+                android:title="调色板"
+                android:orderInCategory="90"
+                app:showAsAction="always|withText"/>
+            <item
+                android:id="@+id/download_btn"
+                android:icon="@drawable/ic_file_download_black_24dp"
+                android:tint="@color/dark_grey"
+                android:title="下载"
+                android:orderInCategory="91"
+                app:showAsAction="always|withText"/>
+            <item
+                android:id="@+id/setting_btn"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:tint="@color/dark_grey"
+                android:title="设置"
+                android:orderInCategory="92"
+                app:showAsAction="always|withText"/>
+        </menu>
+    </item>
+
+</menu>
