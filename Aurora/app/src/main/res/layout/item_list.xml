@@ -33,7 +33,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="@color/medium_grey"
+        android:textColor="@color/grey_medium"
         android:textSize="@dimen/list_body"
         android:text="@string/item_desc" />
 </RelativeLayout>

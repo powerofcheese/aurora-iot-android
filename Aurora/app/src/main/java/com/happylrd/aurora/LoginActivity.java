@@ -15,6 +15,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TEST_PASSWORD_STR = "666666";
 
     private Button btn_login;
+    private Button btn_forget_password;
+    private Button btn_goto_signup;
     private TextInputLayout til_user_name;
     private TextInputLayout til_password;
 
@@ -47,6 +49,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        btn_forget_password = (Button) findViewById(R.id.btn_forget_password);
+
+        btn_goto_signup = (Button) findViewById(R.id.btn_goto_signup);
+        btn_goto_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSignup();
+            }
+        });
     }
 
     private boolean validateUsername(String username) {
@@ -87,6 +98,11 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
-        }, 3000);
+        }, 2000);
+    }
+
+    private void doSignup(){
+        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+        startActivity(intent);
     }
 }

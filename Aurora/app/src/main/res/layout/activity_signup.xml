@@ -48,32 +48,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/md_keylines"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="登录"
-        android:textColor="@color/white"/>
+        android:backgroundTint="#11C1F3"
+        android:text="注册"
+        android:textColor="@color/white" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/md_keylines">
-        <Button
-            android:id="@+id/btn_forget_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="忘记密码？"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
-
-        <Button
-            android:id="@+id/btn_goto_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="前去注册？"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
-    </RelativeLayout>
 </LinearLayout>

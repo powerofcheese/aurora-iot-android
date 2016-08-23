@@ -1,8 +1,6 @@
 package com.happylrd.aurora;
 
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +14,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private NavigationView navigationView;
-    private FloatingActionButton fab;
+
+    private FrameLayout frameLayout;
+    private FloatingActionsMenu fabMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
 
         // add menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -68,12 +73,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.getBackground().setAlpha(0);
+
+        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+        fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Hello Aurora!",
-                        Snackbar.LENGTH_LONG).show();
+            public void onMenuExpanded() {
+                frameLayout.getBackground().setAlpha(240);
+                frameLayout.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        fabMenu.collapse();
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                frameLayout.getBackground().setAlpha(0);
+                frameLayout.setOnTouchListener(null);
+
             }
         });
     }
@@ -102,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new ListMessageFragment(), "配色");
         adapter.addFragment(new CardFindFragment(), "发现");
         adapter.addFragment(new ListMessageFragment(), "我的");
-        adapter.addFragment(new ListMessageFragment(), "消息");
         adapter.addFragment(new ListMessageFragment(), "互联");
         viewPager.setAdapter(adapter);
     }
