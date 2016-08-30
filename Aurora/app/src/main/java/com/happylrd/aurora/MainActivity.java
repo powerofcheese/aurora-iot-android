@@ -1,5 +1,7 @@
 package com.happylrd.aurora;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
@@ -33,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout frameLayout;
     private FloatingActionsMenu fabMenu;
+    private FloatingActionButton fab_write_sth;
+    private FloatingActionButton fab_wrap_shoes;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +107,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        fab_write_sth = (FloatingActionButton) findViewById(R.id.fab_write_sth);
+        fab_write_sth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = WriteSthActivity.newIntent(MainActivity.this);
+                startActivity(intent);
+            }
+        });
+
+        fab_wrap_shoes = (FloatingActionButton) findViewById(R.id.fab_wrap_shoes);
+        fab_wrap_shoes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ShoesActivity.newIntent(MainActivity.this);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -122,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new ListMessageFragment(), "极光");
         adapter.addFragment(new ListMessageFragment(), "配色");
         adapter.addFragment(new CardFindFragment(), "发现");
-        adapter.addFragment(new ListMessageFragment(), "我的");
+        adapter.addFragment(new MyInfoFragment(), "我的");
         adapter.addFragment(new ListMessageFragment(), "互联");
         viewPager.setAdapter(adapter);
     }

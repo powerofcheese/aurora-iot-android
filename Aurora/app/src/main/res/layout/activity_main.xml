@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabIndicatorColor="@color/white" />
-
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
@@ -66,17 +65,30 @@
                     fab:fab_colorPressed="@color/grey"
                     fab:fab_icon="@drawable/ic_color_lens_black_24dp"
                     fab:fab_plusIconColor="@color/white"
-                    fab:fab_title="配色" />
+                    fab:fab_size="mini"
+                    fab:fab_title="让色彩拥抱你" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab_write_something"
+                    android:id="@+id/fab_write_sth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_colorNormal="@color/white"
                     fab:fab_colorPressed="@color/grey"
                     fab:fab_icon="@drawable/ic_mode_edit_black_24dp"
                     fab:fab_plusIconColor="@color/white"
+                    fab:fab_size="mini"
                     fab:fab_title="说点什么" />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_wrap_shoes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="@color/white"
+                    fab:fab_colorPressed="@color/grey"
+                    fab:fab_icon="@drawable/ic_3d_rotation_black_24dp"
+                    fab:fab_plusIconColor="@color/white"
+                    fab:fab_size="mini"
+                    fab:fab_title="来给鞋子加特效" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab_others"
@@ -88,10 +100,8 @@
                     fab:fab_plusIconColor="@color/white"
                     fab:fab_size="mini"
                     fab:fab_title="别的好玩的事情" />
-
             </com.getbase.floatingactionbutton.FloatingActionsMenu>
         </FrameLayout>
-
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
