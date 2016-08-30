@@ -148,9 +148,10 @@ public class MainActivity extends AppCompatActivity {
     public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ListMessageFragment(), "极光");
-        adapter.addFragment(new ListMessageFragment(), "配色");
+        adapter.addFragment(new ColorPickerFragment(), "配色");
         adapter.addFragment(new CardFindFragment(), "发现");
         adapter.addFragment(new MyInfoFragment(), "我的");
+        adapter.addFragment(new StepCounterFragment(), "计步");
         adapter.addFragment(new ListMessageFragment(), "互联");
         viewPager.setAdapter(adapter);
     }

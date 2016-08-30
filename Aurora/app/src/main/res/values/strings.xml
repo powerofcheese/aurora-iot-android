@@ -12,4 +12,7 @@
         deserunt mollit anim id est laborum.
     </string>
     <string name="detail_location">"8 Rue Scribe, 75009 Paris, France"</string>
+
+    <string name="fit_running">Running</string>
+    <string name="fit_cycling">Cycling</string>
 </resources>
