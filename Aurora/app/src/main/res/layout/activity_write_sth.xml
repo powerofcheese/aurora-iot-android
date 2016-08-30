@@ -20,7 +20,11 @@
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_takePhoto"
+        android:text="拍照片"/>
     <EditText
         android:id="@+id/et_write_sth"
         android:layout_width="match_parent"

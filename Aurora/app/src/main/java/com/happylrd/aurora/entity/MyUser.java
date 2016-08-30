@@ -1,34 +1,49 @@
 package com.happylrd.aurora.entity;
 
-import cn.bmob.v3.BmobUser;
+import java.util.List;
 
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+
+/**
+ * Created by lenovo on 2016/8/26.
+ */
 public class MyUser extends BmobUser {
 
-    private String nickName;
-    private Boolean sex;
-    private Integer age;
+    private String signature;
+    private String sex;
+    private BmobFile my_picture;
+    private List<MyUser> friend;
 
-    public String getNickName() {
-        return nickName;
+    public BmobFile getMy_picture() {
+        return my_picture;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setMy_picture(BmobFile my_picture) {
+        this.my_picture = my_picture;
     }
 
-    public Boolean getSex() {
+    public List<MyUser> getFriend() {
+        return friend;
+    }
+
+    public void setFriend(List<MyUser> friend) {
+        this.friend = friend;
+    }
+
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Boolean sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getSignature() {
+        return signature;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }
