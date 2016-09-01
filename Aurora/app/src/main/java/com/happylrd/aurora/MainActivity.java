@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionsMenu fabMenu;
     private FloatingActionButton fab_write_sth;
     private FloatingActionButton fab_wrap_shoes;
+    private FloatingActionButton fab_color_picker;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -125,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+        fab_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ColorPickerActivity.newIntent(MainActivity.this);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -148,10 +158,9 @@ public class MainActivity extends AppCompatActivity {
     public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ListMessageFragment(), "极光");
-        adapter.addFragment(new ColorPickerFragment(), "配色");
+        adapter.addFragment(new StepCounterFragment(), "计步");
         adapter.addFragment(new CardFindFragment(), "发现");
         adapter.addFragment(new MyInfoFragment(), "我的");
-        adapter.addFragment(new StepCounterFragment(), "计步");
         adapter.addFragment(new ListMessageFragment(), "互联");
         viewPager.setAdapter(adapter);
     }

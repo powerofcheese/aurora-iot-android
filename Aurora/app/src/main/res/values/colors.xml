@@ -17,5 +17,8 @@
     <color name="pink">#FF4081</color>
     <color name="pink_dark">#FF60AA</color>
 
+    <color name="yellow">#FFFF00</color>
+    <color name="yellow_dark">#FFEB3B</color>
+
     <color name="secondary_text">#727272</color>
 </resources>
