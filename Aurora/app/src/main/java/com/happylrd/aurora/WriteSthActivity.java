@@ -1,41 +1,40 @@
 package com.happylrd.aurora;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.happylrd.aurora.entity.MyUser;
-import com.happylrd.aurora.entity.Post;
 import com.happylrd.aurora.entity.WriteSthContent;
+import com.happylrd.aurora.util.PictureUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -43,14 +42,17 @@ import cn.bmob.v3.listener.UploadBatchListener;
 
 public class WriteSthActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerView;
     private Toolbar toolbar;
     private EditText et_write_sth;
-    private ImageView image_submit_sth;
-    private Button button_takePhoto;
 
-    private final int TAKE_PHOTO = 0;
-    private final int CHOOSE_PHOTO = 1;
-    private ArrayList<String> paths;
+    private ImageView iv_add_image;
+
+    private final int REQUEST_CAMERA = 0;
+    private final int REQUEST_GALLERY = 1;
+
+    private List<File> pics_file_list;
+    private List<String> pics_path_list;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, WriteSthActivity.class);
@@ -62,6 +64,13 @@ public class WriteSthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_sth);
 
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        TileAdapter tileAdapter = new TileAdapter();
+        recyclerView.setAdapter(tileAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(WriteSthActivity.this, 3));
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("写说说");
         setSupportActionBar(toolbar);
@@ -69,26 +78,48 @@ public class WriteSthActivity extends AppCompatActivity {
 
         et_write_sth = (EditText) findViewById(R.id.et_write_sth);
 
-        image_submit_sth = (ImageView) findViewById(R.id.image_submit_sth);
-        image_submit_sth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.putExtra("crop", true);
-                intent.putExtra("scale", true);
-                intent.setType("image/*");
-                startActivityForResult(intent, CHOOSE_PHOTO);
-            }
-        });
-        button_takePhoto = (Button) findViewById(R.id.button_takePhoto);
-        button_takePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, TAKE_PHOTO);
-            }
-        });
-        paths = new ArrayList<String>();
+        pics_file_list = new ArrayList<>();
+        pics_path_list = new ArrayList<>();
+    }
+
+
+    public class TileHolder extends RecyclerView.ViewHolder {
+
+        public ImageView imageView;
+
+        public TileHolder(View itemView) {
+            super(itemView);
+
+            imageView = (ImageView) itemView.findViewById(R.id.iv_add_image);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iv_add_image = imageView;
+                    selectImage();
+                }
+            });
+        }
+    }
+
+    public class TileAdapter extends RecyclerView.Adapter<TileHolder> {
+
+        @Override
+        public TileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(WriteSthActivity.this);
+            View view = layoutInflater
+                    .inflate(R.layout.item_tile, parent, false);
+            return new TileHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(TileHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return pics_file_list.size() + 1;
+        }
     }
 
     @Override
@@ -103,166 +134,254 @@ public class WriteSthActivity extends AppCompatActivity {
 
         if (id == R.id.menu_item_publish) {
             String textContent = et_write_sth.getText().toString();
-
-            sendPost(textContent);
+            cameraLogic(textContent);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void uploadResToCloud(String textContent) {
+    private void cameraLogic(String textContent) {
+
+        if (textContent.equals("") &&
+                (pics_file_list.size() == 0 ||
+                        pics_file_list.get(pics_file_list.size() - 1) == null)) {
+            // set menu no clickable
+        }
+
+        if (pics_file_list.size() == 0 ||
+                pics_file_list.get(pics_file_list.size() - 1) == null) {
+            uploadText(textContent);
+        } else if (textContent.equals("")) {
+            uploadPics(getPicsPathByFileList(pics_file_list));
+        } else {
+            uploadTextAndPics(textContent, getPicsPathByFileList(pics_file_list));
+        }
+    }
+
+
+    private void galleryLogic(String textContent, List<File> picsFileList) {
+
+        if (textContent.equals("") &&
+                (picsFileList == null || picsFileList.size() == 0)) {
+            // set menu no clickable
+        }
+
+        if (picsFileList == null || picsFileList.size() == 0) {
+            uploadText(textContent);
+        } else if (textContent.equals("")) {
+            uploadPics(getPicsPathByFileList(picsFileList));
+        } else {
+            uploadTextAndPics(textContent, getPicsPathByFileList(picsFileList));
+        }
+    }
+
+    private List<String> getPicsPathByFileList(List<File> picsFileList) {
+        for (int i = 0; i < picsFileList.size(); i++) {
+            pics_path_list.add(picsFileList.get(i).getPath());
+        }
+        return pics_path_list;
+    }
+
+    private void uploadText(String textContent) {
         WriteSthContent writeSthContent = new WriteSthContent();
         writeSthContent.setTextContent(textContent);
+        writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
+
         writeSthContent.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(WriteSthActivity.this, "发表成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WriteSthActivity.this, "发表文字成功", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(WriteSthActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WriteSthActivity.this, "发表文字失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void uploadPicToCloud(String picPath) {
+    private void uploadPics(final List<String> picsPathList) {
 
+        BmobFile.uploadBatch(
+                picsPathList.toArray(new String[picsPathList.size()]),
+                new UploadBatchListener() {
+                    @Override
+                    public void onSuccess(List<BmobFile> list, List<String> list1) {
+                        if (list1.size() == picsPathList.size()) {
+                            WriteSthContent writeSthContent = new WriteSthContent();
+                            writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
+                            writeSthContent.setPicsPathList(list1);
+
+                            writeSthContent.save(new SaveListener<String>() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    if (e == null) {
+                                        Toast.makeText(WriteSthActivity.this, "发表图片成功!",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(WriteSthActivity.this, "发表图片失败!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onProgress(int i, int i1, int i2, int i3) {
+
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+                });
+    }
+
+    private void uploadTextAndPics(final String textContent,
+                                   final List<String> picsPathList) {
+        BmobFile.uploadBatch(
+                picsPathList.toArray(new String[picsPathList.size()]),
+                new UploadBatchListener() {
+                    @Override
+                    public void onSuccess(List<BmobFile> list, List<String> list1) {
+                        if (list1.size() == picsPathList.size()) {
+                            WriteSthContent writeSthContent = new WriteSthContent();
+                            writeSthContent.setTextContent(textContent);
+                            writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
+                            writeSthContent.setPicsPathList(list1);
+
+                            writeSthContent.save(new SaveListener<String>() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    if (e == null) {
+
+                                        Toast.makeText(WriteSthActivity.this, "发表图片与文字成功!",
+                                                Toast.LENGTH_SHORT).show();
+
+                                    } else {
+                                        Toast.makeText(WriteSthActivity.this, "发表图片与文字失败!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onProgress(int i, int i1, int i2, int i3) {
+
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Toast.makeText(WriteSthActivity.this, "pics----onload Failure!" +
+                                s, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public String getUniquePictureFilename() {
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        String picName = "IMG_" + simpleDateFormat.format(date) + ".jpg";
+        return picName;
+    }
+
+    public File getPhotoFile() {
+        File externalFilesDir = getApplicationContext()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        return new File(externalFilesDir, getUniquePictureFilename());
+    }
+
+
+    private void selectImage() {
+        final CharSequence[] items = {"拍照", "从手机中选择"};
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(WriteSthActivity.this);
+        dialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("拍照")) {
+                    cameraIntent();
+                } else if (items[item].equals("从手机中选择")) {
+                    galleryIntent();
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    private void cameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        pics_file_list.add(getPhotoFile());
+
+        Log.d("Pics Size:", pics_file_list.size() + "");
+        Log.d("Pics Path:", pics_file_list
+                .get(pics_file_list.size() - 1).getPath());
+
+        Uri uri = Uri.fromFile(pics_file_list
+                .get(pics_file_list.size() - 1)
+        );
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    private void galleryIntent() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(
+                Intent.createChooser(intent, "Select picture"), REQUEST_GALLERY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case TAKE_PHOTO:
-                String sdStatus = Environment.getExternalStorageState();
-                if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-                    Log.v("TestFile", "SD card is not avaiable/writeable right now.");
-                    return;
-                }
-                Bundle bundle = data.getExtras();
-                Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
-                Log.i("bmob", "get Bitmap take photo-----");
-                image_submit_sth.setImageBitmap(bitmap);
-                FileOutputStream b = null;
-                File file = new File("/sdcard/myImage/");
-                file.mkdirs();// 创建文件夹，名称为pk4fun // 照片的命名，目标文件夹下，以当前时间数字串为名称，即可确保每张照片名称不相同。网上流传的其他Demo这里的照片名称都写死了，则会发生无论拍照多少张，后一张总会把前一张照片覆盖。细心的同学还可以设置这个字符串，比如加上“ＩＭＧ”字样等；然后就会发现sd卡中myimage这个文件夹下，会保存刚刚调用相机拍出来的照片，照片名称不会重复。
-                String str = null;
-                Date date = null;
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");// 获取当前时间，进一步转化为字符串
-                date = new Date();
-                str = format.format(date);
-                String fileName = "/sdcard/myImage/" + str + ".jpg";
-                paths.add(fileName);
-                Log.i("bmob", "拍摄中" + fileName);
-                try {
-                    b = new FileOutputStream(fileName);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        b.flush();
-                        b.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            case CHOOSE_PHOTO:
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.i("bmob", "Enter-----");
-                    Uri uri = data.getData(); //返回的结果
-                    Log.i("bmob", "get URI-----");
-                    ContentResolver cr = this.getContentResolver();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                    if (cursor == null) {
-                        return;
-                    }
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String picturePath = cursor.getString(columnIndex);
-                    paths.add(picturePath);
-                    Toast.makeText(getApplicationContext(), picturePath,
-                            Toast.LENGTH_SHORT).show();
-                    Log.i("bmob", "相册中" + picturePath);
-                    if (!picturePath.toLowerCase().endsWith(".jpg") && !picturePath.toLowerCase().endsWith(".jpeg")) {
-                        Toast.makeText(getApplicationContext(), "请选择jpg格式的图片",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    try {
-                        Bitmap bitmap1 = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                        image_submit_sth.setImageBitmap(bitmap1);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    private void sendPost(String content){
-        final String c = content;
-        Log.i("bmob", "pics----onload  start!");
-        if(paths == null || paths.size() == 0){
-            final Post post = new Post();
-            post.setContent(content);
-            post.setAuthor(BmobUser.getCurrentUser(MyUser.class));
-            post.save(new SaveListener<String>() {
-                @Override
-                public void done(String s, BmobException e) {
-                    if (e == null) {
-                        Log.i("bmob", "发表说说成功：" + s);
-                        Toast.makeText(WriteSthActivity.this, "发表说说成功!" , Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.i("bmob", "发表说说失败：" + e.getMessage() + "," + e.getErrorCode());
-                        Toast.makeText(WriteSthActivity.this,"发表说说失败!" + e.getMessage()  , Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+        if (resultCode != Activity.RESULT_OK) {
+            pics_file_list.remove(pics_file_list.size() - 1);
+//            Log.d("After remove Pics size", pics_file_list.size()+" size");
             return;
         }
-        String [] strings = new String[paths.size()];
-        for (int i = 0; i <paths.size() ; i++) {
-            strings[i] = paths.get(i);
-        }
-        BmobFile.uploadBatch(strings, new UploadBatchListener() {
-            @Override
-            public void onSuccess(List<BmobFile> list, List<String> list1) {
-                if (list1.size() == paths.size()) {
-                    Log.i("bmob", "pics----onload completely!");
-                    final Post post = new Post();
-                    post.setContent(c);
-                    post.setAuthor(BmobUser.getCurrentUser(MyUser.class));
-                    post.setPost_pics(list1);
-                    post.save(new SaveListener<String>() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if (e == null) {
-                                Log.i("bmob", "发表说说成功：" + s);
-                                Toast.makeText(WriteSthActivity.this, "发表说说成功!" , Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(WriteSthActivity.this,"发表说说失败!" + e.getMessage()  , Toast.LENGTH_SHORT).show();
-                                Log.i("bmob", "发表说说失败：" + e.getMessage() + "," + e.getErrorCode());
-                            }
-                        }
-                    });
+
+        if (requestCode == REQUEST_CAMERA) {
+            updateImageItem(pics_file_list
+                    .get(pics_file_list.size() - 1)
+            );
+
+        } else if (requestCode == REQUEST_GALLERY) {
+
+            // just for demo, need to modify
+            Bitmap bm = null;
+            if (data != null) {
+                try {
+                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
             }
+            iv_add_image.setImageBitmap(bm);
+        }
+    }
 
-            @Override
-            public void onProgress(int i, int i1, int i2, int i3) {
+    private void updateImageItem(File pictureFile) {
 
-            }
+        if (pictureFile == null || !pictureFile.exists()) {
+            Log.d("PictureFile is null?",
+                    (pictureFile == null || !pictureFile.exists()) + "");
+        } else {
+            Log.d("updateImage path", pictureFile.getPath());
 
-            @Override
-            public void onError(int i, String s) {
-                Toast.makeText(WriteSthActivity.this, "pics----onload Failure!" + s, Toast.LENGTH_SHORT).show();
-                Log.i("bmob", "pics----onload Failure!" + s);
-            }
-        });
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    pictureFile.getPath(), WriteSthActivity.this);
+            iv_add_image.setImageBitmap(bitmap);
+        }
     }
 }

@@ -4,9 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,7 +20,7 @@ import cn.bmob.v3.listener.SaveListener;
 public class LoginActivity extends AppCompatActivity {
 
     // need to be replaced with your application id
-    private static final String BMOB_APPLICATION_ID = "51343ffcee8d4b3363acc1503b77ce09";
+    private static final String BMOB_APPLICATION_ID = "REPLACE_ME_WITH_A_REAL_ID";
 
     private Button btn_login;
     private Button btn_forget_password;
@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = til_user_name.getEditText().getText().toString();
                 String password = til_password.getEditText().getText().toString();
+
                 doLogin(username, password);
             }
         });
@@ -82,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     GoToMainActivity();
                 } else {
-                    Log.i("BMOB",e.getMessage());
                     til_user_name.setError("用户名或密码错误");
                     til_password.setError("用户名或密码错误");
                     loginFailInfo();

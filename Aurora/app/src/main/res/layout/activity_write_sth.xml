@@ -20,11 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_takePhoto"
-        android:text="拍照片"/>
+
     <EditText
         android:id="@+id/et_write_sth"
         android:layout_width="match_parent"
@@ -34,12 +30,20 @@
         android:lines="6"
         android:maxLines="6" />
 
-    <ImageView
-        android:id="@+id/image_submit_sth"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="@dimen/md_keylines"
-        android:scaleType="centerCrop"
-        android:tint="@color/grey_image_button"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/md_keylines">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_add_image"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_margin="@dimen/md_keylines"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:tint="@color/grey_image_button"-->
+        <!--app:srcCompat="@drawable/ic_add_black_24dp" />-->
 </LinearLayout>
