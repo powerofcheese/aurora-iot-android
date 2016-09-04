@@ -24,9 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.happylrd.aurora.entity.MyUser;
-import com.happylrd.aurora.entity.WriteSthContent;
-import com.happylrd.aurora.util.PictureUtils;
+import com.happylrd.aurora.entity.WriteSth;
 
 import java.io.File;
 import java.io.IOException;
@@ -183,11 +183,11 @@ public class WriteSthActivity extends AppCompatActivity {
     }
 
     private void uploadText(String textContent) {
-        WriteSthContent writeSthContent = new WriteSthContent();
-        writeSthContent.setTextContent(textContent);
-        writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
+        WriteSth writeSth = new WriteSth();
+        writeSth.setTextContent(textContent);
+        writeSth.setAuthor(MyUser.getCurrentUser(MyUser.class));
 
-        writeSthContent.save(new SaveListener<String>() {
+        writeSth.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
@@ -207,11 +207,11 @@ public class WriteSthActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(List<BmobFile> list, List<String> list1) {
                         if (list1.size() == picsPathList.size()) {
-                            WriteSthContent writeSthContent = new WriteSthContent();
-                            writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
-                            writeSthContent.setPicsPathList(list1);
+                            WriteSth writeSth = new WriteSth();
+                            writeSth.setAuthor(MyUser.getCurrentUser(MyUser.class));
+                            writeSth.setPicsPathList(list1);
 
-                            writeSthContent.save(new SaveListener<String>() {
+                            writeSth.save(new SaveListener<String>() {
                                 @Override
                                 public void done(String s, BmobException e) {
                                     if (e == null) {
@@ -246,12 +246,12 @@ public class WriteSthActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(List<BmobFile> list, List<String> list1) {
                         if (list1.size() == picsPathList.size()) {
-                            WriteSthContent writeSthContent = new WriteSthContent();
-                            writeSthContent.setTextContent(textContent);
-                            writeSthContent.setAuthor(MyUser.getCurrentUser(MyUser.class));
-                            writeSthContent.setPicsPathList(list1);
+                            WriteSth writeSth = new WriteSth();
+                            writeSth.setTextContent(textContent);
+                            writeSth.setAuthor(MyUser.getCurrentUser(MyUser.class));
+                            writeSth.setPicsPathList(list1);
 
-                            writeSthContent.save(new SaveListener<String>() {
+                            writeSth.save(new SaveListener<String>() {
                                 @Override
                                 public void done(String s, BmobException e) {
                                     if (e == null) {
@@ -310,7 +310,7 @@ public class WriteSthActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("拍照")) {
                     cameraIntent();
-                } else if (items[item].equals("从手机中选择")) {
+                } else if (items[item].equals("选择照片")) {
                     galleryIntent();
                 }
             }
@@ -379,9 +379,9 @@ public class WriteSthActivity extends AppCompatActivity {
         } else {
             Log.d("updateImage path", pictureFile.getPath());
 
-            Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    pictureFile.getPath(), WriteSthActivity.this);
-            iv_add_image.setImageBitmap(bitmap);
+            Glide.with(WriteSthActivity.this)
+                    .load(pictureFile.getPath())
+                    .into(iv_add_image);
         }
     }
 }

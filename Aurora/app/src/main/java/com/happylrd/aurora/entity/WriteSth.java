@@ -3,15 +3,15 @@ package com.happylrd.aurora.entity;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobRelation;
 
-public class WriteSthContent extends BmobObject {
+public class WriteSth extends BmobObject {
 
     private String textContent;
-
-    private String picturePath;
-
     private List<String> picsPathList;
-    private MyUser author;
+
+    private MyUser author;  // author and writesth are one to many
+    private BmobRelation praise;  // user and writesth are many to many
 
     public String getTextContent() {
         return textContent;
@@ -37,11 +37,11 @@ public class WriteSthContent extends BmobObject {
         this.author = author;
     }
 
-    public String getPicturePath() {
-        return picturePath;
+    public BmobRelation getPraise() {
+        return praise;
     }
 
-    public void setPicturePath(String picturePath) {
-        this.picturePath = picturePath;
+    public void setPraise(BmobRelation praise) {
+        this.praise = praise;
     }
 }

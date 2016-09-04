@@ -5,7 +5,7 @@ import cn.bmob.v3.BmobUser;
 public class MyUser extends BmobUser {
 
     private String nickName;
-    private Boolean sex;
+    private String sex;
     private Integer age;
 
     public String getNickName() {
@@ -16,11 +16,11 @@ public class MyUser extends BmobUser {
         this.nickName = nickName;
     }
 
-    public Boolean getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Boolean sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
