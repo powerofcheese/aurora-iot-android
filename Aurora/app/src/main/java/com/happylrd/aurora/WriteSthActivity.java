@@ -275,8 +275,9 @@ public class WriteSthActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(int i, String s) {
-                        Toast.makeText(WriteSthActivity.this, "pics----onload Failure!" +
-                                s, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WriteSthActivity.this,
+                                "pics upload Failure!" + s, Toast.LENGTH_SHORT)
+                                .show();
                     }
                 });
     }
@@ -302,7 +303,7 @@ public class WriteSthActivity extends AppCompatActivity {
 
 
     private void selectImage() {
-        final CharSequence[] items = {"拍照", "从手机中选择"};
+        final CharSequence[] items = {"拍照", "选择照片"};
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(WriteSthActivity.this);
         dialog.setItems(items, new DialogInterface.OnClickListener() {
@@ -339,6 +340,19 @@ public class WriteSthActivity extends AppCompatActivity {
     private void galleryIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
+
+        pics_file_list.add(getPhotoFile());
+
+        Log.d("Pics Size:", pics_file_list.size() + "");
+        Log.d("Pics Path:", pics_file_list
+                .get(pics_file_list.size() - 1).getPath());
+
+        Uri uri = Uri.fromFile(pics_file_list
+                .get(pics_file_list.size() - 1)
+        );
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
         startActivityForResult(
                 Intent.createChooser(intent, "Select picture"), REQUEST_GALLERY);
     }
@@ -353,8 +367,7 @@ public class WriteSthActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CAMERA) {
             updateImageItem(pics_file_list
-                    .get(pics_file_list.size() - 1)
-            );
+                    .get(pics_file_list.size() - 1));
 
         } else if (requestCode == REQUEST_GALLERY) {
 

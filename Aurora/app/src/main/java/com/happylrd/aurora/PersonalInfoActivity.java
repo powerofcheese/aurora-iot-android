@@ -3,13 +3,18 @@ package com.happylrd.aurora;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +31,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private String[] sex_array = new String[]{"男", "女", "未知"};
     private int sex_array_selected_index = 2;
 
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
 
     private RelativeLayout rl_head_portrait;
@@ -49,10 +55,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_info);
 
+        collapsingToolbarLayout =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("个人信息");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setBgColorByPalette();
 
         tv_nick_name = (TextView) findViewById(R.id.tv_nick_name);
         rl_nick_name = (RelativeLayout) findViewById(R.id.rl_nick_name);
@@ -63,6 +73,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         MyUser myUser = BmobUser.getCurrentUser(MyUser.class);
         tv_nick_name.setText(myUser.getNickName());
+        collapsingToolbarLayout.setTitle(myUser.getNickName());
+
         tv_sex.setText(myUser.getSex());
         if (!(myUser.getAge() == null)) {
             tv_age.setText(myUser.getAge() + "");
@@ -247,5 +259,24 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private void showInputNotNullToast() {
         Toast.makeText(PersonalInfoActivity.this, "输入不能为空", Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void setBgColorByPalette(){
+        BitmapDrawable bitmapDrawable =
+                (BitmapDrawable) getResources().getDrawable(R.drawable.profile);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Palette.Builder builder = Palette.from(bitmap);
+        builder.generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                collapsingToolbarLayout.setBackgroundColor(vibrant.getRgb());
+                toolbar.setBackgroundColor(vibrant.getRgb());
+                if(Build.VERSION.SDK_INT >= 21){
+                    Window window = getWindow();
+                    window.setStatusBarColor(vibrant.getRgb());
+                }
+            }
+        });
     }
 }

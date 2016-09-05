@@ -95,7 +95,8 @@ public class CardFindFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = DetailActivity.newIntent(getActivity());
+                    Log.d("WriteSth Id ", mWriteSth.getObjectId()+"");
+                    Intent intent = DetailActivity.newIntent(getActivity(), mWriteSth.getObjectId());
                     startActivity(intent);
                 }
             });

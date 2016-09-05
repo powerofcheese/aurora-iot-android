@@ -7,6 +7,7 @@ public class MyUser extends BmobUser {
     private String nickName;
     private String sex;
     private Integer age;
+    private String headPortraitPath;
 
     public String getNickName() {
         return nickName;
@@ -30,5 +31,13 @@ public class MyUser extends BmobUser {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getHeadPortraitPath() {
+        return headPortraitPath;
+    }
+
+    public void setHeadPortraitPath(String headPortraitPath) {
+        this.headPortraitPath = headPortraitPath;
     }
 }
