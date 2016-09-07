@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ColorSchemeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -38,17 +40,16 @@ public class ColorSchemeActivity extends AppCompatActivity {
     }
 
     private class ColorSchemeHolder extends RecyclerView.ViewHolder {
-
-        public ImageView itemAvatar;
-        public TextView itemTitle;
-        public TextView itemDescription;
+        private CircleImageView civ_head_portrait;
+        private TextView tv_nick_name;
+        private TextView tv_message;
 
         public ColorSchemeHolder(View itemView) {
             super(itemView);
 
-            itemAvatar = (ImageView) itemView.findViewById(R.id.list_avatar);
-            itemTitle = (TextView) itemView.findViewById(R.id.list_title);
-            itemDescription = (TextView) itemView.findViewById(R.id.list_desc);
+            civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
+            tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
+            tv_message = (TextView) itemView.findViewById(R.id.tv_message);
         }
 
         public void bindColorScheme() {

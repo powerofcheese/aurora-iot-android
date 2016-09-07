@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:padding="@dimen/md_keylines">
 
-    <ImageView
-        android:id="@+id/list_avatar"
-        android:layout_width="@dimen/avator_size"
-        android:layout_height="@dimen/avator_size"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_head_portrait"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/a_avator" />
+        android:src="@drawable/default_head_portrait"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="2dp" />
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/tv_nick_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_toRightOf="@+id/list_avatar"
+        android:layout_toRightOf="@id/civ_head_portrait"
+        android:text="竹轩听雨"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="@dimen/article_subheading"
-        android:text="@string/item_title" />
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/list_desc"
+        android:id="@+id/tv_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/list_title"
+        android:layout_below="@id/tv_nick_name"
         android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_toRightOf="@+id/list_avatar"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@id/civ_head_portrait"
         android:ellipsize="end"
         android:singleLine="true"
+        android:text="消息内容"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="@color/grey_medium"
-        android:textSize="@dimen/list_body"
-        android:text="@string/item_desc" />
+        android:textSize="16sp" />
 </RelativeLayout>

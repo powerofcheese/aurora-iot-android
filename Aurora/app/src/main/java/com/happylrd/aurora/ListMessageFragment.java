@@ -1,7 +1,5 @@
 package com.happylrd.aurora;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,32 +13,52 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+
 public class ListMessageFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private MessageAdapter mMessageAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.recycler_view, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
-        ContentAdapter contentAdapter = new ContentAdapter();
-        recyclerView.setAdapter(contentAdapter);
+        initView(view);
+        initListener();
+
+        return view;
+    }
+
+    private void initView(View view){
+        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        mMessageAdapter = new MessageAdapter();
+        AlphaInAnimationAdapter alphaInAnimationAdapter =
+                new AlphaInAnimationAdapter(mMessageAdapter);
+        ScaleInAnimationAdapter scaleInAnimationAdapter =
+                new ScaleInAnimationAdapter(alphaInAnimationAdapter);
+        recyclerView.setAdapter(scaleInAnimationAdapter);
+
         swipeRefreshLayout.setDistanceToTriggerSync(400);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+    }
 
+    private void initListener(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -53,23 +71,19 @@ public class ListMessageFragment extends Fragment {
                 }, 2000);
             }
         });
-
-
-        return swipeRefreshLayout;  // recyclerview
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private class MessageHolder extends RecyclerView.ViewHolder{
+        private CircleImageView civ_head_portrait;
+        private TextView tv_nick_name;
+        private TextView tv_message;
 
-        public ImageView itemAvatar;
-        public TextView itemTitle;
-        public TextView itemDescription;
+        public MessageHolder(View itemView){
+            super(itemView);
 
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_list, parent, false));
-            itemAvatar = (ImageView) itemView.findViewById(R.id.list_avatar);
-            itemTitle = (TextView) itemView.findViewById(R.id.list_title);
-            itemDescription = (TextView) itemView.findViewById(R.id.list_desc);
-
+            civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
+            tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
+            tv_message = (TextView) itemView.findViewById(R.id.tv_message);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,23 +91,30 @@ public class ListMessageFragment extends Fragment {
                 }
             });
         }
+
+        public void bindMessage(){
+
+        }
     }
 
-    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    private class MessageAdapter extends RecyclerView.Adapter<MessageHolder>{
 
-        private static final int LENGTH = 18;
+        private static final int LENGTH = 100;
 
-        public ContentAdapter() {
+        public MessageAdapter(){
 
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater
+                    .inflate(R.layout.item_list, parent, false);
+            return new MessageHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(MessageHolder holder, int position) {
 
         }
 
