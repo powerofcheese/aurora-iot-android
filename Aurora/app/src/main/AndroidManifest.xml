@@ -64,6 +64,11 @@
 
         </activity>
 
+        <activity android:name=".ColorSchemeActivity"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
+
         <activity android:name=".ColorPickerActivity"
             android:parentActivityName=".MainActivity">
 

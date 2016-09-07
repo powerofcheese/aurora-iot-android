@@ -30,7 +30,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:src="@drawable/profile"
+                android:src="@drawable/default_head_portrait"
                 app:civ_border_color="#FFFFFFFF"
                 app:civ_border_width="6dp" />
 
@@ -67,7 +67,7 @@
                     android:layout_height="@dimen/avator_size"
                     android:layout_marginLeft="@dimen/md_keylines"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile" />
+                    android:src="@drawable/default_head_portrait" />
 
                 <ImageButton
                     android:id="@+id/arrow_down_btn"

@@ -33,6 +33,11 @@ public class ColorPickerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_picker);
 
+        initView();
+        initListener();
+    }
+
+    private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("色彩选择");
         setSupportActionBar(toolbar);
@@ -46,8 +51,10 @@ public class ColorPickerActivity extends AppCompatActivity {
         colorPicker.addOpacityBar(opacityBar);
         colorPicker.addSaturationBar(saturationBar);
         colorPicker.addValueBar(valueBar);
-
         btn_determine_color = (Button) findViewById(R.id.btn_determine_color);
+    }
+
+    private void initListener() {
         btn_determine_color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

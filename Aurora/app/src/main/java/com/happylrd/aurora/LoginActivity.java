@@ -41,11 +41,19 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Bmob.initialize(this, BMOB_APPLICATION_ID);
+        initView();
+        initListener();
+    }
 
+    private void initView() {
         til_user_name = (TextInputLayout) findViewById(R.id.til_user_name);
         til_password = (TextInputLayout) findViewById(R.id.til_password);
-
         btn_login = (Button) findViewById(R.id.btn_login);
+        btn_forget_password = (Button) findViewById(R.id.btn_forget_password);
+        btn_goto_signup = (Button) findViewById(R.id.btn_goto_signup);
+    }
+
+    private void initListener() {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,9 +64,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btn_forget_password = (Button) findViewById(R.id.btn_forget_password);
-
-        btn_goto_signup = (Button) findViewById(R.id.btn_goto_signup);
         btn_goto_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,18 +96,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startProgressDialog() {
-        progressDialog= new ProgressDialog(LoginActivity.this);
+        progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(true);
         progressDialog.show();
     }
 
-    public void loginSuccessInfo(){
+    public void loginSuccessInfo() {
         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
     }
 
-    public void loginFailInfo(){
+    public void loginFailInfo() {
         Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
     }

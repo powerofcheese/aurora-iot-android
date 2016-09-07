@@ -53,18 +53,34 @@ public class CardFindFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.recycler_view, container, false);
 
+        initView(view);
+        initListener();
+
+        mWriteSthAdapter = new WriteSthAdapter();
+        recyclerView.setAdapter(mWriteSthAdapter);
+        initData();
+
+        prevEndTime = new String();
+        return view;
+    }
+
+    private void initView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setDistanceToTriggerSync(400);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+    }
+
+    private void initListener() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -73,13 +89,6 @@ public class CardFindFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-        mWriteSthAdapter = new WriteSthAdapter();
-        recyclerView.setAdapter(mWriteSthAdapter);
-        initData();
-
-        prevEndTime = new String();
-        return view;
     }
 
     private class WriteSthHolder extends RecyclerView.ViewHolder {

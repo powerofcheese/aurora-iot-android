@@ -341,7 +341,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
     private void setBgColorByDefaultHeadPortrait() {
         BitmapDrawable bitmapDrawable =
-                (BitmapDrawable) getResources().getDrawable(R.drawable.profile);
+                (BitmapDrawable) getResources().getDrawable(R.drawable.default_head_portrait);
         Bitmap bitmap = bitmapDrawable.getBitmap();
         usePaletteByBitmap(bitmap);
     }

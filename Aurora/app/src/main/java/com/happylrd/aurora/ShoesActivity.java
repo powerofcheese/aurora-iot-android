@@ -48,6 +48,11 @@ public class ShoesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shoes);
 
+        initView();
+        initListener();
+    }
+
+    private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("我的鞋子");
         setSupportActionBar(toolbar);
@@ -60,6 +65,9 @@ public class ShoesActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+    }
+
+    private void initListener() {
         fab_color_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
+        initListener();
+    }
+
+    private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("极光");
         setSupportActionBar(toolbar);
@@ -63,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
-
         // add menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -71,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.getBackground().setAlpha(0);
+
+        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+        fab_write_sth = (FloatingActionButton) findViewById(R.id.fab_write_sth);
+        fab_wrap_shoes = (FloatingActionButton) findViewById(R.id.fab_wrap_shoes);
+        fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+    }
+
+    private void initListener() {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -84,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
-        frameLayout.getBackground().setAlpha(0);
-
-        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
         fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
@@ -109,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab_write_sth = (FloatingActionButton) findViewById(R.id.fab_write_sth);
         fab_write_sth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab_wrap_shoes = (FloatingActionButton) findViewById(R.id.fab_wrap_shoes);
         fab_wrap_shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
         fab_color_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

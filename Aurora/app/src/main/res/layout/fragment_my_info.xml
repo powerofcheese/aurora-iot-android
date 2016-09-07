@@ -20,19 +20,19 @@
             android:layout_margin="@dimen/md_keylines">
 
             <ImageView
-                android:id="@+id/list_avatar_profile"
+                android:id="@+id/iv_head_portrait"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/profile" />
+                app:srcCompat="@drawable/default_head_portrait" />
 
             <TextView
-                android:id="@+id/list_title_profile"
+                android:id="@+id/tv_nick_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/md_keylines"
                 android:layout_marginTop="20dp"
-                android:layout_toRightOf="@+id/list_avatar_profile"
+                android:layout_toRightOf="@id/iv_head_portrait"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:textSize="20sp"
                 tools:text="竹轩听雨" />
@@ -96,6 +96,7 @@
             android:showDividers="middle">
 
             <RelativeLayout
+                android:id="@+id/rl_color_scheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/md_keylines">

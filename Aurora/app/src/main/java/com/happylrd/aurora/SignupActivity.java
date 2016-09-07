@@ -26,10 +26,17 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        initView();
+        initListener();
+    }
+
+    private void initView(){
         til_user_name = (TextInputLayout) findViewById(R.id.til_user_name);
         til_password = (TextInputLayout) findViewById(R.id.til_password);
-
         btn_signup = (Button) findViewById(R.id.btn_signup);
+    }
+
+    private void initListener(){
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

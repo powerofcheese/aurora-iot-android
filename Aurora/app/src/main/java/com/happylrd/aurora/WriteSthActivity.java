@@ -82,7 +82,6 @@ public class WriteSthActivity extends AppCompatActivity {
         pics_path_list = new ArrayList<>();
     }
 
-
     public class TileHolder extends RecyclerView.ViewHolder {
 
         public ImageView imageView;

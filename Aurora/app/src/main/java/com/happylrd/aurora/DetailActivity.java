@@ -66,23 +66,30 @@ public class DetailActivity extends AppCompatActivity {
 
         WRITESTH_ID = (String) getIntent().getSerializableExtra(EXTRA_WRITESTH_ID);
 
+        initView();
+        initData();
+
+        mPicAdapter = new PicAdapter();
+        recyclerView.setAdapter(mPicAdapter);
+    }
+
+    private void initView() {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         collapsingToolbarLayout =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        collapsingToolbarLayout.setTitle(getString(R.string.item_title));
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_pics);
-        recyclerView.setLayoutManager(new LinearLayoutManager(DetailActivity.this));
-
         tv_nick_name = (TextView) findViewById(R.id.tv_nick_name);
         tv_text_content = (TextView) findViewById(R.id.tv_text_content);
-
         civ_head_portrait_bg = (CircleImageView) findViewById(R.id.civ_head_portrait_bg);
         civ_head_portrait = (CircleImageView) findViewById(R.id.civ_head_portrait);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(DetailActivity.this));
+    }
+
+    private void initData() {
         BmobQuery<WriteSth> query = new BmobQuery<>();
         query.getObject(WRITESTH_ID, new QueryListener<WriteSth>() {
             @Override
@@ -118,27 +125,20 @@ public class DetailActivity extends AppCompatActivity {
                                             setBgColorByDefaultHeadPortrait();
                                         }
                                     } else {
-//                                        showFindFailedToast();
-                                        Log.d("Find fail 1 ", e.getMessage());
+                                        showFindFailedToast();
                                     }
                                 }
                             });
                 } else {
-//                    showFindFailedToast();
-                    Log.d("Find fail 2 ", e.getMessage());
+                    showFindFailedToast();
                 }
             }
         });
-
-        mPicAdapter = new PicAdapter();
-        recyclerView.setAdapter(mPicAdapter);
-
     }
 
     private class PicHolder extends RecyclerView.ViewHolder {
 
         private String mPicUrl;
-
         public ImageView iv_pic;
 
         public PicHolder(View itemView) {
@@ -149,7 +149,6 @@ public class DetailActivity extends AppCompatActivity {
 
         public void bindPicUrl(String picUrl) {
             mPicUrl = picUrl;
-
             Log.d("Pic Url ", picUrl);
 
             Glide.with(DetailActivity.this)
@@ -199,7 +198,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setBgColorByDefaultHeadPortrait() {
         BitmapDrawable bitmapDrawable =
-                (BitmapDrawable) getResources().getDrawable(R.drawable.profile);
+                (BitmapDrawable) getResources().getDrawable(R.drawable.default_head_portrait);
         Bitmap bitmap = bitmapDrawable.getBitmap();
         usePaletteByBitmap(bitmap);
     }
