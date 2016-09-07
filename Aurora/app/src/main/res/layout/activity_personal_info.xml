@@ -85,6 +85,7 @@
                             android:textSize="20sp" />
 
                         <ImageView
+                            android:id="@+id/iv_head_portrait"
                             android:layout_width="80sp"
                             android:layout_height="80sp"
                             android:layout_alignParentRight="true"

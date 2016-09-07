@@ -35,6 +35,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CardFindFragment extends Fragment {
 
@@ -86,6 +87,8 @@ public class CardFindFragment extends Fragment {
         private WriteSth mWriteSth;
 
         public TextView tv_nick_name;
+        public CircleImageView civ_head_portrait;
+
         public TextView tv_text_content;
         public ImageView iv_pic_content;
         private ImageButton ibtn_praise;
@@ -95,13 +98,14 @@ public class CardFindFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("WriteSth Id ", mWriteSth.getObjectId()+"");
+                    Log.d("WriteSth Id ", mWriteSth.getObjectId() + "");
                     Intent intent = DetailActivity.newIntent(getActivity(), mWriteSth.getObjectId());
                     startActivity(intent);
                 }
             });
 
             tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
+            civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
             tv_text_content = (TextView) itemView.findViewById(R.id.tv_text_content);
             iv_pic_content = (ImageView) itemView.findViewById(R.id.iv_pic);
             ibtn_praise = (ImageButton) itemView.findViewById(R.id.ibtn_praise);
@@ -124,6 +128,11 @@ public class CardFindFragment extends Fragment {
                         public void done(MyUser myUser, BmobException e) {
                             if (e == null) {
                                 tv_nick_name.setText(myUser.getNickName());
+                                if (myUser.getHeadPortraitPath() != null) {
+                                    Glide.with(getActivity())
+                                            .load(myUser.getHeadPortraitPath())
+                                            .into(civ_head_portrait);
+                                }
                             } else {
                                 showFindFailedToast();
                             }

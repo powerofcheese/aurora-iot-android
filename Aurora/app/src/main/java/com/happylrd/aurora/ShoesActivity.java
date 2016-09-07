@@ -70,7 +70,7 @@ public class ShoesActivity extends AppCompatActivity {
 
     public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new CardFindFragment(), "左鞋");
+        adapter.addFragment(new ListMessageFragment(), "左鞋");
         adapter.addFragment(new ListMessageFragment(), "右鞋");
         viewPager.setAdapter(adapter);
     }

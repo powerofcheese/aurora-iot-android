@@ -13,13 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/list_avatar"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_head_portrait"
             android:layout_width="@dimen/avator_size"
             android:layout_height="@dimen/avator_size"
             android:layout_marginLeft="@dimen/md_keylines"
             android:scaleType="centerCrop"
-            android:src="@drawable/a_avator" />
+            android:src="@drawable/profile" />
 
         <ImageButton
             android:id="@+id/arrow_down_btn"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/md_keylines"
-            android:layout_toRightOf="@+id/list_avatar"
+            android:layout_toRightOf="@id/civ_head_portrait"
             android:text="昵称"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textSize="@dimen/article_subheading" />
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_nick_name"
             android:layout_marginLeft="@dimen/md_keylines"
-            android:layout_toRightOf="@+id/list_avatar"
+            android:layout_toRightOf="@id/civ_head_portrait"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="时间"
@@ -59,7 +59,7 @@
             android:id="@+id/tv_text_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/list_avatar"
+            android:layout_below="@id/civ_head_portrait"
             android:layout_marginBottom="@dimen/md_keylines"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"

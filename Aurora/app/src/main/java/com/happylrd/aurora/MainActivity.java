@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("竹轩听雨");
+        toolbar.setTitle("极光");
         setSupportActionBar(toolbar);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new StepCounterFragment(), "计步");
         adapter.addFragment(new CardFindFragment(), "发现");
         adapter.addFragment(new MyInfoFragment(), "我的");
-        adapter.addFragment(new ListMessageFragment(), "互联");
         viewPager.setAdapter(adapter);
     }
 
