@@ -19,7 +19,13 @@ public class SignupActivity extends AppCompatActivity {
     private Button btn_signup;
     private TextInputLayout til_user_name;
     private TextInputLayout til_password;
+    private Button btn_goto_login;
     private MyUser myUser;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, SignupActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +36,14 @@ public class SignupActivity extends AppCompatActivity {
         initListener();
     }
 
-    private void initView(){
+    private void initView() {
         til_user_name = (TextInputLayout) findViewById(R.id.til_user_name);
         til_password = (TextInputLayout) findViewById(R.id.til_password);
         btn_signup = (Button) findViewById(R.id.btn_signup);
+        btn_goto_login = (Button) findViewById(R.id.btn_goto_login);
     }
 
-    private void initListener(){
+    private void initListener() {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +51,13 @@ public class SignupActivity extends AppCompatActivity {
                 String password = til_password.getEditText().getText().toString();
 
                 doSignUp(username, password);
+            }
+        });
+
+        btn_goto_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoToLogin();
             }
         });
     }
@@ -69,10 +83,5 @@ public class SignupActivity extends AppCompatActivity {
     private void GoToLogin() {
         Intent intent = LoginActivity.newIntent(SignupActivity.this);
         startActivity(intent);
-    }
-
-    public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, SignupActivity.class);
-        return intent;
     }
 }

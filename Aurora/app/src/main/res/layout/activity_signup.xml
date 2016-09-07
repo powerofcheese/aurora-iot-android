@@ -10,9 +10,9 @@
         android:id="@+id/transparent_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
+        android:layout_alignParentTop="true"
         android:alpha="0.9"
-        android:layout_alignParentTop="true"/>
+        android:background="#000000" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_avatar"
@@ -26,9 +26,9 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_user_name"
-        android:layout_below="@id/civ_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/civ_avatar"
         android:layout_margin="@dimen/md_keylines">
 
         <EditText
@@ -38,16 +38,16 @@
             android:drawableLeft="@drawable/ic_account_box_black_24dp"
             android:drawableTint="@color/white"
             android:hint="手机号"
-            android:textColor="@color/white"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textColor="@color/white" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_password"
-        android:layout_below="@id/til_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/til_user_name"
         android:layout_margin="@dimen/md_keylines">
 
         <EditText
@@ -57,18 +57,27 @@
             android:drawableLeft="@drawable/ic_lock_black_24dp"
             android:drawableTint="@color/white"
             android:hint="密码"
-            android:textColor="@color/white"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@color/white" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btn_signup"
-        android:layout_below="@id/til_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/til_password"
         android:layout_margin="@dimen/md_keylines"
         android:backgroundTint="#11C1F3"
         android:text="注册"
         android:textColor="@color/white" />
 
+    <Button
+        android:id="@+id/btn_goto_login"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/btn_signup"
+        android:layout_below="@id/btn_signup"
+        android:text="返回登录"
+        android:textColor="@color/white" />
 </RelativeLayout>
