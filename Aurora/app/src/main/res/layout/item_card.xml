@@ -77,8 +77,7 @@
             android:layout_below="@id/tv_text_content"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/a" />
+            android:scaleType="centerCrop" />
 
         <ImageButton
             android:id="@+id/share_button"

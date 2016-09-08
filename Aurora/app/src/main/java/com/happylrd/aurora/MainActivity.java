@@ -2,6 +2,8 @@ package com.happylrd.aurora;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,26 +15,39 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.happylrd.aurora.entity.MyUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobUser;
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+    private View mHeadView;
+    private CircleImageView mNavHeadPortrait;
+    private TextView mNavNickName;
+
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private NavigationView navigationView;
 
     private FrameLayout frameLayout;
     private FloatingActionsMenu fabMenu;
@@ -52,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
         initListener();
+        initData();
     }
 
     private void initView() {
@@ -65,8 +81,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mHeadView = navigationView.getHeaderView(0);
+        mNavHeadPortrait = (CircleImageView) mHeadView.findViewById(R.id.civ_head_portrait);
+        mNavNickName = (TextView) mHeadView.findViewById(R.id.tv_nick_name);
 
         // add menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -144,6 +163,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initData() {
+        MyUser currentUser = BmobUser.getCurrentUser(MyUser.class);
+        mNavNickName.setText(currentUser.getNickName());
+        if (currentUser.getHeadPortraitPath() != null) {
+            Glide.with(MainActivity.this)
+                    .load(currentUser.getHeadPortraitPath())
+                    .into(mNavHeadPortrait);
+            setBgColorByHeadPortrait(currentUser.getHeadPortraitPath());
+        } else {
+            setBgColorByDefaultHeadPortrait();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -199,5 +231,35 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    private void setBgColorByDefaultHeadPortrait() {
+        BitmapDrawable bitmapDrawable =
+                (BitmapDrawable) getResources().getDrawable(R.drawable.default_head_portrait);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        usePaletteByBitmap(bitmap);
+    }
+
+    private void setBgColorByHeadPortrait(String headPortraitPath) {
+        Glide.with(MainActivity.this)
+                .load(headPortraitPath)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        usePaletteByBitmap(resource);
+                    }
+                });
+    }
+
+    private void usePaletteByBitmap(Bitmap bitmap) {
+        Palette.Builder builder = Palette.from(bitmap);
+        builder.generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                mHeadView.setBackgroundColor(vibrant.getRgb());
+            }
+        });
     }
 }
