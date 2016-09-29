@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -23,68 +24,23 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/black"
-            android:fillViewport="false" />
+            app:tabIndicatorColor="@color/white" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
-
-    </android.support.v4.view.ViewPager>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_color_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom|end"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="40dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
         android:src="@drawable/ic_color_lens_black_24dp"
-        android:tint="@color/black"
-        app:backgroundTint="@color/colorAccent" />
-
-    <com.sa90.materialarcmenu.ArcMenu
-        android:id="@+id/scenes_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-
-        android:layout_gravity="bottom|left|end"
-        app:menu_scr="@drawable/sence"
-        app:menu_open="arc_right"
-
-        app:menu_ripple_color="@color/white"
-        app:menu_color="@color/colorAccent"
-        >
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/scenes_shining"
-            android:background="@color/white"
-            android:src="@drawable/shining"
-            android:layout_height="wrap_content" />
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/scenes_loop"
-            android:background="@color/white"
-            android:src="@drawable/loop"
-            android:layout_height="wrap_content" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/scenes_breath"
-            android:background="@color/white"
-            android:src="@drawable/breath"
-            android:layout_height="wrap_content" />
-
-
-
-    </com.sa90.materialarcmenu.ArcMenu>
-
-
+        android:tint="@color/white"
+        app:backgroundTint="@color/yellow_dark" />
 </android.support.design.widget.CoordinatorLayout>

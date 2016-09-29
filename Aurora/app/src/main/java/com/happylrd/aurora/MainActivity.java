@@ -1,12 +1,9 @@
 package com.happylrd.aurora;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,79 +14,46 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.sa90.materialarcmenu.ArcMenu;
-import com.sa90.materialarcmenu.StateChangeListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.happylrd.aurora.entity.MyUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobUser;
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+    private View mHeadView;
+    private CircleImageView mNavHeadPortrait;
+    private TextView mNavNickName;
+
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private NavigationView navigationView;
 
     private FrameLayout frameLayout;
-    private ArcMenu fabMenu;
-
-    public static BTS service;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    StepCounterFragment.step_num = Integer.parseInt(readMessage);
-                    StepCounterFragment.setUI();
-                    break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString("TOAST"),
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case STATE_CHANGE:
-                    switch (msg.arg1){
-                        case BTS.STATE_NONE:
-                            Toast.makeText(getApplicationContext(),"Welcome to the APP-----当前状态为未连接",Toast.LENGTH_SHORT).show();
-                            break;
-                        case BTS.STATE_CONNECTED:
-                            Toast.makeText(getApplicationContext(),"Welcome to the APP-----已连接",Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                    break;
-                case LIGHT:
-                    if(service == null){
-                        Toast.makeText(getApplicationContext(),"请先连接蓝牙设备！", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    String send = msg.arg1 + " " + msg.obj.toString();
-                    service.write(send.getBytes());
-                    break;
-
-            }
-        }
-    };
-    private static final int REQUEST_OPEN_BT = 1;
-    private static final int SEARCH_NEW_DEVICE = 2;
-    private static final int SEARCH_PAIRED_DEVICE = 3;
-    private static final int DISPLAY_DRAW = 8;
-
-    public static final int LIGHT = 9;
-    public static final int MESSAGE_READ = 4;
-    public static final int MESSAGE_DEVICE_NAME = 5;
-    public static final int MESSAGE_TOAST = 6;
-    public static final int STATE_CHANGE = 7;
+    private FloatingActionsMenu fabMenu;
+    private FloatingActionButton fab_write_sth;
+    private FloatingActionButton fab_wrap_shoes;
+    private FloatingActionButton fab_color_picker;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -101,8 +65,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
+        initListener();
+        initData();
+    }
+
+    private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle("极光");
         setSupportActionBar(toolbar);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -111,9 +81,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mHeadView = navigationView.getHeaderView(0);
+        mNavHeadPortrait = (CircleImageView) mHeadView.findViewById(R.id.civ_head_portrait);
+        mNavNickName = (TextView) mHeadView.findViewById(R.id.tv_nick_name);
 
         // add menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -122,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.getBackground().setAlpha(0);
+
+        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+        fab_write_sth = (FloatingActionButton) findViewById(R.id.fab_write_sth);
+        fab_wrap_shoes = (FloatingActionButton) findViewById(R.id.fab_wrap_shoes);
+        fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+    }
+
+    private void initListener() {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -135,84 +117,62 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
-        frameLayout.getBackground().setAlpha(0);
-        fabMenu = (ArcMenu) findViewById(R.id.fab_menu);
-
-        fabMenu.setStateChangeListener(new StateChangeListener() {
+        fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
-            public void onMenuOpened() {
+            public void onMenuExpanded() {
                 frameLayout.getBackground().setAlpha(240);
                 frameLayout.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        fabMenu.toggleMenu();
+                        fabMenu.collapse();
                         return true;
                     }
                 });
             }
 
             @Override
-            public void onMenuClosed() {
+            public void onMenuCollapsed() {
                 frameLayout.getBackground().setAlpha(0);
                 frameLayout.setOnTouchListener(null);
+
             }
         });
-        findViewById(R.id.fab_write_sth).setOnClickListener(new View.OnClickListener() {
+
+        fab_write_sth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.toggleMenu();
                 Intent intent = WriteSthActivity.newIntent(MainActivity.this);
                 startActivity(intent);
             }
         });
-        findViewById(R.id.fab_wrap_shoes).setOnClickListener(new View.OnClickListener() {
+
+        fab_wrap_shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.toggleMenu();
-                if(service == null){
-                    Toast.makeText(getApplicationContext(),"请先连接蓝牙设备！",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Intent intent = ShoesActivity.newIntent(MainActivity.this);
-                    startActivity(intent);
-                }
+                Intent intent = ShoesActivity.newIntent(MainActivity.this);
+                startActivity(intent);
             }
         });
-       findViewById(R.id.fab_color_picker).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               fabMenu.toggleMenu();
-               // If BT is not on, request that it be enabled.
-               BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-               if (!bluetoothAdapter.isEnabled()) {
-                   Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                   startActivityForResult(enableIntent, REQUEST_OPEN_BT);
-               }
-               else
-                   service = new BTS(handler);
-           }
-       });
-        findViewById(R.id.fab_others).setOnClickListener(new View.OnClickListener() {
+
+        fab_color_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.toggleMenu();
-                Intent intent = new Intent(MainActivity.this,activity_music.class);
+                Intent intent = ColorPickerActivity.newIntent(MainActivity.this);
                 startActivity(intent);
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_OPEN_BT){
-            if(resultCode == Activity.RESULT_OK){
-                Toast.makeText(this,"蓝牙打开成功！", Toast.LENGTH_SHORT).show();
-                service = new BTS(handler);
-            }
-            else {
-                Toast.makeText(this,"请打开蓝牙,部分功能需要蓝牙！", Toast.LENGTH_LONG).show();
-            }
+    private void initData() {
+        MyUser currentUser = BmobUser.getCurrentUser(MyUser.class);
+        mNavNickName.setText(currentUser.getNickName());
+        if (currentUser.getHeadPortraitPath() != null) {
+            Glide.with(MainActivity.this)
+                    .load(currentUser.getHeadPortraitPath())
+                    .into(mNavHeadPortrait);
+            setBgColorByHeadPortrait(currentUser.getHeadPortraitPath());
+        } else {
+            setBgColorByDefaultHeadPortrait();
         }
     }
 
@@ -234,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setupViewPager(ViewPager viewPager){
+    public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ListMessageFragment(), "SCENES");
-        adapter.addFragment(new StepCounterFragment(), "STEP");
-        adapter.addFragment(new CardFindFragment(), "FIND");
-        adapter.addFragment(new MyInfoFragment(), "MINE");
+        adapter.addFragment(new ListMessageFragment(), "极光");
+        adapter.addFragment(new StepCounterFragment(), "计步");
+        adapter.addFragment(new CardFindFragment(), "发现");
+        adapter.addFragment(new MyInfoFragment(), "我的");
         viewPager.setAdapter(adapter);
     }
 
@@ -271,5 +231,35 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    private void setBgColorByDefaultHeadPortrait() {
+        BitmapDrawable bitmapDrawable =
+                (BitmapDrawable) getResources().getDrawable(R.drawable.default_head_portrait);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        usePaletteByBitmap(bitmap);
+    }
+
+    private void setBgColorByHeadPortrait(String headPortraitPath) {
+        Glide.with(MainActivity.this)
+                .load(headPortraitPath)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        usePaletteByBitmap(resource);
+                    }
+                });
+    }
+
+    private void usePaletteByBitmap(Bitmap bitmap) {
+        Palette.Builder builder = Palette.from(bitmap);
+        builder.generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                mHeadView.setBackgroundColor(vibrant.getRgb());
+            }
+        });
     }
 }

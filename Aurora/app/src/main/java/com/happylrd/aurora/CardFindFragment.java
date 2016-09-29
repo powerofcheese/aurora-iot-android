@@ -35,6 +35,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CardFindFragment extends Fragment {
 
@@ -52,30 +53,8 @@ public class CardFindFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.recycler_view, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-        swipeRefreshLayout.setDistanceToTriggerSync(400);
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                refreshData();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-        if(MainActivity.service != null) {
-            MainActivity.service.write("step".getBytes());
-        }
+        initView(view);
+        initListener();
 
         mWriteSthAdapter = new WriteSthAdapter();
         recyclerView.setAdapter(mWriteSthAdapter);
@@ -85,13 +64,41 @@ public class CardFindFragment extends Fragment {
         return view;
     }
 
+    private void initView(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        swipeRefreshLayout.setDistanceToTriggerSync(400);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+    }
+
+    private void initListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                refreshData();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
     private class WriteSthHolder extends RecyclerView.ViewHolder {
 
         private WriteSth mWriteSth;
 
         public TextView tv_nick_name;
+        public CircleImageView civ_head_portrait;
+
         public TextView tv_text_content;
-        public TextView tv_data;
         public ImageView iv_pic_content;
         private ImageButton ibtn_praise;
 
@@ -107,7 +114,7 @@ public class CardFindFragment extends Fragment {
             });
 
             tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
-            tv_data = (TextView) itemView.findViewById(R.id.tv_date1);
+            civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
             tv_text_content = (TextView) itemView.findViewById(R.id.tv_text_content);
             iv_pic_content = (ImageView) itemView.findViewById(R.id.iv_pic);
             ibtn_praise = (ImageButton) itemView.findViewById(R.id.ibtn_praise);
@@ -130,6 +137,11 @@ public class CardFindFragment extends Fragment {
                         public void done(MyUser myUser, BmobException e) {
                             if (e == null) {
                                 tv_nick_name.setText(myUser.getNickName());
+                                if (myUser.getHeadPortraitPath() != null) {
+                                    Glide.with(getActivity())
+                                            .load(myUser.getHeadPortraitPath())
+                                            .into(civ_head_portrait);
+                                }
                             } else {
                                 showFindFailedToast();
                             }
@@ -139,7 +151,7 @@ public class CardFindFragment extends Fragment {
             if (mWriteSth.getTextContent() != null) {
                 tv_text_content.setText(mWriteSth.getTextContent());
             }
-            tv_data.setText(mWriteSth.getCreatedAt());
+
             if (mWriteSth.getPicsPathList() != null) {
                 // just show the first picture
                 Glide.with(getActivity())
