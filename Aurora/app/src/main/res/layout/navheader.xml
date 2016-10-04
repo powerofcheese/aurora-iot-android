@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/navheader_height"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorAccent"
     android:padding="@dimen/md_keylines">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_head_portrait"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="@dimen/md_keylines"
-        android:src="@drawable/default_head_portrait"
-        app:civ_border_color="#FFFFFFFF"
+        android:id="@+id/profile_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/test"
+        app:civ_border_color="@color/colorAccent"
         app:civ_border_width="2dp" />
 
     <TextView
-        android:id="@+id/tv_nick_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/civ_head_portrait"
-        android:layout_below="@id/civ_head_portrait"
+        android:layout_alignLeft="@id/profile_image"
+        android:layout_below="@id/profile_image"
         android:layout_marginTop="@dimen/md_keylines"
-        android:text="竹轩听雨"
+
         android:textColor="@color/white"
         android:textSize="20sp" />
 
@@ -32,7 +32,7 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/md_keylines"
-        android:src="@drawable/ic_brightness_3_black_24dp"
+
         app:civ_border_color="#FFFFFFFF"
         app:civ_border_width="2dp" />
 
@@ -40,10 +40,11 @@
         android:id="@+id/message_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_toLeftOf="@id/day_night_mode_image"
         android:layout_marginRight="@dimen/md_keylines"
         android:layout_marginTop="@dimen/md_keylines"
-        android:layout_toLeftOf="@id/day_night_mode_image"
-        android:src="@drawable/ic_email_black_24dp"
+
         app:civ_border_color="#FFFFFFFF"
         app:civ_border_width="2dp" />
+
 </RelativeLayout>

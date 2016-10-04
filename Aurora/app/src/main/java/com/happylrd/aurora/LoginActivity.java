@@ -4,10 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.happylrd.aurora.entity.MyUser;
@@ -19,13 +19,13 @@ import cn.bmob.v3.listener.SaveListener;
 public class LoginActivity extends AppCompatActivity {
 
     // need to be replaced with your application id
-    private static final String BMOB_APPLICATION_ID = "REPLACE_ME_WITH_A_REAL_ID";
+    private static final String BMOB_APPLICATION_ID = "e48cfb64577915188bf157e0d55816ce";
 
     private Button btn_login;
     private Button btn_forget_password;
     private Button btn_goto_signup;
-    private TextInputLayout til_user_name;
-    private TextInputLayout til_password;
+    private EditText til_user_name;
+    private EditText til_password;
 
     private ProgressDialog progressDialog;
     private MyUser myUser;
@@ -41,29 +41,24 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Bmob.initialize(this, BMOB_APPLICATION_ID);
-        initView();
-        initListener();
-    }
 
-    private void initView() {
-        til_user_name = (TextInputLayout) findViewById(R.id.til_user_name);
-        til_password = (TextInputLayout) findViewById(R.id.til_password);
+        til_user_name = (EditText) findViewById(R.id.et_user_name);
+        til_password = (EditText) findViewById(R.id.et_password);
+
         btn_login = (Button) findViewById(R.id.btn_login);
-        btn_forget_password = (Button) findViewById(R.id.btn_forget_password);
-        btn_goto_signup = (Button) findViewById(R.id.btn_goto_signup);
-    }
-
-    private void initListener() {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = til_user_name.getEditText().getText().toString();
-                String password = til_password.getEditText().getText().toString();
+                String username = til_user_name.getText().toString();
+                String password = til_password.getText().toString();
 
                 doLogin(username, password);
             }
         });
 
+        btn_forget_password = (Button) findViewById(R.id.btn_forget_password);
+
+        btn_goto_signup = (Button) findViewById(R.id.btn_goto_signup);
         btn_goto_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,10 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(MyUser myUser, BmobException e) {
                 if (e == null) {
-                    til_user_name.setErrorEnabled(false);
-                    til_password.setErrorEnabled(false);
                     loginSuccessInfo();
-
                     GoToMainActivity();
                 } else {
                     til_user_name.setError("用户名或密码错误");
@@ -96,18 +88,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startProgressDialog() {
-        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog= new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(true);
         progressDialog.show();
     }
 
-    public void loginSuccessInfo() {
+    public void loginSuccessInfo(){
         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
     }
 
-    public void loginFailInfo() {
+    public void loginFailInfo(){
         Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
     }

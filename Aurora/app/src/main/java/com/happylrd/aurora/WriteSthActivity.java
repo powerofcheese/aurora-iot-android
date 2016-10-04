@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,7 +28,6 @@ import com.happylrd.aurora.entity.MyUser;
 import com.happylrd.aurora.entity.WriteSth;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +41,7 @@ import cn.bmob.v3.listener.UploadBatchListener;
 public class WriteSthActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private  TileAdapter tileAdapter;
     private Toolbar toolbar;
     private EditText et_write_sth;
 
@@ -64,9 +63,12 @@ public class WriteSthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_sth);
 
+        pics_file_list = new ArrayList<>();
+        pics_path_list = new ArrayList<>();
+
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
-        TileAdapter tileAdapter = new TileAdapter();
+        tileAdapter = new TileAdapter(pics_path_list);
         recyclerView.setAdapter(tileAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(WriteSthActivity.this, 3));
@@ -78,9 +80,9 @@ public class WriteSthActivity extends AppCompatActivity {
 
         et_write_sth = (EditText) findViewById(R.id.et_write_sth);
 
-        pics_file_list = new ArrayList<>();
-        pics_path_list = new ArrayList<>();
+
     }
+
 
     public class TileHolder extends RecyclerView.ViewHolder {
 
@@ -102,6 +104,12 @@ public class WriteSthActivity extends AppCompatActivity {
 
     public class TileAdapter extends RecyclerView.Adapter<TileHolder> {
 
+        private List<String> pathList;
+
+        private TileAdapter(List<String> pathList){
+            this.pathList = pathList;
+        }
+
         @Override
         public TileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(WriteSthActivity.this);
@@ -112,12 +120,17 @@ public class WriteSthActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(TileHolder holder, int position) {
-
+            if(position < pathList.size()){
+                iv_add_image = holder.imageView;
+                Glide.with(WriteSthActivity.this)
+                        .load(pathList.get(position))
+                        .into(iv_add_image);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return pics_file_list.size() + 1;
+            return pics_path_list.size() + 1;
         }
     }
 
@@ -133,52 +146,25 @@ public class WriteSthActivity extends AppCompatActivity {
 
         if (id == R.id.menu_item_publish) {
             String textContent = et_write_sth.getText().toString();
-            cameraLogic(textContent);
+            galleryLogic(textContent, pics_path_list);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void cameraLogic(String textContent) {
-
+    private void galleryLogic(String textContent, List<String> pics_path_list) {
         if (textContent.equals("") &&
-                (pics_file_list.size() == 0 ||
-                        pics_file_list.get(pics_file_list.size() - 1) == null)) {
+                (pics_path_list == null || pics_path_list.size() == 0)) {
             // set menu no clickable
         }
 
-        if (pics_file_list.size() == 0 ||
-                pics_file_list.get(pics_file_list.size() - 1) == null) {
+        if (pics_path_list == null || pics_path_list.size() == 0) {
             uploadText(textContent);
         } else if (textContent.equals("")) {
-            uploadPics(getPicsPathByFileList(pics_file_list));
+            uploadPics(pics_path_list);
         } else {
-            uploadTextAndPics(textContent, getPicsPathByFileList(pics_file_list));
+            uploadTextAndPics(textContent, pics_path_list);
         }
-    }
-
-
-    private void galleryLogic(String textContent, List<File> picsFileList) {
-
-        if (textContent.equals("") &&
-                (picsFileList == null || picsFileList.size() == 0)) {
-            // set menu no clickable
-        }
-
-        if (picsFileList == null || picsFileList.size() == 0) {
-            uploadText(textContent);
-        } else if (textContent.equals("")) {
-            uploadPics(getPicsPathByFileList(picsFileList));
-        } else {
-            uploadTextAndPics(textContent, getPicsPathByFileList(picsFileList));
-        }
-    }
-
-    private List<String> getPicsPathByFileList(List<File> picsFileList) {
-        for (int i = 0; i < picsFileList.size(); i++) {
-            pics_path_list.add(picsFileList.get(i).getPath());
-        }
-        return pics_path_list;
     }
 
     private void uploadText(String textContent) {
@@ -199,7 +185,6 @@ public class WriteSthActivity extends AppCompatActivity {
     }
 
     private void uploadPics(final List<String> picsPathList) {
-
         BmobFile.uploadBatch(
                 picsPathList.toArray(new String[picsPathList.size()]),
                 new UploadBatchListener() {
@@ -337,63 +322,34 @@ public class WriteSthActivity extends AppCompatActivity {
     }
 
     private void galleryIntent() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-
-        pics_file_list.add(getPhotoFile());
-
-        Log.d("Pics Size:", pics_file_list.size() + "");
-        Log.d("Pics Path:", pics_file_list
-                .get(pics_file_list.size() - 1).getPath());
-
-        Uri uri = Uri.fromFile(pics_file_list
-                .get(pics_file_list.size() - 1)
-        );
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-
-        startActivityForResult(
-                Intent.createChooser(intent, "Select picture"), REQUEST_GALLERY);
+        Intent intent = new Intent(WriteSthActivity.this,photos_Activity.class);
+        startActivityForResult(intent, REQUEST_GALLERY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             pics_file_list.remove(pics_file_list.size() - 1);
-//            Log.d("After remove Pics size", pics_file_list.size()+" size");
             return;
         }
 
         if (requestCode == REQUEST_CAMERA) {
-            updateImageItem(pics_file_list
-                    .get(pics_file_list.size() - 1));
+            pics_path_list.add(pics_file_list.get(pics_file_list.size() - 1).getPath());
+            tileAdapter.notifyDataSetChanged();
 
         } else if (requestCode == REQUEST_GALLERY) {
 
-            // just for demo, need to modify
-            Bitmap bm = null;
-            if (data != null) {
-                try {
-                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
+            Bundle bundle = data.getBundleExtra("PATH");
+            String[] galleryPhotoPaths = bundle.getStringArray("paths");
+            try{
+                for(int i = 0;i < galleryPhotoPaths.length;i++){
+                    pics_path_list.add(galleryPhotoPaths[i]);
                 }
+                tileAdapter.notifyDataSetChanged();
             }
-            iv_add_image.setImageBitmap(bm);
-        }
-    }
-
-    private void updateImageItem(File pictureFile) {
-
-        if (pictureFile == null || !pictureFile.exists()) {
-            Log.d("PictureFile is null?",
-                    (pictureFile == null || !pictureFile.exists()) + "");
-        } else {
-            Log.d("updateImage path", pictureFile.getPath());
-
-            Glide.with(WriteSthActivity.this)
-                    .load(pictureFile.getPath())
-                    .into(iv_add_image);
+            catch (Exception e){
+                Log.i("aaa","错误为" + e.getMessage());
+            }
         }
     }
 }

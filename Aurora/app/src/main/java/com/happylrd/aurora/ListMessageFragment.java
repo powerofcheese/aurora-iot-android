@@ -7,58 +7,47 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import java.util.Arrays;
+import java.util.List;
 
 public class ListMessageFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private MessageAdapter mMessageAdapter;
+    private List<Integer> pics;
+    private String [] names = {"wave","ball","star","go","fire","eye","charse"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.recycler_view, container, false);
-
-        initView(view);
-        initListener();
-
-        return view;
-    }
-
-    private void initView(View view){
         recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        pics = Arrays.asList(R.drawable.main_1,R.drawable.main_2,R.drawable.main_3,
+                R.drawable.main_4,R.drawable.main_5,R.drawable.main_6,R.drawable.main_7);
+
+        ContentAdapter contentAdapter = new ContentAdapter(pics);
+        recyclerView.setAdapter(contentAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mMessageAdapter = new MessageAdapter();
-        AlphaInAnimationAdapter alphaInAnimationAdapter =
-                new AlphaInAnimationAdapter(mMessageAdapter);
-        ScaleInAnimationAdapter scaleInAnimationAdapter =
-                new ScaleInAnimationAdapter(alphaInAnimationAdapter);
-        recyclerView.setAdapter(scaleInAnimationAdapter);
-
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setDistanceToTriggerSync(400);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-    }
 
-    private void initListener(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -71,56 +60,59 @@ public class ListMessageFragment extends Fragment {
                 }, 2000);
             }
         });
+
+        if(MainActivity.service != null) {
+            MainActivity.service.write("step".getBytes());
+            Log.d("aaa", "记步界面发送step");
+        }
+
+        return swipeRefreshLayout;  // recyclerview
     }
 
-    private class MessageHolder extends RecyclerView.ViewHolder{
-        private CircleImageView civ_head_portrait;
-        private TextView tv_nick_name;
-        private TextView tv_message;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public MessageHolder(View itemView){
-            super(itemView);
+        public ImageView itemAvatar;
 
-            civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
-            tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
-            tv_message = (TextView) itemView.findViewById(R.id.tv_message);
-            itemView.setOnClickListener(new View.OnClickListener() {
+        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.item_list, parent, false));
+            itemAvatar = (ImageView) itemView.findViewById(R.id.item_newlist_image);
+        }
+    }
+
+    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+
+        private List<Integer> contents;
+
+        public ContentAdapter(List<Integer> contents) {
+            this.contents = contents;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder,final int position) {
+            holder.itemAvatar.setBackgroundResource(contents.get(position));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(MainActivity.service!= null){
+                        String send = "" + names[position];
+                        MainActivity.service.write(send.getBytes());
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity(),"请先连接蓝牙！",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
 
-        public void bindMessage(){
-
-        }
-    }
-
-    private class MessageAdapter extends RecyclerView.Adapter<MessageHolder>{
-
-        private static final int LENGTH = 100;
-
-        public MessageAdapter(){
-
-        }
-
-        @Override
-        public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater
-                    .inflate(R.layout.item_list, parent, false);
-            return new MessageHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(MessageHolder holder, int position) {
-
-        }
-
         @Override
         public int getItemCount() {
-            return LENGTH;
+            return contents.size();
         }
     }
 }

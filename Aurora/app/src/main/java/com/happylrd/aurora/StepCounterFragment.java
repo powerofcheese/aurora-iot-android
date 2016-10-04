@@ -1,15 +1,15 @@
 package com.happylrd.aurora;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,85 +19,50 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class StepCounterFragment extends Fragment {
 
-    private DecoView mDecoView;
+    private static DecoView mDecoView;
 
-    private TextView tv_step_goal;
-    private TextView tv_percentage;
+    private EditText tv_step_goal;
+    private static TextView tv_step_num;
     private Button btn_set_step_goal;
     private Button btn_start_counter;
     private ImageView iv_running;
-    private TextView tv_running;
 
-    private String[] step_goal_array = new String[]{"10", "50", "100", "500", "1000"};
-    private int step_goal_array_selected_index = 0;
-
-    private final String percentage_text_format = "%.0f%%";
-    private final String running_text_format = "%.0f Km";
-
-    private static final String DEFAULT_GOAL_TEXT = "200";
 
     private int mBackIndex;
-    private int mDataIndex_1;
+    private static int mDataIndex_1;
+
+    //通过蓝牙获取
+    public static int step_num = 5500;
+    private static int goal = 10000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_counter, container, false);
+        if(MainActivity.service != null) {
+            MainActivity.service.write("step".getBytes());
+            Log.d("aaa","记步界面发送step");
+        }
 
         mDecoView = (DecoView) view.findViewById(R.id.dynamicArcView);
 
-        tv_percentage = (TextView) view.findViewById(R.id.tv_percentage);
-        tv_running = (TextView) view.findViewById(R.id.tv_running);
+        tv_step_num = (TextView) view.findViewById(R.id.tv_percentage);
 
-        tv_step_goal = (TextView) view.findViewById(R.id.tv_step_goal);
-        tv_step_goal.setText(DEFAULT_GOAL_TEXT);
-
-        btn_start_counter = (Button) view.findViewById(R.id.btn_start_counter);
-        btn_start_counter.setOnClickListener(new View.OnClickListener() {
+        tv_step_goal = (EditText) view.findViewById(R.id.tv_step_goal_editor);
+        tv_step_goal.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                createDataSeries1();
-                createEvents();
-            }
-        });
-
-        btn_set_step_goal = (Button) view.findViewById(R.id.btn_set_step_goal);
-        btn_set_step_goal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialog =
-                        new AlertDialog.Builder(getActivity());
-                dialog.setTitle("目标(单位:km)")
-                        .setSingleChoiceItems(step_goal_array, step_goal_array_selected_index,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        step_goal_array_selected_index = which;
-                                    }
-                                })
-                        .setPositiveButton("确定",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        tv_step_goal.setText(step_goal_array[step_goal_array_selected_index]);
-                                    }
-                                })
-                        .setNegativeButton("取消",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
-                        .create();
-                dialog.show();
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                goal = Integer.parseInt(tv_step_goal.getText().toString());
+                setUI();
+                return false;
             }
         });
 
         iv_running = (ImageView) view.findViewById(R.id.iv_running);
 
         createBackSeries();
-
+       // createEvents();
+        setUI();
         return view;
     }
 
@@ -109,48 +74,6 @@ public class StepCounterFragment extends Fragment {
                 .build();
 
         mBackIndex = mDecoView.addSeries(seriesItem);
-    }
-
-    private void createDataSeries1() {
-        final SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 221, 19, 29))
-                .setRange(0, 100, 0)
-                .build();
-
-        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
-            @Override
-            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                float percentFilled = (
-                        (currentPosition - seriesItem.getMinValue()) /
-                                (seriesItem.getMaxValue() - seriesItem.getMinValue()));
-                tv_percentage.setText(
-                        String.format(percentage_text_format, percentFilled * 100f));
-            }
-
-            @Override
-            public void onSeriesItemDisplayProgress(float v) {
-
-            }
-        });
-
-        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
-            @Override
-            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                float percentFilled = (
-                        (currentPosition - seriesItem.getMinValue()) /
-                                (seriesItem.getMaxValue() - seriesItem.getMinValue()));
-                tv_running.setText(
-                        String.format(running_text_format,
-                                percentFilled *
-                                        Float.parseFloat(tv_step_goal.getText().toString())));
-            }
-
-            @Override
-            public void onSeriesItemDisplayProgress(float v) {
-
-            }
-        });
-
-        mDataIndex_1 = mDecoView.addSeries(seriesItem);
     }
 
     private void createEvents() {
@@ -183,7 +106,28 @@ public class StepCounterFragment extends Fragment {
                 .build());
     }
 
-    private void resetText() {
-        // need to add
+
+    public static void setUI(){
+        float precent = 1.0f * step_num / goal;
+        if(precent > 1)
+            precent = 1;
+        final SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 255, 193, 0))
+                .setRange(0,100 ,precent * 100 )
+                .build();
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                float percentFilled = (
+                        (currentPosition - seriesItem.getMinValue()) /
+                                (seriesItem.getMaxValue()));
+                tv_step_num.setText("" + (int)(goal * percentFilled));
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float v) {
+
+            }
+        });
+        mDataIndex_1 = mDecoView.addSeries(seriesItem);
     }
 }

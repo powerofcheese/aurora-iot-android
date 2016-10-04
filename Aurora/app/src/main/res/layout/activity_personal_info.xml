@@ -18,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:contentScrim="?attr/colorPrimary"
+            android:background="@color/colorAccent"
             app:expandedTitleMarginEnd="@dimen/article_keylines"
             app:expandedTitleMarginStart="@dimen/md_keylines"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -29,7 +28,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:src="@drawable/default_head_portrait"
+                android:src="@drawable/profile"
                 app:civ_border_color="#FFFFFFFF"
                 app:civ_border_width="6dp" />
 
@@ -46,6 +45,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -67,6 +67,7 @@
                     android:divider="@drawable/info_divider"
                     android:dividerPadding="@dimen/md_keylines"
                     android:orientation="vertical"
+                    android:background="@color/colorPrimary"
                     android:showDividers="middle">
 
                     <RelativeLayout
@@ -85,12 +86,11 @@
                             android:textSize="20sp" />
 
                         <ImageView
-                            android:id="@+id/iv_head_portrait"
                             android:layout_width="80sp"
                             android:layout_height="80sp"
                             android:layout_alignParentRight="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/default_head_portrait" />
+                            android:src="@drawable/profile" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -140,12 +140,23 @@
                             android:src="@drawable/ic_center_focus_weak_black_24dp" />
                     </RelativeLayout>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/info_divider"
+                    android:dividerPadding="@dimen/md_keylines"
+                    android:orientation="vertical"
+                    android:background="@color/colorPrimary"
+                    android:showDividers="middle">
+
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="@color/colorPrimary"
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:foreground="?attr/selectableItemBackground">
 
@@ -155,6 +166,7 @@
                     android:divider="@drawable/info_divider"
                     android:dividerPadding="@dimen/md_keylines"
                     android:orientation="vertical"
+                    android:background="@color/colorPrimary"
                     android:showDividers="middle">
 
                     <RelativeLayout
