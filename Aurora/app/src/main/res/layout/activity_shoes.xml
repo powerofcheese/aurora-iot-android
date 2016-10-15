@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -23,68 +25,87 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/black"
-            android:fillViewport="false" />
+            app:tabIndicatorColor="@color/white" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_overlay">
 
-
-    </android.support.v4.view.ViewPager>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_color_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom|end"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="40dp"
-        android:src="@drawable/ic_color_lens_black_24dp"
-        android:tint="@color/black"
-        app:backgroundTint="@color/colorAccent" />
-
-    <com.sa90.materialarcmenu.ArcMenu
-        android:id="@+id/scenes_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-
-        android:layout_gravity="bottom|left|end"
-        app:menu_scr="@drawable/sence"
-        app:menu_open="arc_right"
-
-        app:menu_ripple_color="@color/white"
-        app:menu_color="@color/colorAccent"
-        >
-
-
-        <android.support.design.widget.FloatingActionButton
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab_menu"
             android:layout_width="wrap_content"
-            android:id="@+id/scenes_shining"
-            android:background="@color/white"
-            android:src="@drawable/shining"
-            android:layout_height="wrap_content" />
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/scenes_loop"
-            android:background="@color/white"
-            android:src="@drawable/loop"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            fab:fab_addButtonColorNormal="@color/colorAccent"
+            fab:fab_addButtonColorPressed="@color/yellow_dark"
+            fab:fab_addButtonPlusIconColor="@color/black_shallow"
+            fab:fab_addButtonStrokeVisible="false"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            fab:fab_labelsPosition="left">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/scenes_breath"
-            android:background="@color/white"
-            android:src="@drawable/breath"
-            android:layout_height="wrap_content" />
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_color_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/yellow_dark"
+                fab:fab_icon="@drawable/ic_color_lens_black_24dp"
+                fab:fab_plusIconColor="@color/black_shallow"
+                fab:fab_size="mini"
+                fab:fab_title="选择颜色" />
 
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_pattern"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/yellow_dark"
+                fab:fab_icon="@drawable/ic_whatshot_black_24dp"
+                fab:fab_plusIconColor="@color/black_shallow"
+                fab:fab_size="mini"
+                fab:fab_title="模式" />
 
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_animation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/yellow_dark"
+                fab:fab_icon="@drawable/ic_toys_black_24dp"
+                fab:fab_plusIconColor="@color/black_shallow"
+                fab:fab_size="mini"
+                fab:fab_title="动画" />
 
-    </com.sa90.materialarcmenu.ArcMenu>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_rotation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/yellow_dark"
+                fab:fab_icon="@drawable/ic_3d_rotation_black_24dp"
+                fab:fab_plusIconColor="@color/black_shallow"
+                fab:fab_size="mini"
+                fab:fab_title="旋转" />
 
-
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/yellow_dark"
+                fab:fab_icon="@drawable/ic_directions_run_black_24dp"
+                fab:fab_plusIconColor="@color/black_shallow"
+                fab:fab_size="mini"
+                fab:fab_title="动作" />
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

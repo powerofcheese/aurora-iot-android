@@ -10,9 +10,8 @@
     <ImageView
         android:id="@+id/iv_add_image"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:scaleType="centerCrop"
         android:tint="@color/grey_image_button"
         app:srcCompat="@drawable/ic_add_black_24dp" />
-
 </RelativeLayout>

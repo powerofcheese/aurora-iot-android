@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.github.pavlospt.CircleView
+        android:id="@+id/cv_item_circle"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginBottom="@dimen/md_keylines"
+        app:cv_backgroundColorValue="@color/white"
+        app:cv_fillColor="@color/black_shallow"
+        app:cv_strokeColorValue="@color/yellow"
+        app:cv_strokeWidthSize="40"
+        app:cv_subtitleSize="0dp"
+        app:cv_titleColor="@color/white"
+        app:cv_titleSize="12dp"
+        app:cv_titleText="Schema" />
+</LinearLayout>

@@ -9,6 +9,7 @@
 
         <item name="android:textColorHint">@color/white</item>
     </style>
+
     <style name="AppTheme" parent="AppTheme.Base"></style>
 
     <style name="menu_labels_style">
@@ -16,12 +17,12 @@
         <item name="android:textColor">@color/secondary_text</item>
     </style>
 
-    <style name="LightPickerDialogTheme" parent="android:Theme.Holo.Light.Dialog">
-        <item name="android:windowMinWidthMinor">0dip</item>
-        <item name="android:windowMinWidthMajor">0dip</item>
+    <style name="btn_dialog_color_picker" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
-    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@android:color/black</item>
+
+    <style name="btn_login_and_signup" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/colorPrimary</item>
     </style>
 </resources>

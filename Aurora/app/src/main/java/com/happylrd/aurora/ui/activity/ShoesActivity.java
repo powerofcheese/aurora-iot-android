@@ -1,0 +1,171 @@
+package com.happylrd.aurora.ui.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.happylrd.aurora.R;
+import com.happylrd.aurora.ui.dialog.ColorPickerDialog;
+import com.happylrd.aurora.ui.dialog.TabDialog;
+import com.happylrd.aurora.ui.fragment.LeftShoeFragment;
+import com.happylrd.aurora.ui.fragment.RightShoeFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShoesActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    private FrameLayout frameLayout;
+    private FloatingActionsMenu fabMenu;
+    private FloatingActionButton fab_color_picker;
+    private FloatingActionButton fab_action;
+
+    private LeftShoeFragment mLeftShoeFragment;
+    private RightShoeFragment mRightShoeFragment;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ShoesActivity.class);
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_shoes);
+
+        initView();
+        initListener();
+    }
+
+    private void initView() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("我的鞋子");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.getBackground().setAlpha(0);
+
+        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+        fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+        fab_action = (FloatingActionButton) findViewById(R.id.fab_action);
+    }
+
+    private void initListener() {
+
+        fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                frameLayout.getBackground().setAlpha(240);
+                frameLayout.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        fabMenu.collapse();
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                frameLayout.getBackground().setAlpha(0);
+                frameLayout.setOnTouchListener(null);
+            }
+        });
+
+        fab_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showColorPickerDialog();
+                frameLayout.getBackground().setAlpha(0);
+                fabMenu.collapse();
+            }
+        });
+
+        fab_action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTabDialog();
+                frameLayout.getBackground().setAlpha(0);
+                fabMenu.collapse();
+            }
+        });
+    }
+
+    public void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+
+        mLeftShoeFragment = new LeftShoeFragment();
+        mRightShoeFragment = new RightShoeFragment();
+
+        adapter.addFragment(mLeftShoeFragment, "左鞋");
+        adapter.addFragment(mRightShoeFragment, "右鞋");
+        viewPager.setAdapter(adapter);
+    }
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+    }
+
+    private void showTabDialog() {
+        TabDialog tabDialog = TabDialog.newInstance();
+        tabDialog.show(getSupportFragmentManager(), "tabDialog");
+    }
+
+    private void showColorPickerDialog() {
+        ColorPickerDialog colorPickerDialog = ColorPickerDialog.newInstance();
+        colorPickerDialog.show(getSupportFragmentManager(), "colorPickerDialog");
+    }
+
+    public void setShoesColor(int color) {
+        mLeftShoeFragment.setColor(color);
+        mRightShoeFragment.setColor(color);
+    }
+}
