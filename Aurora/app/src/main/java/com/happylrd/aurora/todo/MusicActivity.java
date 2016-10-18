@@ -48,7 +48,7 @@ public class MusicActivity extends AppCompatActivity {
         }
     };
 
-    public static Intent newIntent(Context packageContext){
+    public static Intent newIntent(Context packageContext) {
         Intent intent = new Intent(packageContext, MusicActivity.class);
         return intent;
     }
@@ -191,5 +191,4 @@ public class MusicActivity extends AppCompatActivity {
             player = new MediaPlayer();
         return player;
     }
-
 }

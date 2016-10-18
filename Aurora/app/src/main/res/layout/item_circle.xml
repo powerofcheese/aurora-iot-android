@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black_shallow"
     android:orientation="vertical">
 
     <com.github.pavlospt.CircleView
-        android:id="@+id/cv_item_circle"
+        android:id="@+id/cv_item"
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:layout_marginBottom="@dimen/md_keylines"
@@ -17,5 +18,15 @@
         app:cv_subtitleSize="0dp"
         app:cv_titleColor="@color/white"
         app:cv_titleSize="12dp"
-        app:cv_titleText="Schema" />
+        app:cv_titleText="模式概括" />
+
+    <TextView
+        android:id="@+id/tv_pattern_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:text="模式描述blahblahblah"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
 </LinearLayout>

@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.constant.Constants;
 import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.util.ToastUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -125,7 +126,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (editText.getText().toString().equals("")) {
-                                            showInputNotNullToast();
+                                            ToastUtil.showInputNotNullToast(PersonalInfoActivity.this);
                                         } else {
                                             String nickName = editText.getText().toString();
                                             updateNickName(nickName);
@@ -196,7 +197,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (editText.getText().toString().equals("")) {
-                                            showInputNotNullToast();
+                                            ToastUtil.showInputNotNullToast(PersonalInfoActivity.this);
                                         } else {
                                             Integer integer_age = Integer.parseInt(
                                                     editText.getText().toString());
@@ -261,7 +262,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                         if (e == null) {
                             logUpdateSuccess();
                         } else {
-                            showUpdateFailToast();
+                            ToastUtil.showUpdateFailToast(PersonalInfoActivity.this);
                         }
                     }
                 });
@@ -279,7 +280,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                         if (e == null) {
                             logUpdateSuccess();
                         } else {
-                            showUpdateFailToast();
+                            ToastUtil.showUpdateFailToast(PersonalInfoActivity.this);
                         }
                     }
                 });
@@ -297,7 +298,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                         if (e == null) {
                             logUpdateSuccess();
                         } else {
-                            showUpdateFailToast();
+                            ToastUtil.showUpdateFailToast(PersonalInfoActivity.this);
                         }
                     }
                 });
@@ -335,7 +336,7 @@ public class PersonalInfoActivity extends BasePermissionActivity {
                         if (e == null) {
                             logUpdateSuccess();
                         } else {
-                            showUpdateFailToast();
+                            ToastUtil.showUpdateFailToast(PersonalInfoActivity.this);
                         }
                     }
                 });
@@ -381,16 +382,6 @@ public class PersonalInfoActivity extends BasePermissionActivity {
 
     private void logUpdateSuccess() {
         Log.d("PersonalInfoActivity", "update success");
-    }
-
-    private void showUpdateFailToast() {
-        Toast.makeText(PersonalInfoActivity.this, "更新失败", Toast.LENGTH_SHORT)
-                .show();
-    }
-
-    private void showInputNotNullToast() {
-        Toast.makeText(PersonalInfoActivity.this, "输入不能为空", Toast.LENGTH_SHORT)
-                .show();
     }
 
     public String getUniquePictureFilename() {

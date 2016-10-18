@@ -13,17 +13,14 @@ import com.happylrd.aurora.R;
 public class CircleUnitFragment extends Fragment {
 
     private static final String ARG_COLOR_ID = "color_id";
+    private static final String ARG_MODE_NAME = "mode_name";
 
     private CircleView cv_item_circle;
 
-    public static CircleUnitFragment newInstanceAlpha() {
-        CircleUnitFragment circleUnitFragment = new CircleUnitFragment();
-        return circleUnitFragment;
-    }
-
-    public static CircleUnitFragment newInstance(int colorId) {
+    public static CircleUnitFragment newInstance(int colorId, String modeName) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_COLOR_ID, colorId);
+        args.putSerializable(ARG_MODE_NAME, modeName);
 
         CircleUnitFragment circleUnitFragment = new CircleUnitFragment();
         circleUnitFragment.setArguments(args);
@@ -37,11 +34,12 @@ public class CircleUnitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         int colorId = (int) getArguments().getSerializable(ARG_COLOR_ID);
+        String modeName = (String) getArguments().getSerializable(ARG_MODE_NAME);
 
         View view = inflater.inflate(R.layout.fragment_circle_unit, container, false);
 
         initView(view);
-        initData(colorId);
+        initData(colorId, modeName);
         initListener();
 
         return view;
@@ -51,8 +49,9 @@ public class CircleUnitFragment extends Fragment {
         cv_item_circle = (CircleView) view.findViewById(R.id.cv_item_circle);
     }
 
-    private void initData(int colorId) {
+    private void initData(int colorId, String modeName) {
         cv_item_circle.setStrokeColor(colorId);
+        cv_item_circle.setTitleText(modeName);
     }
 
     private void initListener() {

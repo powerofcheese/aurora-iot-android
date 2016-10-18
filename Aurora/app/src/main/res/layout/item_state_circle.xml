@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="@dimen/md_keylines"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/md_keylines"
+            android:orientation="horizontal">
+
+            <com.github.pavlospt.CircleView
+                android:id="@+id/cv_item_light"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="@dimen/md_keylines"
+                android:layout_weight="1"
+                app:cv_backgroundColorValue="@color/white"
+                app:cv_fillColor="@color/black_shallow"
+                app:cv_strokeColorValue="@color/yellow"
+                app:cv_strokeWidthSize="40"
+                app:cv_subtitleSize="0dp"
+                app:cv_titleColor="@color/white"
+                app:cv_titleSize="12dp"
+                app:cv_titleText="Light" />
+
+            <com.github.pavlospt.CircleView
+                android:id="@+id/cv_item_sound"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="@dimen/md_keylines"
+                android:layout_weight="1"
+                app:cv_backgroundColorValue="@color/white"
+                app:cv_fillColor="@color/black_shallow"
+                app:cv_strokeColorValue="@color/yellow"
+                app:cv_strokeWidthSize="40"
+                app:cv_subtitleSize="0dp"
+                app:cv_titleColor="@color/white"
+                app:cv_titleSize="12dp"
+                app:cv_titleText="Sound" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/md_keylines"
+            android:layout_marginRight="@dimen/md_keylines">
+
+            <Button
+                android:id="@+id/btn_toe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="TOE" />
+
+            <Button
+                android:id="@+id/btn_heel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="HEEL" />
+
+            <Button
+                android:id="@+id/btn_stomp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="STOMP" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/md_keylines"
+            android:layout_marginLeft="@dimen/md_keylines"
+            android:layout_marginRight="@dimen/md_keylines">
+
+            <Button
+                android:id="@+id/btn_kick_low"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="KICK LOW" />
+
+            <Button
+                android:id="@+id/btn_kick_mid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="KICK MID" />
+
+            <Button
+                android:id="@+id/btn_kick_high"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="KICK HIGH" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

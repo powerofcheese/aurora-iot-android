@@ -20,7 +20,6 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -28,6 +27,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.WriteSth;
+import com.happylrd.aurora.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,12 +141,12 @@ public class DetailActivity extends AppCompatActivity {
                                             setBgColorByDefaultHeadPortrait();
                                         }
                                     } else {
-                                        showFindFailedToast();
+                                        ToastUtil.showFindFailedToast(DetailActivity.this);
                                     }
                                 }
                             });
                 } else {
-                    showFindFailedToast();
+                    ToastUtil.showFindFailedToast(DetailActivity.this);
                 }
             }
         });
@@ -204,11 +204,6 @@ public class DetailActivity extends AppCompatActivity {
             Log.d("writeSthList size: ", mPicUrlList.size() + "");
             notifyDataSetChanged();
         }
-    }
-
-    public void showFindFailedToast() {
-        Toast.makeText(DetailActivity.this, "查询失败", Toast.LENGTH_SHORT)
-                .show();
     }
 
     private void setBgColorByDefaultHeadPortrait() {

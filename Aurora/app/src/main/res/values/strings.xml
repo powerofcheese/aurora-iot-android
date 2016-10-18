@@ -7,4 +7,56 @@
 
     <string name="fit_running">Running</string>
     <string name="fit_cycling">Cycling</string>
+
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="number_six">6</string>
+    <string name="number_seven">7</string>
+    <string name="number_eight">8</string>
+    <string name="number_nine">9</string>
+    <string name="number_ten">10</string>
+    <string name="number_eleven">11</string>
+    <string name="number_twelve">12</string>
+
+    <string name="pattern_single_color">单色</string>
+    <string name="pattern_gradation">渐变</string>
+    <string name="pattern_thin_stripe">细条纹</string>
+    <string name="pattern_thick_stripe">粗条纹</string>
+    <string name="pattern_half_stripe">对半</string>
+    <string name="pattern_skip_stripe">间隔条纹</string>
+    <string name="pattern_gradation_skipping">渐变间隔</string>
+    <string name="pattern_random">随机</string>
+    <string name="pattern_random_skipping">随机间隔</string>
+    <string name="pattern_similar_color">相似颜色</string>
+
+    <string name="anim_ramp">蔓延</string>
+    <string name="anim_wave">波浪</string>
+    <string name="anim_flash">闪光</string>
+    <string name="anim_strobe">快速闪烁</string>
+    <string name="anim_strobe_in_out">间隔闪烁</string>
+    <string name="anim_slow_hue">缓慢色阶</string>
+    <string name="anim_hue_cycle">色阶循环</string>
+    <string name="anim_hue_strobe">色阶闪烁</string>
+    <string name="anim_nothing">无</string>
+
+    <string name="rotation_float_left">缓慢向左</string>
+    <string name="rotation_float_right">缓慢向右</string>
+    <string name="rotation_rotate_left">中速向左</string>
+    <string name="rotation_rotate_right">中速向右</string>
+    <string name="rotation_spin_left">快速向左</string>
+    <string name="rotation_spin_right">快速向右</string>
+    <string name="rotation_swing">摇晃</string>
+    <string name="rotation_switch">切换</string>
+    <string name="rotation_snake">迂回</string>
+    <string name="rotation_random_snake">随机迂回</string>
+    <string name="rotation_move_to_rotation">移动旋转</string>
+    <string name="rotation_nothing">无</string>
+
+    <string name="action_quick_in_out">快速进出</string>
+    <string name="action_fade_in_out">缓慢进出</string>
+    <string name="action_power_slow">缓慢蓄力</string>
+    <string name="action_power_quick">快速蓄力</string>
 </resources>

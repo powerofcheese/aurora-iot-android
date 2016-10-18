@@ -17,8 +17,11 @@ import android.widget.FrameLayout;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.happylrd.aurora.R;
+import com.happylrd.aurora.ui.dialog.ActionTabDialog;
+import com.happylrd.aurora.ui.dialog.AnimTabDialog;
 import com.happylrd.aurora.ui.dialog.ColorPickerDialog;
-import com.happylrd.aurora.ui.dialog.TabDialog;
+import com.happylrd.aurora.ui.dialog.PatternTabDialog;
+import com.happylrd.aurora.ui.dialog.RotationTabDialog;
 import com.happylrd.aurora.ui.fragment.LeftShoeFragment;
 import com.happylrd.aurora.ui.fragment.RightShoeFragment;
 
@@ -34,6 +37,9 @@ public class ShoesActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private FloatingActionsMenu fabMenu;
     private FloatingActionButton fab_color_picker;
+    private FloatingActionButton fab_pattern;
+    private FloatingActionButton fab_anim;
+    private FloatingActionButton fab_rotation;
     private FloatingActionButton fab_action;
 
     private LeftShoeFragment mLeftShoeFragment;
@@ -70,6 +76,9 @@ public class ShoesActivity extends AppCompatActivity {
 
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
         fab_color_picker = (FloatingActionButton) findViewById(R.id.fab_color_picker);
+        fab_pattern = (FloatingActionButton) findViewById(R.id.fab_pattern);
+        fab_anim = (FloatingActionButton) findViewById(R.id.fab_anim);
+        fab_rotation = (FloatingActionButton) findViewById(R.id.fab_rotation);
         fab_action = (FloatingActionButton) findViewById(R.id.fab_action);
     }
 
@@ -104,10 +113,37 @@ public class ShoesActivity extends AppCompatActivity {
             }
         });
 
+        fab_pattern.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPatternTabDialog();
+                frameLayout.getBackground().setAlpha(0);
+                fabMenu.collapse();
+            }
+        });
+
+        fab_anim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnimTabDialog();
+                frameLayout.getBackground().setAlpha(0);
+                fabMenu.collapse();
+            }
+        });
+
+        fab_rotation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRotationTabDialog();
+                frameLayout.getBackground().setAlpha(0);
+                fabMenu.collapse();
+            }
+        });
+
         fab_action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTabDialog();
+                showActionTabDialog();
                 frameLayout.getBackground().setAlpha(0);
                 fabMenu.collapse();
             }
@@ -154,9 +190,24 @@ public class ShoesActivity extends AppCompatActivity {
         }
     }
 
-    private void showTabDialog() {
-        TabDialog tabDialog = TabDialog.newInstance();
-        tabDialog.show(getSupportFragmentManager(), "tabDialog");
+    private void showPatternTabDialog() {
+        PatternTabDialog patternTabDialog = PatternTabDialog.newInstance();
+        patternTabDialog.show(getSupportFragmentManager(), "patternTabDialog");
+    }
+
+    private void showAnimTabDialog() {
+        AnimTabDialog animTabDialog = AnimTabDialog.newInstance();
+        animTabDialog.show(getSupportFragmentManager(), "animTabDialog");
+    }
+
+    private void showRotationTabDialog() {
+        RotationTabDialog rotationTabDialog = RotationTabDialog.newInstance();
+        rotationTabDialog.show(getSupportFragmentManager(), "rotationTabDialog");
+    }
+
+    private void showActionTabDialog() {
+        ActionTabDialog actionTabDialog = ActionTabDialog.newInstance();
+        actionTabDialog.show(getSupportFragmentManager(), "actionTabDialog");
     }
 
     private void showColorPickerDialog() {

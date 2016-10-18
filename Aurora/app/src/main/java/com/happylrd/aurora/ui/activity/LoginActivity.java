@@ -8,10 +8,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.util.ToastUtil;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.exception.BmobException;
@@ -104,12 +104,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginSuccessInfo() {
-        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+        ToastUtil.showLoginSuccessToast(LoginActivity.this);
         progressDialog.dismiss();
     }
 
     public void loginFailInfo() {
-        Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+        ToastUtil.showLoginFailToast(LoginActivity.this);
         progressDialog.dismiss();
     }
 

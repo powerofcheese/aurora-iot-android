@@ -42,7 +42,6 @@ public class BluetoothService {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
-
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
@@ -192,7 +191,6 @@ public class BluetoothService {
         ConnectedThread r = Communication;
         r.write(out);
     }
-
 
     public synchronized void setState(int s) {
         state = s;

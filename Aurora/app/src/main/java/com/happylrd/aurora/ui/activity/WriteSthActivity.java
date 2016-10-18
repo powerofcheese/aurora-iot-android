@@ -194,9 +194,11 @@ public class WriteSthActivity extends BasePermissionActivity {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(WriteSthActivity.this, "发表文字成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WriteSthActivity.this, "发表文字成功", Toast.LENGTH_SHORT)
+                            .show();
                 } else {
-                    Toast.makeText(WriteSthActivity.this, "发表文字失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WriteSthActivity.this, "发表文字失败", Toast.LENGTH_SHORT)
+                            .show();
                 }
             }
         });

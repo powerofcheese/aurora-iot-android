@@ -34,7 +34,7 @@ import com.happylrd.aurora.todo.MusicActivity;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.ui.fragment.CardFindFragment;
-import com.happylrd.aurora.ui.fragment.ListPatternFragment;
+import com.happylrd.aurora.ui.fragment.ListModeFragment;
 import com.happylrd.aurora.ui.fragment.MyInfoFragment;
 import com.happylrd.aurora.ui.fragment.StepCounterFragment;
 
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ListPatternFragment(), "模式");
+        adapter.addFragment(new ListModeFragment(), "模式");
         adapter.addFragment(new StepCounterFragment(), "计步");
         adapter.addFragment(new CardFindFragment(), "发现");
         adapter.addFragment(new MyInfoFragment(), "我的");

@@ -7,10 +7,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.util.ToastUtil;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -72,10 +72,10 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void done(MyUser myUser, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(SignupActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showSignUpSuccessToast(SignupActivity.this);
                     GoToLogin();
                 } else {
-                    Toast.makeText(SignupActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showSignUpFailToast(SignupActivity.this);
                 }
             }
         });

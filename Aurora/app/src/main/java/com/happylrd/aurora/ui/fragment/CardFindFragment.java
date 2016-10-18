@@ -23,6 +23,7 @@ import com.happylrd.aurora.ui.activity.DetailActivity;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.WriteSth;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -106,6 +107,8 @@ public class CardFindFragment extends Fragment {
         private RecyclerView rv_pics;
         private PicAdapter mPicAdapter;
 
+//        private ShineButton sbtn_praise;
+
         public WriteSthHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +131,10 @@ public class CardFindFragment extends Fragment {
 
             ibtn_praise = (ImageButton) itemView.findViewById(R.id.ibtn_praise);
             ibtn_comment = (ImageButton) itemView.findViewById(R.id.ibtn_comment);
+
+//            sbtn_praise = (ShineButton) itemView.findViewById(R.id.sbtn_praise);
+//            sbtn_praise.init(getActivity());
+
             ibtn_praise.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -219,7 +226,7 @@ public class CardFindFragment extends Fragment {
                 @Override
                 public void done(BmobException e) {
                     if (e == null) {
-                        ibtn_praise.setColorFilter(getResources().getColor(R.color.colorPrimary));
+                        ibtn_praise.setColorFilter(getResources().getColor(R.color.colorAccent));
                         Log.d("Click Praise", "点赞成功");
                     } else {
                         Toast.makeText(getActivity(), "点赞失败", Toast.LENGTH_SHORT)
@@ -262,7 +269,7 @@ public class CardFindFragment extends Fragment {
                         for (int i = 0; i < list.size(); i++) {
                             Log.d("List str", list.get(i).getObjectId());
                             if (list.get(i).getObjectId().equals(BmobUser.getCurrentUser(MyUser.class).getObjectId())) {
-                                ibtn_praise.setColorFilter(getResources().getColor(R.color.colorPrimary));
+                                ibtn_praise.setColorFilter(getResources().getColor(R.color.colorAccent));
                                 break;
                             }
                         }

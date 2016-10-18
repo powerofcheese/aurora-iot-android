@@ -1,5 +1,6 @@
 package com.happylrd.aurora.ui.dialog;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -13,26 +14,27 @@ import android.widget.Button;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.adapter.TabAdapter;
+import com.happylrd.aurora.ui.fragment.CircleUnitFragment;
 
 import me.relex.circleindicator.CircleIndicator;
 
-public class TabDialog extends DialogFragment {
+public class PatternTabDialog extends DialogFragment {
 
-    private ViewPager mViewPager;
-    private TabAdapter mTabAdapter;
-    private CircleIndicator mCircleIndicator;
+    private ViewPager viewPager;
+    private TabAdapter adapter;
+    private CircleIndicator circleIndicator;
 
     private RecyclerView mRecyclerView;
     private ColorAdapter mColorAdapter;
 
     private Button btn_ok;
 
-    public static TabDialog newInstance() {
-        TabDialog tabDialog = new TabDialog();
-        return tabDialog;
+    public static PatternTabDialog newInstance() {
+        PatternTabDialog patternTabDialog = new PatternTabDialog();
+        return patternTabDialog;
     }
 
-    public TabDialog() {
+    public PatternTabDialog() {
     }
 
     @Override
@@ -60,8 +62,8 @@ public class TabDialog extends DialogFragment {
     }
 
     private void initView(View view) {
-        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mCircleIndicator = (CircleIndicator) view.findViewById(R.id.circle_indicator);
+        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        circleIndicator = (CircleIndicator) view.findViewById(R.id.circle_indicator);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         btn_ok = (Button) view.findViewById(R.id.btn_ok);
     }
@@ -76,19 +78,41 @@ public class TabDialog extends DialogFragment {
     }
 
     private void initData() {
-        mTabAdapter = new TabAdapter(getChildFragmentManager());
+        adapter = new TabAdapter(getChildFragmentManager());
 
-        initDataByFragment();
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_single_color)),
+                getString(R.string.number_one));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_gradation)),
+                getString(R.string.number_two));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_thin_stripe)),
+                getString(R.string.number_three));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_thick_stripe)),
+                getString(R.string.number_four));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_half_stripe)),
+                getString(R.string.number_five));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_skip_stripe)),
+                getString(R.string.number_six));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_gradation_skipping)),
+                getString(R.string.number_seven));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_random)),
+                getString(R.string.number_eight));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_random_skipping)),
+                getString(R.string.number_nine));
+        adapter.addFragment(CircleUnitFragment
+                        .newInstance(Color.YELLOW, getString(R.string.pattern_similar_color)),
+                getString(R.string.number_ten));
 
-        mViewPager.setAdapter(mTabAdapter);
-        mCircleIndicator.setViewPager(mViewPager);
-    }
-
-    /**
-     * a method for sub-class to process the logic of initializing data
-     */
-    public void initDataByFragment() {
-
+        viewPager.setAdapter(adapter);
+        circleIndicator.setViewPager(viewPager);
     }
 
     private class ColorHolder extends RecyclerView.ViewHolder {
