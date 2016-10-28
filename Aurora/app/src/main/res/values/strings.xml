@@ -55,8 +55,8 @@
     <string name="rotation_move_to_rotation">移动旋转</string>
     <string name="rotation_nothing">无</string>
 
-    <string name="action_quick_in_out">快速进出</string>
     <string name="action_fade_in_out">缓慢进出</string>
+    <string name="action_quick_in_out">快速进出</string>
     <string name="action_power_slow">缓慢蓄力</string>
     <string name="action_power_quick">快速蓄力</string>
 </resources>

@@ -10,7 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final long JUMP_DELAY = 2000L;
+    private static final long JUMP_DELAY = 500L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

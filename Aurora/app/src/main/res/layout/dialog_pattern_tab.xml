@@ -21,6 +21,36 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/md_keylines"
+            android:text="颜色"
+            android:textSize="18sp" />
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_alignParentRight="true"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/black_shallow" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button

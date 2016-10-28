@@ -63,4 +63,8 @@ public class CircleUnitFragment extends Fragment {
             }
         });
     }
+
+    public String getMotionName(){
+        return cv_item_circle.getTitleText();
+    }
 }

@@ -14,7 +14,9 @@ import android.widget.Button;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.adapter.TabAdapter;
+import com.happylrd.aurora.ui.activity.ShoesActivity;
 import com.happylrd.aurora.ui.fragment.CircleUnitFragment;
+import com.happylrd.aurora.util.DialogUtil;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -45,13 +47,13 @@ public class PatternTabDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_tab, container);
+        View view = inflater.inflate(R.layout.dialog_pattern_tab, container);
 
         initView(view);
         initListener();
         initData();
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 8));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -72,6 +74,13 @@ public class PatternTabDialog extends DialogFragment {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String patternMotionName = ((CircleUnitFragment)
+                        (adapter.getItem(viewPager.getCurrentItem())))
+                        .getMotionName();
+
+                ((ShoesActivity) getActivity())
+                        .setPatternMotionNameFromDialog(patternMotionName);
+
                 dismiss();
             }
         });
@@ -120,6 +129,12 @@ public class PatternTabDialog extends DialogFragment {
         public ColorHolder(View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogUtil.showColorPickerDialog(getFragmentManager());
+                }
+            });
         }
 
         public void bindColor() {

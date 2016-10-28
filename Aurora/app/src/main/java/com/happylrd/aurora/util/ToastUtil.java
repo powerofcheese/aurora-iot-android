@@ -39,4 +39,14 @@ public class ToastUtil {
         Toast.makeText(context, "查询失败", Toast.LENGTH_SHORT)
                 .show();
     }
+
+    public static void showSaveSuccessToast(Context context) {
+        Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    public static void showSaveFailToast(Context context) {
+        Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT)
+                .show();
+    }
 }

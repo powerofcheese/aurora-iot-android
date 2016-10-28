@@ -18,21 +18,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.github.pavlospt.CircleView;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
+import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.model.GestureState;
 import com.happylrd.aurora.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 
 public class StateActivity extends AppCompatActivity {
+
+    private static final String TAG = "StateActivity";
+    public static final String EXTRA_MOTION = "com.happylrd.aurora.motion";
+    public Motion mMotion;
 
     private Toolbar mToolbar;
 
@@ -49,10 +56,22 @@ public class StateActivity extends AppCompatActivity {
         return intent;
     }
 
+    public static Intent newIntent(Context packageContext, Motion motion) {
+        Intent intent = new Intent(packageContext, StateActivity.class);
+        intent.putExtra(EXTRA_MOTION, motion);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_state);
+
+        mMotion = (Motion) getIntent().getSerializableExtra(EXTRA_MOTION);
+
+        if (mMotion == null) {
+            initMotion();
+        }
 
         initView();
         initListener();
@@ -79,8 +98,10 @@ public class StateActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mCircleAdapter);
     }
 
+    /**
+     * temporarily place here
+     */
     private void initData() {
-        // temporarily placeholder
         List<Mode> tempModeList = new ArrayList<>();
 
         for (int i = 0; i < 18; i++) {
@@ -116,6 +137,10 @@ public class StateActivity extends AppCompatActivity {
         });
     }
 
+    private void initMotion() {
+        mMotion = new Motion();
+    }
+
     private void addModeLogic() {
         showAddModeDialog();
     }
@@ -139,7 +164,7 @@ public class StateActivity extends AppCompatActivity {
                                     ToastUtil.showInputNotNullToast(StateActivity.this);
                                 } else {
                                     String modeName = editText.getText().toString();
-                                    uploadModeName(modeName);
+                                    saveMode(modeName);
                                 }
                             }
                         })
@@ -154,27 +179,117 @@ public class StateActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void uploadModeName(String modeName) {
+    /**
+     * save Mode by modeName
+     *
+     * @param modeName
+     */
+    private void saveMode(String modeName) {
         Mode mode = new Mode();
         mode.setModeName(modeName);
         mode.setAuthor(MyUser.getCurrentUser(MyUser.class));
 
         mode.save(new SaveListener<String>() {
             @Override
+            public void done(String objectId, BmobException e) {
+                if (e == null) {
+                    findModeById(objectId);
+                    ToastUtil.showSaveSuccessToast(StateActivity.this);
+                } else {
+                    ToastUtil.showSaveFailToast(StateActivity.this);
+                }
+            }
+        });
+    }
+
+    /**
+     * find Mode by objectId and prepare for saving GestureState
+     *
+     * @param objectId
+     */
+    private void findModeById(String objectId) {
+        BmobQuery<Mode> query = new BmobQuery<Mode>();
+        query.getObject(objectId, new QueryListener<Mode>() {
+            @Override
+            public void done(Mode mode, BmobException e) {
+                if (e == null) {
+                    saveGestureState(mode);
+                } else {
+                    Log.d(TAG, "find mode failed");
+                }
+            }
+        });
+    }
+
+    /**
+     * save GestureState by Mode
+     *
+     * @param mode
+     */
+    private void saveGestureState(Mode mode) {
+
+        // temporarily place here
+        GestureState gestureState = new GestureState();
+        gestureState.setToe(false);
+        gestureState.setHeel(false);
+        gestureState.setStomp(false);
+        gestureState.setKickLow(false);
+        gestureState.setKickMid(false);
+        gestureState.setKickHigh(true);
+
+        gestureState.setMode(mode);
+
+        gestureState.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId, BmobException e) {
+                if (e == null) {
+                    findGestureStateById(objectId);
+                } else {
+                    Log.d(TAG, "save gestureState failed");
+                }
+            }
+        });
+    }
+
+    /**
+     * find GestureState by objectId and prepare for saving Motion
+     *
+     * @param objectId
+     */
+    private void findGestureStateById(String objectId) {
+        BmobQuery<GestureState> queryGestureState = new BmobQuery<GestureState>();
+        queryGestureState.getObject(objectId, new QueryListener<GestureState>() {
+            @Override
+            public void done(GestureState gestureState, BmobException e) {
+                if (e == null) {
+                    saveMotionByGestureState(gestureState);
+                } else {
+                    Log.d(TAG, "find gestureState failed");
+                }
+            }
+        });
+    }
+
+    /**
+     * save Motion by GestureState
+     *
+     * @param gestureState
+     */
+    private void saveMotionByGestureState(GestureState gestureState) {
+        mMotion.setGestureState(gestureState);
+        mMotion.save(new SaveListener<String>() {
+            @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(StateActivity.this, "添加模式成功", Toast.LENGTH_SHORT)
-                            .show();
+                    // save motion success
                 } else {
-                    Toast.makeText(StateActivity.this, "添加模式失败", Toast.LENGTH_SHORT)
-                            .show();
+                    Log.d(TAG, "save motion failed");
                 }
             }
         });
     }
 
     private class CircleHolder extends RecyclerView.ViewHolder {
-
         private Mode mMode;
 
         private CircleView cv_item_light;
