@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.ui.dialog.ActionTabDialog;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoesActivity extends AppCompatActivity {
+
+    private static final String TAG = "ShoesActivity";
 
     private Motion mMotion = new Motion();
 
@@ -178,11 +181,19 @@ public class ShoesActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_item_done) {
+            Log.d(TAG, getJsonByMotion());
+
             Intent intent = StateActivity.newIntent(ShoesActivity.this, mMotion);
             startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private String getJsonByMotion() {
+        Gson gson = new Gson();
+        String json = gson.toJson(mMotion);
+        return json;
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -238,6 +249,15 @@ public class ShoesActivity extends AppCompatActivity {
         mMotion.setPatternName(patternMotionName);
         Log.d("ReceivePatternData", mMotion.getPatternName());
     }
+
+
+    public void setPatternColorListFromDialog(List<Integer> intColorList) {
+        mMotion.setIntColorList(intColorList);
+        for (Integer item : mMotion.getIntColorList()) {
+            Log.d("ReceivePatternColor:", item + "");
+        }
+    }
+
 
     public void setAnimationMotionNameFromDialog(String animationMotionName) {
         mMotion.setAnimationName(animationMotionName);

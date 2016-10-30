@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:background="@color/black_shallow"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.larswerkman.holocolorpicker.ColorPicker
+        android:id="@+id/color_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.larswerkman.holocolorpicker.OpacityBar
+        android:id="@+id/opacity_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_determine_color"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/md_keylines"
+        android:text="OK"
+        android:textColor="@color/white"
+        android:theme="@style/btn_dialog_color_picker" />
+</LinearLayout>

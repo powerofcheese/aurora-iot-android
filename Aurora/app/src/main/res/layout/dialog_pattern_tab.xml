@@ -33,6 +33,7 @@
             android:textSize="18sp" />
 
         <ImageButton
+            android:id="@+id/ibtn_add_color"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="38dp"
             android:layout_height="38dp"

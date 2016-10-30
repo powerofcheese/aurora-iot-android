@@ -1,5 +1,7 @@
 package com.happylrd.aurora.model;
 
+import java.util.List;
+
 import cn.bmob.v3.BmobObject;
 
 public class Motion extends BmobObject {
@@ -8,6 +10,8 @@ public class Motion extends BmobObject {
     private String animationName;
     private String rotationName;
     private String actionName;
+
+    private List<Integer> intColorList;
 
     private GestureState gestureState;  // gestureState and motion is one to one
 
@@ -49,5 +53,13 @@ public class Motion extends BmobObject {
 
     public void setGestureState(GestureState gestureState) {
         this.gestureState = gestureState;
+    }
+
+    public List<Integer> getIntColorList() {
+        return intColorList;
+    }
+
+    public void setIntColorList(List<Integer> intColorList) {
+        this.intColorList = intColorList;
     }
 }

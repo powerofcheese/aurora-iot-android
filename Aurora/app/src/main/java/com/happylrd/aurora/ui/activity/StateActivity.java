@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.pavlospt.CircleView;
+import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
@@ -179,6 +180,17 @@ public class StateActivity extends AppCompatActivity {
                 .show();
     }
 
+
+    /**
+     * just test for Gson
+     */
+    private void gestureStateToJson(GestureState gestureState){
+        Gson gson = new Gson();
+        String json = gson.toJson(gestureState);
+        Log.d(TAG, json);
+    }
+
+
     /**
      * save Mode by modeName
      *
@@ -238,6 +250,8 @@ public class StateActivity extends AppCompatActivity {
         gestureState.setKickHigh(true);
 
         gestureState.setMode(mode);
+
+//        gestureStateToJson(gestureState);
 
         gestureState.save(new SaveListener<String>() {
             @Override
