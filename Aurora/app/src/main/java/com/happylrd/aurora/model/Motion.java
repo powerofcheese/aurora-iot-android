@@ -13,6 +13,7 @@ public class Motion extends BmobObject {
 
     private List<Integer> intColorList;
 
+    private NormalState normalState;  // normalState and motion is one to one
     private GestureState gestureState;  // gestureState and motion is one to one
 
     public String getPatternName() {
@@ -45,6 +46,14 @@ public class Motion extends BmobObject {
 
     public void setActionName(String actionName) {
         this.actionName = actionName;
+    }
+
+    public NormalState getNormalState() {
+        return normalState;
+    }
+
+    public void setNormalState(NormalState normalState) {
+        this.normalState = normalState;
     }
 
     public GestureState getGestureState() {

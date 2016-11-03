@@ -20,12 +20,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.pavlospt.CircleView;
-import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.GestureState;
+import com.happylrd.aurora.model.NormalState;
 import com.happylrd.aurora.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -40,7 +40,9 @@ public class StateActivity extends AppCompatActivity {
 
     private static final String TAG = "StateActivity";
     public static final String EXTRA_MOTION = "com.happylrd.aurora.motion";
+
     public Motion mMotion;
+    public NormalState mNormalState;
 
     private Toolbar mToolbar;
 
@@ -103,14 +105,19 @@ public class StateActivity extends AppCompatActivity {
      * temporarily place here
      */
     private void initData() {
-        List<Mode> tempModeList = new ArrayList<>();
+        List<GestureState> tempGestureStateList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            GestureState gestureState = new GestureState();
+            gestureState.setToe(false);
+            gestureState.setHeel(false);
+            gestureState.setStomp(false);
+            gestureState.setKickLow(false);
+            gestureState.setKickMid(false);
+            gestureState.setKickHigh(false);
 
-        for (int i = 0; i < 18; i++) {
-            Mode mode = new Mode();
-            tempModeList.add(mode);
+            tempGestureStateList.add(gestureState);
         }
-
-        mCircleAdapter.addAll(tempModeList);
+        mCircleAdapter.addAll(tempGestureStateList);
     }
 
     private void initListener() {
@@ -180,17 +187,6 @@ public class StateActivity extends AppCompatActivity {
                 .show();
     }
 
-
-    /**
-     * just test for Gson
-     */
-    private void gestureStateToJson(GestureState gestureState){
-        Gson gson = new Gson();
-        String json = gson.toJson(gestureState);
-        Log.d(TAG, json);
-    }
-
-
     /**
      * save Mode by modeName
      *
@@ -215,7 +211,8 @@ public class StateActivity extends AppCompatActivity {
     }
 
     /**
-     * find Mode by objectId and prepare for saving GestureState
+     * find Mode by objectId and prepare for saving NormalState
+     * and many GestureState
      *
      * @param objectId
      */
@@ -225,7 +222,9 @@ public class StateActivity extends AppCompatActivity {
             @Override
             public void done(Mode mode, BmobException e) {
                 if (e == null) {
-                    saveGestureState(mode);
+                    saveNormalState(mode);
+
+                    saveManyGestureState(mode);
                 } else {
                     Log.d(TAG, "find mode failed");
                 }
@@ -234,24 +233,45 @@ public class StateActivity extends AppCompatActivity {
     }
 
     /**
-     * save GestureState by Mode
+     * save NormalState by Mode
      *
      * @param mode
      */
-    private void saveGestureState(Mode mode) {
+    private void saveNormalState(Mode mode) {
+        mNormalState = new NormalState();
+        mNormalState.setMode(mode);
+        mNormalState.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId, BmobException e) {
+                if (e == null) {
+                    findNormalStateById(objectId);
+                } else {
+                    Log.d(TAG, "save normalState failed");
+                }
+            }
+        });
+    }
 
-        // temporarily place here
-        GestureState gestureState = new GestureState();
-        gestureState.setToe(false);
-        gestureState.setHeel(false);
-        gestureState.setStomp(false);
-        gestureState.setKickLow(false);
-        gestureState.setKickMid(false);
-        gestureState.setKickHigh(true);
+    /**
+     * save many GestureState by calling saveGestureState method for each item
+     *
+     * @param mode
+     */
+    private void saveManyGestureState(Mode mode) {
+        List<GestureState> gestureStateList = mCircleAdapter.getGestureStateList();
+        for (int i = 0; i < gestureStateList.size(); i++) {
+            saveGestureState(mode, gestureStateList.get(i));
+        }
+    }
 
+    /**
+     * actually save GestureState item
+     *
+     * @param mode
+     * @param gestureState
+     */
+    private void saveGestureState(Mode mode, GestureState gestureState) {
         gestureState.setMode(mode);
-
-//        gestureStateToJson(gestureState);
 
         gestureState.save(new SaveListener<String>() {
             @Override
@@ -260,6 +280,25 @@ public class StateActivity extends AppCompatActivity {
                     findGestureStateById(objectId);
                 } else {
                     Log.d(TAG, "save gestureState failed");
+                }
+            }
+        });
+    }
+
+    /**
+     * find NormalState by objectId and prepare for saving Motion
+     *
+     * @param objectId
+     */
+    private void findNormalStateById(String objectId) {
+        BmobQuery<NormalState> queryNormalState = new BmobQuery<NormalState>();
+        queryNormalState.getObject(objectId, new QueryListener<NormalState>() {
+            @Override
+            public void done(NormalState normalState, BmobException e) {
+                if (e == null) {
+                    saveMotionByNormalState(normalState);
+                } else {
+                    Log.d(TAG, "find normalState failed");
                 }
             }
         });
@@ -285,6 +324,25 @@ public class StateActivity extends AppCompatActivity {
     }
 
     /**
+     * save Motion by NormalState
+     *
+     * @param normalState
+     */
+    private void saveMotionByNormalState(NormalState normalState) {
+        mMotion.setNormalState(normalState);
+        mMotion.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    // save motion success
+                } else {
+                    Log.d(TAG, "save motion failed");
+                }
+            }
+        });
+    }
+
+    /**
      * save Motion by GestureState
      *
      * @param gestureState
@@ -304,7 +362,8 @@ public class StateActivity extends AppCompatActivity {
     }
 
     private class CircleHolder extends RecyclerView.ViewHolder {
-        private Mode mMode;
+
+        private GestureState mGestureState;
 
         private CircleView cv_item_light;
         private CircleView cv_item_sound;
@@ -348,69 +407,123 @@ public class StateActivity extends AppCompatActivity {
             btn_toe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_toe.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    Log.d("Toe is null?", (mGestureState.getToe() == null) + "");
+
+                    if (!mGestureState.getToe()) {
+                        btn_toe.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setToe(true);
+                    } else {
+                        btn_toe.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setToe(false);
+                    }
                 }
             });
 
             btn_heel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_heel.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    if (!mGestureState.getHeel()) {
+                        btn_heel.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setHeel(true);
+                    } else {
+                        btn_heel.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setHeel(false);
+                    }
                 }
             });
 
             btn_stomp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_stomp.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    if (!mGestureState.getStomp()) {
+                        btn_stomp.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setStomp(true);
+                    } else {
+                        btn_stomp.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setStomp(false);
+                    }
                 }
             });
 
             btn_kick_low.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_kick_low.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    if (!mGestureState.getKickLow()) {
+                        btn_kick_low.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickLow(true);
+                    } else {
+                        btn_kick_low.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickLow(false);
+                    }
                 }
             });
 
             btn_kick_mid.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_kick_mid.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    if (!mGestureState.getKickMid()) {
+                        btn_kick_mid.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickMid(true);
+                    } else {
+                        btn_kick_mid.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickMid(false);
+                    }
                 }
             });
 
             btn_kick_high.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_kick_high.getBackground().setColorFilter(
-                            getResources().getColor(R.color.colorAccent),
-                            PorterDuff.Mode.MULTIPLY);
+                    if (!mGestureState.getKickHigh()) {
+                        btn_kick_high.getBackground().setColorFilter(
+                                getResources().getColor(R.color.colorAccent),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickHigh(true);
+                    } else {
+                        btn_kick_high.getBackground().setColorFilter(
+                                getResources().getColor(R.color.white),
+                                PorterDuff.Mode.MULTIPLY);
+                        mGestureState.setKickHigh(false);
+                    }
                 }
             });
         }
 
-        public void bindCircle(Mode mode) {
-            mMode = mode;
+        public void bindCircle(GestureState gestureState) {
+            mGestureState = gestureState;
         }
     }
 
     private class CircleAdapter extends RecyclerView.Adapter<CircleHolder> {
 
-        private List<Mode> mModeList;
+        private List<GestureState> mGestureStateList;
+
+        public List<GestureState> getGestureStateList() {
+            return mGestureStateList;
+        }
 
         public CircleAdapter() {
-            mModeList = new ArrayList<>();
+            mGestureStateList = new ArrayList<>();
         }
 
         @Override
@@ -423,23 +536,23 @@ public class StateActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(CircleHolder holder, int position) {
-            Mode mode = mModeList.get(position);
-            holder.bindCircle(mode);
+            GestureState gestureState = mGestureStateList.get(position);
+            holder.bindCircle(gestureState);
         }
 
         @Override
         public int getItemCount() {
-            return mModeList.size();
+            return mGestureStateList.size();
         }
 
-        public void add(Mode mode) {
-            mModeList.add(mode);
+        public void add(GestureState gestureState) {
+            mGestureStateList.add(gestureState);
             notifyDataSetChanged();
         }
 
-        public void addAll(List<Mode> modes) {
-            mModeList.addAll(modes);
-            Log.d("modeList size: ", mModeList.size() + "");
+        public void addAll(List<GestureState> gestureStates) {
+            mGestureStateList.addAll(gestureStates);
+            Log.d("gestureStateList: ", mGestureStateList.size() + "");
             notifyDataSetChanged();
         }
     }

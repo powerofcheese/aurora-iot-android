@@ -30,6 +30,8 @@ import com.happylrd.aurora.ui.dialog.RotationTabDialog;
 import com.happylrd.aurora.ui.fragment.LeftShoeFragment;
 import com.happylrd.aurora.ui.fragment.RightShoeFragment;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -161,9 +161,11 @@ public class PatternTabDialog extends DialogFragment {
             mCircleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ColorEditDialog colorEditDialog = new ColorEditDialog();
+                    colorEditDialog.setTargetFragment(PatternTabDialog.this, 1);
+                    // some logic for edit color
 
-                    // just as a placeholder
-                    DialogUtil.showColorPickerDialog(getFragmentManager());
+                    colorEditDialog.show(getFragmentManager(), "colorEditDialog");
 
                 }
             });
