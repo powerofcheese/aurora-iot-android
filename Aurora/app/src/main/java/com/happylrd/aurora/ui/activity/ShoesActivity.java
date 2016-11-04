@@ -2,6 +2,7 @@ package com.happylrd.aurora.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,8 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Motion;
+import com.happylrd.aurora.todo.colorMode.ColorController;
+import com.happylrd.aurora.todo.colorMode.ColorFolder;
 import com.happylrd.aurora.ui.dialog.ActionTabDialog;
 import com.happylrd.aurora.ui.dialog.AnimTabDialog;
 import com.happylrd.aurora.ui.dialog.ColorPickerDialog;
@@ -29,8 +32,7 @@ import com.happylrd.aurora.ui.dialog.PatternTabDialog;
 import com.happylrd.aurora.ui.dialog.RotationTabDialog;
 import com.happylrd.aurora.ui.fragment.LeftShoeFragment;
 import com.happylrd.aurora.ui.fragment.RightShoeFragment;
-
-import org.json.JSONObject;
+import com.happylrd.aurora.util.ZhToEnMapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,12 @@ public class ShoesActivity extends AppCompatActivity {
     private LeftShoeFragment mLeftShoeFragment;
     private RightShoeFragment mRightShoeFragment;
 
+    // need to be normalized later
+    private ColorController mColorController;
+    private ColorFolder mColorFolder = new ColorFolder();
+
+    private ZhToEnMapUtil mZhToEnMapUtil;
+
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ShoesActivity.class);
         return intent;
@@ -68,6 +76,7 @@ public class ShoesActivity extends AppCompatActivity {
 
         initView();
         initListener();
+        initData();
     }
 
     private void initView() {
@@ -94,26 +103,26 @@ public class ShoesActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-
-        fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
-            @Override
-            public void onMenuExpanded() {
-                frameLayout.getBackground().setAlpha(240);
-                frameLayout.setOnTouchListener(new View.OnTouchListener() {
+        fabMenu.setOnFloatingActionsMenuUpdateListener(
+                new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
                     @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        fabMenu.collapse();
-                        return true;
+                    public void onMenuExpanded() {
+                        frameLayout.getBackground().setAlpha(240);
+                        frameLayout.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                fabMenu.collapse();
+                                return true;
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onMenuCollapsed() {
+                        frameLayout.getBackground().setAlpha(0);
+                        frameLayout.setOnTouchListener(null);
                     }
                 });
-            }
-
-            @Override
-            public void onMenuCollapsed() {
-                frameLayout.getBackground().setAlpha(0);
-                frameLayout.setOnTouchListener(null);
-            }
-        });
 
         fab_color_picker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +170,11 @@ public class ShoesActivity extends AppCompatActivity {
         });
     }
 
+    private void initData() {
+        mZhToEnMapUtil = new ZhToEnMapUtil();
+        mZhToEnMapUtil.initMap(ShoesActivity.this);
+    }
+
     public void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
 
@@ -182,6 +196,12 @@ public class ShoesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        if (id == R.id.menu_item_preview) {
+            Log.d(TAG, getJsonByMotion());
+
+            doPreview();
+        }
+
         if (id == R.id.menu_item_done) {
             Log.d(TAG, getJsonByMotion());
 
@@ -190,6 +210,56 @@ public class ShoesActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * a method for preview the magic shoes
+     */
+    private void doPreview() {
+        mColorController = new ColorController(mLeftShoeFragment.getLeftShoe());
+
+        if (mMotion.getIntColorList() != null) {
+            mColorFolder.setColorarray(mMotion.getIntColorList());
+        } else {
+            // just as the default value temporarily
+            List<Integer> tempDefaultColors = new ArrayList<>();
+            tempDefaultColors.add(Color.RED);
+            tempDefaultColors.add(Color.GREEN);
+            tempDefaultColors.add(Color.CYAN);
+            mColorFolder.setColorarray(tempDefaultColors);
+        }
+
+        if (mMotion.getPatternName() != null) {
+            mColorFolder.setPattern(
+                    mZhToEnMapUtil.getEnValueByZhKey(mMotion.getPatternName())
+            );
+        } else {
+            mColorFolder.setPattern(
+                    getString(R.string.pattern_skip_stripe_en)
+            );
+        }
+
+        if (mMotion.getAnimationName() != null) {
+            mColorFolder.setAnimation(
+                    mZhToEnMapUtil.getEnValueByZhKey(mMotion.getAnimationName())
+            );
+        } else {
+            mColorFolder.setAnimation(
+                    getString(R.string.anim_flash_en)
+            );
+        }
+
+        if (mMotion.getRotationName() != null) {
+            mColorFolder.setRotation(
+                    mZhToEnMapUtil.getEnValueByZhKey(mMotion.getRotationName())
+            );
+        } else {
+            mColorFolder.setRotation(
+                    getString(R.string.rotation_float_right_en)
+            );
+        }
+
+        mColorController.Control(mColorFolder);
     }
 
     private String getJsonByMotion() {
@@ -247,11 +317,11 @@ public class ShoesActivity extends AppCompatActivity {
         actionTabDialog.show(getSupportFragmentManager(), "actionTabDialog");
     }
 
+
     public void setPatternMotionNameFromDialog(String patternMotionName) {
         mMotion.setPatternName(patternMotionName);
         Log.d("ReceivePatternData", mMotion.getPatternName());
     }
-
 
     public void setPatternColorListFromDialog(List<Integer> intColorList) {
         mMotion.setIntColorList(intColorList);
@@ -259,7 +329,6 @@ public class ShoesActivity extends AppCompatActivity {
             Log.d("ReceivePatternColor:", item + "");
         }
     }
-
 
     public void setAnimationMotionNameFromDialog(String animationMotionName) {
         mMotion.setAnimationName(animationMotionName);

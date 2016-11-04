@@ -22,7 +22,6 @@ public class ShoeView extends View {
     private int tempColor = Color.WHITE;
 
     private int temp = 0;
-    private String send;
 
     public ShoeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -107,7 +106,6 @@ public class ShoeView extends View {
 
     }
 
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -133,5 +131,11 @@ public class ShoeView extends View {
 
     private static String colorToHexString(int color) {
         return String.format("#%06X", 0xFFFFFFFF & color);
+    }
+
+    public void updateColor(int[] color){
+        for (int i = 0; i < NUM; i++) {
+            mDrawables.getDrawable(i).setColorFilter(color[i],PorterDuff.Mode.SRC_IN);
+        }
     }
 }

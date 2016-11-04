@@ -5,6 +5,11 @@
     tools:context=".ui.activity.ShoesActivity">
 
     <item
+        android:id="@+id/menu_item_preview"
+        android:icon="@drawable/ic_remove_red_eye_black_24dp"
+        android:title="预览"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_item_done"
         android:icon="@drawable/ic_done_black_24dp"
         android:title="确定"
