@@ -1,5 +1,6 @@
 package com.happylrd.aurora.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,10 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
+import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -67,12 +70,15 @@ public class ListModeFragment extends Fragment {
 
     private void initModeData() {
         BmobQuery<Mode> query = new BmobQuery<>();
+        MyUser currentUser = MyUser.getCurrentUser(MyUser.class);
+        query.addWhereEqualTo("author", new BmobPointer(currentUser));
+
         query.findObjects(new FindListener<Mode>() {
             @Override
             public void done(List<Mode> list, BmobException e) {
                 if (e == null) {
                     Log.d("Find is null?", (list == null) + "");
-                    Log.d("Find state", "find success" + list.size());
+                    Log.d("Find size ", list.size() + "");
 
                     mModeAdapter.addAll(list);
                 } else {
@@ -83,14 +89,14 @@ public class ListModeFragment extends Fragment {
     }
 
     private class ModeHolder extends RecyclerView.ViewHolder {
-
-        private ImageView itemAvatar;
+        // need to be tested and normalized
+        private ModeView mModeView;
 
         public ModeHolder(View itemView) {
             super(itemView);
 
-            itemAvatar = (ImageView) itemView.findViewById(R.id.item_newlist_image);
-            itemAvatar.setOnClickListener(new View.OnClickListener() {
+            mModeView = (ModeView) itemView.findViewById(R.id.item_mode_view);
+            mModeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -98,17 +104,18 @@ public class ListModeFragment extends Fragment {
             });
         }
 
-        /**
-         * just for compromise
-         *
-         * @param modePicResId
-         */
-        public void bindDefaultMode(int modePicResId) {
-            itemAvatar.setBackgroundResource(modePicResIdList.get(modePicResId));
-        }
-
         public void bindMode(Mode mode) {
-            itemAvatar.setBackgroundResource(R.drawable.main_2);
+            int[] colors = new int[32];
+            //just for test
+            int[] colorArray = new int[]{Color.GREEN, Color.BLUE, Color.RED};
+            for (int i = 0; i < 32; i++) {
+                colors[i] = colorArray[i % colorArray.length];
+            }
+
+            // color doesn't work
+            mModeView.update(
+                    colors, mode.getModeName()
+            );
         }
     }
 
@@ -133,7 +140,8 @@ public class ListModeFragment extends Fragment {
         public ModeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = inflater
-                    .inflate(R.layout.item_mode, parent, false);
+                    .inflate(R.layout.item_mode_2, parent, false);
+
             return new ModeHolder(view);
         }
 

@@ -31,6 +31,7 @@
     <string name="pattern_random">随机</string>
     <string name="pattern_random_skipping">随机间隔</string>
     <string name="pattern_similar_color">相似颜色</string>
+    <string name="pattern_custom">自定义</string>
 
     <string name="anim_ramp">蔓延</string>
     <string name="anim_wave">波浪</string>
@@ -70,6 +71,7 @@
     <string name="pattern_random_en">Random</string>
     <string name="pattern_random_skipping_en">RandomSkipping</string>
     <string name="pattern_similar_color_en">Similar</string>
+    <string name="pattern_custom_en">Custom</string>
 
     <string name="anim_ramp_en">Ramp</string>
     <string name="anim_wave_en">Wave</string>

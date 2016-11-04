@@ -6,16 +6,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class ModeView extends View {
 
     public final static int MY_NUM = 32;
 
-    private Paint mPaint; //画笔,包含了画几何图形、文本等的样式和颜色信息
+    private Paint mPaint;
 
     private int[] Array_out;
-    private String mTextPaint = "我是图片名称";
+    private String mTextPaint = "ModeName";
     private int mMinWidth = 1000;
     private int mWidth;
     private int mHeight;
@@ -27,6 +28,7 @@ public class ModeView extends View {
 
     public ModeView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     private void init() {
@@ -48,38 +50,44 @@ public class ModeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(mPaint == null){
-            mPaint  = new Paint();
+
+        if (mPaint == null) {
+            mPaint = new Paint();
             mPaint.setStyle(Paint.Style.STROKE); //设置填充
         }
         canvas.drawColor(Color.GRAY);
 
-        RectF oval1 = new RectF(-(int)(mHeight * 0.8),-(int)(mHeight * 0.25),
-                (int)(0.8 * mHeight),(int)(mHeight * 0.95));
-        RectF oval2 = new RectF(-(int)(mHeight * 0.3),(int)(mHeight * 0.25),
-                (int)(mHeight * 0.3),(int)(mHeight * 0.45));
-        RectF oval3 = new RectF(-(int)(mHeight * 1.05),-(int)(mHeight * 0.5),
-                (int)(mHeight * 1.05),(int)(mHeight * 1.2));
-        int line1 = mHeight / 2;
+        RectF oval1 = new RectF(-(int) (mHeight * 0.7), -(int) (mHeight * 0.25),
+                (int) (0.8 * mHeight), (int) (mHeight * 1.25));
+        RectF oval2 = new RectF(-(int) (mHeight * 0.05), (int) (mHeight * 0.4),
+                (int) (mHeight * 0.15), (int) (mHeight * 0.6));
+        RectF oval3 = new RectF(-(int) (mHeight * 1.025), -(int) (mHeight * 0.575),
+                (int) (mHeight * 1.125), (int) (mHeight * 1.575));
+        int line1 = (int) (mHeight * 0.65);
         int line_string = mHeight / 60;
         mPaint.setStrokeWidth(line1);
         for (int i = 0; i < MY_NUM; i++) {
             mPaint.setColor(Array_out[i]);
-            canvas.drawArc(oval1, -90 + i * 6, (float) 5.5, false, mPaint);
+            canvas.drawArc(oval1, (float) (-98 + i * 6.8), (float) 6.5, false, mPaint);
         }
         mPaint.setColor(Color.BLACK);
+        mPaint.setStrokeWidth(line1);
         canvas.drawArc(oval2, 0, 360, false, mPaint);
         mPaint.setStrokeWidth(line_string);
         canvas.drawArc(oval3, 0, 360, false, mPaint);
+
         mPaint.setTextSize(line_string * 15);
         mPaint.setStrokeWidth(line_string / 2);
-        canvas.drawText(mTextPaint,  (float) (0.4 * mWidth),(float) (0.45 * mHeight), mPaint);
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawText(mTextPaint, (float) (0.4 * mWidth), (float) (0.46 * mHeight), mPaint);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measureWidth(widthMeasureSpec),
-                measureHeight(heightMeasureSpec, widthMeasureSpec));
+        setMeasuredDimension(
+                measureWidth(widthMeasureSpec),
+                measureHeight(heightMeasureSpec, widthMeasureSpec)
+        );
     }
 
     private int measureHeight(int measureSpec, int widthMeasureSpec) {
@@ -92,8 +100,8 @@ public class ModeView extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) (measureWidth(widthMeasureSpec) / 3) + getPaddingTop()
-                    + getPaddingBottom();
+            result = (int) (measureWidth(widthMeasureSpec) / 3)
+                    + getPaddingTop() + getPaddingBottom();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
                 result = Math.min(result, specSize);
@@ -113,8 +121,7 @@ public class ModeView extends View {
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = mMinWidth + getPaddingLeft()
-                    + getPaddingRight();
+            result = mMinWidth + getPaddingLeft() + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
                 result = Math.min(result, specSize);

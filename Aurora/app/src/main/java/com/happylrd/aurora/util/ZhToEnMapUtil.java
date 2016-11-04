@@ -60,6 +60,11 @@ public class ZhToEnMapUtil {
                 context.getString(R.string.pattern_similar_color_en)
         );
 
+        enMotionMap.put(
+                context.getString(R.string.pattern_custom),
+                context.getString(R.string.pattern_custom_en)
+        );
+
         // animation start from here
         enMotionMap.put(
                 context.getString(R.string.anim_ramp),

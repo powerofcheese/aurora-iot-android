@@ -6,56 +6,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ColorFolder {
-    private List<Integer> colorarray;
     private String pattern;
     private String animation;
     private String rotation;
     private String reaction;
 
+    private List<Integer> colorList;
+
     public ColorFolder() {
-        colorarray = new ArrayList<>();
-        colorarray.add(Color.BLACK);
+        colorList = new ArrayList<>();
+        colorList.add(Color.BLACK);
         rotation = "Nothing";
         animation = "Nothing";
     }
 
-    public List<Integer> getColorarray() {
-        return colorarray;
+    public List<Integer> getColorList() {
+        return colorList;
     }
 
-    public String getAnimation() {
-        return animation;
+    public void setColorList(List<Integer> colorList) {
+        this.colorList = colorList;
     }
 
     public String getPattern() {
         return pattern;
     }
 
-    public String getReaction() {
-        return reaction;
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
-    public String getRotation() {
-        return rotation;
+    public String getAnimation() {
+        return animation;
     }
 
     public void setAnimation(String animation) {
         this.animation = animation;
     }
 
-    public void setColorarray(List<Integer> colorarray) {
-        this.colorarray = colorarray;
-    }
-
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
-    public void setReaction(String reaction) {
-        this.reaction = reaction;
+    public String getRotation() {
+        return rotation;
     }
 
     public void setRotation(String rotation) {
         this.rotation = rotation;
+    }
+
+    public String getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(String reaction) {
+        this.reaction = reaction;
     }
 }

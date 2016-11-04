@@ -56,25 +56,25 @@ public class ColorController {
         stopTimer();
         switch (data_j.getPattern()) {
             case "Single":
-                colorHelper.Single(data_j.getColorarray());
+                colorHelper.Single(data_j.getColorList());
                 break;
             case "Gradation":
-                colorHelper.gradation(data_j.getColorarray());
+                colorHelper.gradation(data_j.getColorList());
                 break;
             case "ThinStripe":
-                colorHelper.thinStripe(data_j.getColorarray());
+                colorHelper.thinStripe(data_j.getColorList());
                 break;
             case "ThickStripe":
-                colorHelper.thickStripe(data_j.getColorarray());
+                colorHelper.thickStripe(data_j.getColorList());
                 break;
             case "HalfStripe":
-                colorHelper.halfStripe(data_j.getColorarray());
+                colorHelper.halfStripe(data_j.getColorList());
                 break;
             case "SkipStripe":
-                colorHelper.gradationskip(data_j.getColorarray());
+                colorHelper.gradationskip(data_j.getColorList());
                 break;
             case "GradationSkipping":
-                colorHelper.gradationskip(data_j.getColorarray());
+                colorHelper.gradationskip(data_j.getColorList());
                 break;
             case "Random":
                 colorHelper.random();
@@ -83,10 +83,10 @@ public class ColorController {
                 colorHelper.randomskip();
                 break;
             case "Similar":
-                colorHelper.similar(data_j.getColorarray());
+                colorHelper.similar(data_j.getColorList());
                 break;
             default:
-                colorHelper.Single(data_j.getColorarray());
+                colorHelper.Single(data_j.getColorList());
                 break;
         }
         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
