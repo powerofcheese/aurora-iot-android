@@ -28,7 +28,7 @@ public class ShoeView extends View {
 
         mDrawables = (LayerDrawable) getBackground();
         for (int i = 0; i < NUM; i++) {
-            LC[i] = colorToHexString(Color.BLACK);
+            LC[i] = colorToHexString(Color.GRAY);
         }
     }
 
