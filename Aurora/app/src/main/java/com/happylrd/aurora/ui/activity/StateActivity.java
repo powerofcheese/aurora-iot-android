@@ -330,6 +330,9 @@ public class StateActivity extends AppCompatActivity {
      */
     private void saveMotionByNormalState(NormalState normalState) {
         mMotion.setNormalState(normalState);
+
+        mMotion.setGestureState(null);
+
         mMotion.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -349,6 +352,9 @@ public class StateActivity extends AppCompatActivity {
      */
     private void saveMotionByGestureState(GestureState gestureState) {
         mMotion.setGestureState(gestureState);
+
+        mMotion.setNormalState(null);
+
         mMotion.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {

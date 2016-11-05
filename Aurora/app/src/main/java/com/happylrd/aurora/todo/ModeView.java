@@ -46,6 +46,16 @@ public class ModeView extends View {
         invalidate();
     }
 
+    public void setName(String name){
+        mTextPaint = name;
+        invalidate();
+    }
+
+    public void setColorByArray(int[] c){
+        Array_out = c;
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
