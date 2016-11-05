@@ -2,6 +2,7 @@ package com.happylrd.aurora.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ public class LeftShoeFragment extends Fragment {
                 .inflate(R.layout.fragment_left_shoe, container, false);
 
         mLeftShoe = (ShoeView) view.findViewById(R.id.left_shoe);
+
+        Log.d("ShoeView is null?", (mLeftShoe == null)+"");
 
         return view;
     }

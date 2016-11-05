@@ -30,10 +30,6 @@ public class ColorHelper {
         this.shoe = shoe;
     }
 
-    public static void setColorArray_int(int[]colorForCoustom){
-        colorArray_int = colorForCoustom;
-    }
-
     //生成一个随机的颜色值
     public static int randomColor() {
         return Color.argb((int) (Math.random() * 256), (int) (Math.random() * 256),
@@ -60,44 +56,49 @@ public class ColorHelper {
 
         for (int i = colors.size() - 1; i > 0; i--) {
             int r = (Color.red(colors.get(i)) - Color.red(colors.get(i - 1))) / interval;
-            int g = (Color.green(colors.get(i)) - Color.green(colors.get(i - 1))) / interval;;
+            int g = (Color.green(colors.get(i)) - Color.green(colors.get(i - 1))) / interval;
+            ;
             int b = (Color.blue(colors.get(i)) - Color.blue(colors.get(i - 1))) / interval;
+            int a = (Color.alpha(colors.get(i)) - Color.alpha(colors.get(i - 1))) / interval;
+            temp[i][0] = Color.alpha(colors.get(i));
             temp[i][1] = Color.red(colors.get(i));
             temp[i][2] = Color.green(colors.get(i));
             temp[i][3] = Color.blue(colors.get(i));
 
-            colorArray_int[l] = colors.get(i);
+            colorArray_int[l] = Color.argb(temp[i][0], temp[i][1], temp[i][2], temp[i][3]);
             for (int k = 0; k < interval; k++) {
                 l--;
+                temp[i][0] -= a;
                 temp[i][1] -= r;
                 temp[i][2] -= g;
                 temp[i][3] -= b;
-                colorArray_int[l] = Color.argb(255, temp[i][1], temp[i][2], temp[i][3]);
+                colorArray_int[l] = Color.argb(temp[i][0], temp[i][1], temp[i][2], temp[i][3]);
             }
             l--;
         }
 
-        int r = (Color.red(colors.get(0)) - Color.red(colors.get(colors.size() - 1))) / l;
-        int g = (Color.green(colors.get(0)) - Color.green(colors.get(colors.size() - 1))) / l;
-        int b = (Color.blue(colors.get(0)) - Color.blue(colors.get(colors.size() - 1))) / l;
+        int r = (Color.red(colors.get(0)) - Color.red(colors.get(colors.size() - 1))) / interval;
+        int g = (Color.green(colors.get(0)) - Color.green(colors.get(colors.size() - 1))) / interval;
+        ;
+        int b = (Color.blue(colors.get(0)) - Color.blue(colors.get(colors.size() - 1))) / interval;
+        int a = (Color.alpha(colors.get(0)) - Color.alpha(colors.get(colors.size() - 1))) / interval;
+        temp[0][0] = Color.alpha(Color.red(colors.get(0)));
+        temp[0][1] = Color.red(Color.red(colors.get(0)));
+        temp[0][2] = Color.green(Color.red(colors.get(0)));
+        temp[0][3] = Color.blue(Color.red(colors.get(0)));
 
-        temp[0][1] = Color.red(colors.get(0));
-        temp[0][2] = Color.green(colors.get(0));
-        temp[0][3] = Color.blue(colors.get(0));
-
-        colorArray_int[l] = Color.argb(255, temp[0][1], temp[0][2], temp[0][3]);
-
-        for (;l > 0;) {
+        colorArray_int[l] = Color.argb(temp[0][0], temp[0][1], temp[0][2], temp[0][3]);
+        for (int k = 0; k < interval; k++) {
             l--;
+            temp[0][0] -= a;
             temp[0][1] -= r;
             temp[0][2] -= g;
             temp[0][3] -= b;
-
-            colorArray_int[l] = Color.argb(255, temp[0][1], temp[0][2], temp[0][3]);
+            colorArray_int[l] = Color.argb(temp[0][0], temp[0][1], temp[0][2], temp[0][3]);
         }
-
         return colorArray_int;
     }
+
     /**
      * 效果：细条纹
      * 参数：最多6个颜色,其中每两个颜色(颜色用int表示)之间以空格隔开的字符串
@@ -187,18 +188,18 @@ public class ColorHelper {
             l--;
         }
 
-        int r = Color.red(colors.get(0)) - Color.red(colors.get(colors.size() - 1)) / l;
-        int g = Color.green(colors.get(0)) - Color.green(colors.get(colors.size() - 1)) / l;
+        int r = Color.red(colors.get(0)) - Color.red(colors.get(colors.size() - 1)) / interval;
+        int g = Color.green(colors.get(0)) - Color.green(colors.get(colors.size() - 1)) / interval;
         ;
-        int b = Color.blue(colors.get(0)) - Color.blue(colors.get(colors.size() - 1)) / l;
-        int a = Color.alpha(colors.get(0)) - Color.alpha(colors.get(colors.size() - 1)) / l;
+        int b = Color.blue(colors.get(0)) - Color.blue(colors.get(colors.size() - 1)) / interval;
+        int a = Color.alpha(colors.get(0)) - Color.alpha(colors.get(colors.size() - 1)) / interval;
         temp[0][0] = Color.alpha(colors.get(0));
         temp[0][1] = Color.red(colors.get(0));
         temp[0][2] = Color.green(colors.get(0));
         temp[0][3] = Color.blue(colors.get(0));
 
         colorArray_int[l] = Color.argb(temp[0][0], temp[0][1], temp[0][2], temp[0][3]);
-        for (; l > 0;) {
+        for (int k = 0; k < interval; k++) {
             l--;
             temp[0][0] -= a;
             temp[0][1] -= r;
@@ -266,7 +267,7 @@ public class ColorHelper {
 
         for (int i = 0; i < 10; i++) {
             while (true) {
-                data = getRGB(min / 3, max / 3);
+                data = getRGB(min, max);
                 if ((data[0] + data[1] + data[2]) >= min && (data[0] + data[1] + data[2]) <= max) {
                     break;
                 }
@@ -276,16 +277,15 @@ public class ColorHelper {
                 l++;
             }
         }
-
-        while (true) {
-            data = getRGB(min / 3, max / 3);
-            if ((data[0] + data[1] + data[2]) >= min && (data[0] + data[1] + data[2]) <= max) {
-                break;
+        for (int i = 0; i < 2; i++) {
+            while (true) {
+                data = getRGB(min, max);
+                if ((data[0] + data[1] + data[2]) >= min && (data[0] + data[1] + data[2]) <= max) {
+                    break;
+                }
             }
-            for (int i = 0; i < 2; i++) {
-                colorArray_int[l] = Color.argb(255, data[0], data[1], data[2]);
-                l++;
-            }
+            colorArray_int[l] = Color.argb(255, data[0], data[1], data[2]);
+            l++;
         }
         return colorArray_int;
     }
@@ -332,47 +332,47 @@ public class ColorHelper {
     //明暗的渐变
     public void breath() {
         int choice = 0;
+        float[] hsv = new float[3];
         for (int i = 0; i < ShoeView.NUM; i++) {
-            int a = Color.alpha(colorArray_int[i]);
+            Color.colorToHSV(colorArray_int[i], hsv);
             switch (choice) {
                 case 0:
-                   a += 8.5;
-                    if (a >= 255) {
-                        a = 255;
+                    hsv[2] += 0.0333;
+                    if (hsv[2] >= 1) {
+                        hsv[2] = 1;
                         choice = 1;
                     }
                     break;
                 case 1:
-                    a -= 8.5;
-                    if (a <= 0) {
-                        a = 0;
+                    hsv[2] -= 0.0333;
+                    if (hsv[2] <= 0) {
+                        hsv[2] = 0;
                         choice = 0;
                     }
                     break;
             }
-            int tempRGB = colorArray_int[i];
-            colorArray_int[i] = Color.argb(a, Color.red(tempRGB), Color.green(tempRGB), Color.blue(tempRGB));
+            colorArray_int[i] = Color.HSVToColor(hsv);
         }
     }
 
     //明暗的突变
     public void shining() {
         int choice = 0;
+        float[] hsv = new float[3];
 
         for (int i = 0; i < ShoeView.NUM; i++) {
-            int a = Color.alpha(colorArray_int[i]);
+            Color.colorToHSV(colorArray_int[i], hsv);
             switch (choice) {
                 case 0:
-                    a = 255;
+                    hsv[2] = 1;
                     choice = 1;
                     break;
                 case 1:
-                    a = 0;
+                    hsv[2] = 0;
                     choice = 0;
                     break;
             }
-            int tempRGB = colorArray_int[i];
-            colorArray_int[i] = Color.argb(a, Color.red(tempRGB), Color.green(tempRGB), Color.blue(tempRGB));
+            colorArray_int[i] = Color.HSVToColor(hsv);
         }
     }
 
@@ -384,12 +384,11 @@ public class ColorHelper {
             sleep = 4;
         } else {
             if (sleep != 0) {
-
+                float[] hsv = new float[3];
                 for (int i = 0; i < ShoeView.NUM; i++) {
-                    int a = Color.alpha(colorArray_int[i]);
-                    a = 0;
-                    int tempRGB = colorArray_int[i];
-                    colorArray_int[i] = Color.argb(a, Color.red(tempRGB), Color.green(tempRGB), Color.blue(tempRGB));
+                    Color.colorToHSV(colorArray_int[i], hsv);
+                    hsv[2] = 0;
+                    colorArray_int[i] = Color.HSVToColor(hsv);
                 }
                 sleep--;
             } else
