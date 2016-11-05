@@ -64,6 +64,8 @@ public class ShoesActivity extends AppCompatActivity {
 
     private ZhToEnMapUtil mZhToEnMapUtil;
 
+    private List<Integer> tempCustomColorList;
+
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ShoesActivity.class);
         return intent;
@@ -173,6 +175,8 @@ public class ShoesActivity extends AppCompatActivity {
     private void initData() {
         mZhToEnMapUtil = new ZhToEnMapUtil();
         mZhToEnMapUtil.initMap(ShoesActivity.this);
+
+        tempCustomColorList = new ArrayList<>();
     }
 
     public void setupViewPager(ViewPager viewPager) {
@@ -197,9 +201,11 @@ public class ShoesActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_item_preview) {
-            doPreview();
+            Log.d(TAG, getJsonByMotion());
 
             // can pass json data to edison board
+
+            doPreview();
 
             Log.d(TAG, getJsonByMotion());
         }
@@ -218,18 +224,13 @@ public class ShoesActivity extends AppCompatActivity {
     private void doPreview() {
         mColorController = new ColorController(mLeftShoeFragment.getLeftShoe());
 
-        // always can get the list with 32 size
-        List<Integer> tempCustomColorList = getTempCustomColorList();
-
-        Log.d("Motion is null?", (mMotion.getIntColorList() == null) + "");
-
         if (mMotion.getIntColorList() != null) {
             mColorFolder.setColorList(mMotion.getIntColorList());
         } else {
-            mColorFolder.setColorList(tempCustomColorList);
-
-            // store into mMotion
-            mMotion.setIntColorList(tempCustomColorList);
+            // just as the default value temporarily
+            List<Integer> defaultColors = new ArrayList<>();
+            defaultColors.add(Color.GRAY);
+            mColorFolder.setColorList(defaultColors);
         }
 
         if (mMotion.getPatternName() != null) {
@@ -339,6 +340,8 @@ public class ShoesActivity extends AppCompatActivity {
     }
 
     public void setPatternColorListFromDialog(List<Integer> intColorList) {
+//        clearTempCustomColorList();
+
         mMotion.setIntColorList(intColorList);
         for (Integer item : mMotion.getIntColorList()) {
             Log.d("ReceivePatternColor:", item + "");
@@ -361,9 +364,6 @@ public class ShoesActivity extends AppCompatActivity {
     }
 
     private void showColorPickerDialog() {
-
-        mMotion.setIntColorList(null);
-
         ColorPickerDialog colorPickerDialog = ColorPickerDialog.newInstance();
         colorPickerDialog.show(getSupportFragmentManager(), "colorPickerDialog");
     }
@@ -373,16 +373,19 @@ public class ShoesActivity extends AppCompatActivity {
         mRightShoeFragment.setColor(color);
     }
 
-    public List<Integer> getTempCustomColorList() {
-        String[] strColors = mLeftShoeFragment.getLeftShoe().getLC();
-        List<Integer> tempCustomColorList = new ArrayList<>();
-
-        for (int i = 0; i < strColors.length; i++) {
-            tempCustomColorList.add(
-                    Color.parseColor(strColors[i])
-            );
-        }
-
-        return tempCustomColorList;
-    }
+//    public void setTempCustomColorList(){
+//        String[] strColors = mLeftShoeFragment.getLeftShoe().getLC();
+//
+//        for(int i =0; i < strColors.length; i++){
+//            tempCustomColorList.add(
+//                    Integer.parseInt(strColors[i])
+//            );
+//        }
+//    }
+//
+//    public void clearTempCustomColorList(){
+//        Log.d("SizeBeforeClear ", tempCustomColorList.size() + "");
+//        tempCustomColorList.clear();
+//        Log.d("SizeAfterClear ", tempCustomColorList.size() + "");
+//    }
 }
