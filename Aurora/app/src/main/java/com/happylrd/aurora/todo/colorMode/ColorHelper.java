@@ -33,8 +33,8 @@ public class ColorHelper {
         this.shoe = shoe;
     }
 
-    public  void setColorArray_int(List<Integer> colors) {
-        for (int i = 0; i <ShoeView.NUM ; i++) {
+    public void setColorArray_int(List<Integer> colors) {
+        for (int i = 0; i < ShoeView.NUM; i++) {
             colorArray_int[i] = colors.get(i);
         }
     }
@@ -65,7 +65,8 @@ public class ColorHelper {
 
         for (int i = colors.size() - 1; i > 0; i--) {
             int r = (Color.red(colors.get(i)) - Color.red(colors.get(i - 1))) / interval;
-            int g = (Color.green(colors.get(i)) - Color.green(colors.get(i - 1))) / interval;;
+            int g = (Color.green(colors.get(i)) - Color.green(colors.get(i - 1))) / interval;
+            ;
             int b = (Color.blue(colors.get(i)) - Color.blue(colors.get(i - 1))) / interval;
             temp[i][1] = Color.red(colors.get(i));
             temp[i][2] = Color.green(colors.get(i));
@@ -92,7 +93,7 @@ public class ColorHelper {
 
         colorArray_int[l] = Color.argb(255, temp[0][1], temp[0][2], temp[0][3]);
 
-        for (;l > 0;) {
+        for (; l > 0; ) {
             l--;
             temp[0][1] -= r;
             temp[0][2] -= g;
@@ -103,6 +104,7 @@ public class ColorHelper {
 
         return colorArray_int;
     }
+
     /**
      * 效果：细条纹
      * 参数：最多6个颜色,其中每两个颜色(颜色用int表示)之间以空格隔开的字符串
@@ -203,7 +205,7 @@ public class ColorHelper {
         temp[0][3] = Color.blue(colors.get(0));
 
         colorArray_int[l] = Color.argb(temp[0][0], temp[0][1], temp[0][2], temp[0][3]);
-        for (; l > 0;) {
+        for (; l > 0; ) {
             l--;
             temp[0][0] -= a;
             temp[0][1] -= r;
@@ -390,7 +392,7 @@ public class ColorHelper {
             if (sleep != 0) {
 
                 for (int i = 0; i < ShoeView.NUM; i++) {
-                    int a ;
+                    int a;
                     a = 0;
                     int tempRGB = colorArray_int[i];
                     colorArray_int[i] = Color.argb(a, Color.red(tempRGB), Color.green(tempRGB), Color.blue(tempRGB));

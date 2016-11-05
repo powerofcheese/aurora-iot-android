@@ -112,7 +112,7 @@ public class ListModeFragment extends Fragment {
                 colors[i] = colorArray[i % colorArray.length];
             }
 
-            // color doesn't work
+            // fetch color from NormalState
             mModeView.update(
                     colors, mode.getModeName()
             );

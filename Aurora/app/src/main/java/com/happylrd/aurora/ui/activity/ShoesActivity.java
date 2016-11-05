@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -35,6 +36,7 @@ import com.happylrd.aurora.ui.fragment.RightShoeFragment;
 import com.happylrd.aurora.util.ZhToEnMapUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ShoesActivity extends AppCompatActivity {
@@ -209,13 +211,12 @@ public class ShoesActivity extends AppCompatActivity {
             startActivity(intent);
 
             mColorController.recover2init();
-
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /*
+    /**
      * a method for preview the magic shoes
      */
     private void doPreview() {
@@ -227,7 +228,18 @@ public class ShoesActivity extends AppCompatActivity {
         Log.d("Motion is null?", (mMotion.getIntColorList() == null) + "");
 
         if (mMotion.getIntColorList() != null) {
-            mColorFolder.setColorList(mMotion.getIntColorList());
+
+            Log.d("Motion size ", mMotion.getIntColorList().size() + "");
+
+            if (mMotion.getIntColorList().size() == 0) {
+                // just as the default color list
+                mColorFolder.setColorList(Arrays.asList(Color.GRAY));
+
+                Toast.makeText(ShoesActivity.this, "请至少选一种颜色", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                mColorFolder.setColorList(mMotion.getIntColorList());
+            }
         } else {
             mColorFolder.setColorList(tempCustomColorList);
 
