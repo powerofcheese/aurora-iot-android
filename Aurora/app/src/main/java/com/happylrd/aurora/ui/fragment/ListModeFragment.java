@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
@@ -17,6 +18,7 @@ import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.NormalState;
 import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
+import com.happylrd.aurora.util.ZhToEnMapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class ListModeFragment extends Fragment {
+    private static final String TAG = "ListModeFragment";
+
+    private ZhToEnMapUtil mZhToEnMapUtil;
 
     private RecyclerView recyclerView;
     private ModeAdapter mModeAdapter;
@@ -58,6 +63,9 @@ public class ListModeFragment extends Fragment {
         recyclerView.setAdapter(mModeAdapter);
 
         initModeData();
+
+        mZhToEnMapUtil = new ZhToEnMapUtil();
+        mZhToEnMapUtil.initMap(getActivity());
     }
 
     private void initModeData() {
@@ -84,13 +92,20 @@ public class ListModeFragment extends Fragment {
         // need to be tested and normalized
         private ModeView mModeView;
 
+        private Motion mPassMotion;
+
         public ModeHolder(View itemView) {
             super(itemView);
+
+            mPassMotion = new Motion();
 
             mModeView = (ModeView) itemView.findViewById(R.id.item_mode_view);
             mModeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    Log.d(TAG, getJsonByMotion());
+                    // can pass motion json to edison
 
                 }
             });
@@ -113,13 +128,15 @@ public class ListModeFragment extends Fragment {
                                 if (e == null) {
                                     Log.d("FindMotion ", "success");
 
-                                    List<Integer> tempColorList = list.get(0).getIntColorList();
-                                    int[] colorArray = new int[32];
-                                    for (int i = 0; i < tempColorList.size(); i++) {
-                                        colorArray[i] = tempColorList.get(i);
-                                    }
+                                    Motion tempMotion = list.get(0);
 
-                                    mModeView.update(colorArray, mode.getModeName());
+                                    mModeView.setColorAndName(
+                                            tempMotion.getIntColorList(),
+                                            mode.getModeName(),
+                                            mZhToEnMapUtil.getEnValueByZhKey(tempMotion.getPatternName())
+                                    );
+
+                                    mPassMotion = list.get(0);
                                 } else {
                                     Log.d("FindMotionStateFailed ", e.getMessage());
                                 }
@@ -130,6 +147,12 @@ public class ListModeFragment extends Fragment {
                     }
                 }
             });
+        }
+
+        private String getJsonByMotion() {
+            Gson gson = new Gson();
+            String json = gson.toJson(mPassMotion);
+            return json;
         }
     }
 
