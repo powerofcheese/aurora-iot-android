@@ -1,8 +1,5 @@
 package com.happylrd.aurora.todo.colorMode;
 
-import android.graphics.Color;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ColorFolder {
@@ -14,8 +11,6 @@ public class ColorFolder {
     private List<Integer> colorList;
 
     public ColorFolder() {
-        colorList = new ArrayList<>();
-        colorList.add(Color.BLACK);
         rotation = "Nothing";
         animation = "Nothing";
     }

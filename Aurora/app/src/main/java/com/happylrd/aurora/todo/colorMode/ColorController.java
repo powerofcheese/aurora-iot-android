@@ -7,6 +7,8 @@ import android.os.Message;
 import com.happylrd.aurora.constant.Constants;
 import com.happylrd.aurora.ui.view.ShoeView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,16 +16,28 @@ public class ColorController {
 
     private ColorFolder data;
     private ColorHelper colorHelper;
+    private TimerTask task_Rotation;
+    private TimerTask task_Animation;
     private Timer timer_Rotation;
     private Timer timer_Animation;
+    private int[] initColor = new int[ShoeView.NUM];
     private Handler handler_parent2child;
     private Handler handler_child2parent = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            colorHelper.shoe.updateColor(colorHelper.colorArray_int);
+            switch (msg.what) {
+                case Constants.MESSAGE_UPDATE_SHOE:
+                    colorHelper.shoe.updateColor(colorHelper.colorArray_int);
+                    break;
+                case Constants.MESSAGE_INIT_SHOE:
+                    colorHelper.shoe.updateColor(initColor);
+                break;
+                default:
+                    break;
+            }
         }
     };
-    private int[] initColor = new int[ShoeView.NUM];
+
 
     public void setShoeForColorHelper(ShoeView shoeView) {
         colorHelper.setShoe(shoeView);
@@ -35,7 +49,7 @@ public class ColorController {
         timer_Rotation = null;
         colorHelper = new ColorHelper();
         for (int i = 0; i < ShoeView.NUM; i++) {
-            initColor[i] = Color.CYAN;
+            initColor[i] = Color.GRAY;
         }
     }
 
@@ -45,7 +59,7 @@ public class ColorController {
         timer_Animation = null;
         timer_Rotation = null;
         for (int i = 0; i < ShoeView.NUM; i++) {
-            initColor[i] = Color.CYAN;
+            initColor[i] = Color.GRAY;
         }
     }
 
@@ -85,8 +99,13 @@ public class ColorController {
             case "Similar":
                 colorHelper.similar(data_j.getColorList());
                 break;
+            case "Custom":
+                colorHelper.setColorArray_int(data_j.getColorList());
+                break;
             default:
-                colorHelper.Single(data_j.getColorList());
+                List<Integer> init = new ArrayList<>();
+                init.add(Color.CYAN);
+                colorHelper.Single(init);
                 break;
         }
         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
@@ -106,6 +125,14 @@ public class ColorController {
     }
 
     public void stopTimer() {
+        if(task_Animation != null){
+            task_Animation.cancel();
+            task_Animation = null;
+        }
+        if(task_Rotation != null){
+            task_Rotation.cancel();
+            task_Rotation = null;
+        }
         if (timer_Rotation != null) {
             timer_Rotation.cancel();
             timer_Rotation = null;
@@ -117,93 +144,103 @@ public class ColorController {
     }
 
     public void recover2init() {
+
         stopTimer();
-        colorHelper.shoe.updateColor(initColor);
+        handler_child2parent.sendEmptyMessage(Constants.MESSAGE_INIT_SHOE);
     }
 
 
     public void handleRotation(ColorFolder data_j) {
         switch (data_j.getRotation()) {
             case "FloatRight":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Right(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 100);
+                };
+                startTimer(timer_Rotation,task_Rotation , 100);
                 break;
             case "FloatLeft":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Left(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 100);
+                };
+                startTimer(timer_Rotation, task_Rotation, 100);
                 break;
             case "RotateRight":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Right(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Rotation,task_Rotation , 50);
                 break;
             case "RotateLeft":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Left(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Rotation, task_Rotation, 50);
                 break;
             case "SpinRight":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Right(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 20);
+                };
+                startTimer(timer_Rotation,task_Rotation , 20);
                 break;
             case "SpinLeft":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Left(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 20);
+                };
+                startTimer(timer_Rotation,task_Rotation , 20);
                 break;
             case "Swing":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Swing(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Rotation,task_Rotation , 50);
                 break;
             case "Switch":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Switch();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 100);
+                };
+                startTimer(timer_Rotation,task_Rotation , 100);
                 break;
             case "Snake":
-                startTimer(timer_Rotation, new TimerTask() {
+                task_Rotation =  new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.Swing(colorHelper.colorArray_int);
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 20);
+                };
+                startTimer(timer_Rotation,task_Rotation, 20);
                 break;
             case "MoveToRotation":
                 break;
@@ -216,76 +253,84 @@ public class ColorController {
     public void handle_Animation(ColorFolder data_j) {
         switch (data_j.getAnimation()) {
             case "Ramp":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation =  new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.breath();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 100);
+                };
+                startTimer(timer_Animation,task_Animation, 100);
                 break;
             case "Wave":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation =  new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.breath();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 80);
+                };
+                startTimer(timer_Animation,task_Animation, 80);
                 break;
             case "Flash":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.breath();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Animation,task_Animation , 50);
                 break;
             case "Strobe":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.shining();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Animation,task_Animation , 50);
                 break;
             case "StrobeInOut":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.StrobeINOut();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 20);
+                };
+                startTimer(timer_Animation,task_Animation , 20);
                 break;
             case "SlowHue":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation =  new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.hue();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 100);
+                };
+                startTimer(timer_Animation,task_Animation, 100);
                 break;
             case "HueCycle":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.hue();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 50);
+                };
+                startTimer(timer_Animation,task_Animation , 50);
                 break;
             case "HueStrobe":
-                startTimer(timer_Animation, new TimerTask() {
+                task_Animation = new TimerTask() {
                     @Override
                     public void run() {
                         colorHelper.hue();
                         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
                     }
-                }, 20);
+                };
+                startTimer(timer_Animation,task_Animation , 20);
                 break;
             default:
                 break;

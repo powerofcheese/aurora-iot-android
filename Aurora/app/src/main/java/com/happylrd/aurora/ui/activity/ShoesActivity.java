@@ -207,12 +207,15 @@ public class ShoesActivity extends AppCompatActivity {
         if (id == R.id.menu_item_done) {
             Intent intent = StateActivity.newIntent(ShoesActivity.this, mMotion);
             startActivity(intent);
+
+            mColorController.recover2init();
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
+    /*
      * a method for preview the magic shoes
      */
     private void doPreview() {
