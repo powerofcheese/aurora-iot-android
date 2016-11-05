@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 public class ModeView extends View {
@@ -53,8 +52,9 @@ public class ModeView extends View {
 
         if (mPaint == null) {
             mPaint = new Paint();
-            mPaint.setStyle(Paint.Style.STROKE); //设置填充
         }
+
+        mPaint.setStyle(Paint.Style.STROKE); //设置填充
         canvas.drawColor(Color.GRAY);
 
         RectF oval1 = new RectF(-(int) (mHeight * 0.7), -(int) (mHeight * 0.25),
