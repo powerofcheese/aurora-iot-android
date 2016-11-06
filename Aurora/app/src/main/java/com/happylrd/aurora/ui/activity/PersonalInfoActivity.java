@@ -50,6 +50,8 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 public class PersonalInfoActivity extends BasePermissionActivity {
 
+    private static final String TAG = "PersonalInfoActivity";
+
     private final int REQUEST_CAMERA = 0;
     private final int REQUEST_GALLERY = 1;
 
@@ -369,12 +371,19 @@ public class PersonalInfoActivity extends BasePermissionActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                collapsingToolbarLayout.setBackgroundColor(vibrant.getRgb());
-                toolbar.setBackgroundColor(vibrant.getRgb());
-                if (Build.VERSION.SDK_INT >= 21) {
-                    Window window = getWindow();
-                    window.setStatusBarColor(vibrant.getRgb());
+                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                if (vibrantSwatch != null) {
+                    collapsingToolbarLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                    toolbar.setBackgroundColor(vibrantSwatch.getRgb());
+
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        Window window = getWindow();
+                        window.setStatusBarColor(vibrantSwatch.getRgb());
+                    }
+                } else {
+                    Log.d(TAG, "getVibrantSwatch() is null");
+                    // need to deal with
                 }
             }
         });

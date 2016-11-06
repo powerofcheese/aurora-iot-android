@@ -46,6 +46,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private View mHeadView;
@@ -278,9 +280,14 @@ public class MainActivity extends AppCompatActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                Log.d("Vibrant is null", (vibrant == null) + "");
-                mHeadView.setBackgroundColor(vibrant.getRgb());
+                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                if (vibrantSwatch != null) {
+                    mHeadView.setBackgroundColor(vibrantSwatch.getRgb());
+                } else {
+                    Log.d(TAG, "getVibrantSwatch() is null");
+                    // need to deal with
+                }
             }
         });
     }
