@@ -5,4 +5,5 @@ public class Constants {
 
     // just for ColorController in colorMode package
     public static final int MESSAGE_UPDATE_SHOE = 2;
+    public static final int MESSAGE_INIT_SHOE = 3;
 }

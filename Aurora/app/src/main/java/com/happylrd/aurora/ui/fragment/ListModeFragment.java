@@ -1,6 +1,5 @@
 package com.happylrd.aurora.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,14 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.Mode;
+import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
+import com.happylrd.aurora.model.NormalState;
 import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
+import com.happylrd.aurora.util.ZhToEnMapUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -27,14 +29,12 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class ListModeFragment extends Fragment {
+    private static final String TAG = "ListModeFragment";
+
+    private ZhToEnMapUtil mZhToEnMapUtil;
 
     private RecyclerView recyclerView;
     private ModeAdapter mModeAdapter;
-
-    private List<Integer> modePicResIdList;
-
-    private String[] mPlaceHoldModeNames =
-            {"wave", "ball", "star", "go", "fire", "eye", "charse"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,17 +59,18 @@ public class ListModeFragment extends Fragment {
     }
 
     private void initData() {
-        modePicResIdList = Arrays.asList(R.drawable.main_1, R.drawable.main_2, R.drawable.main_3,
-                R.drawable.main_4, R.drawable.main_5, R.drawable.main_6, R.drawable.main_7);
-
         mModeAdapter = new ModeAdapter();
         recyclerView.setAdapter(mModeAdapter);
 
         initModeData();
+
+        mZhToEnMapUtil = new ZhToEnMapUtil();
+        mZhToEnMapUtil.initMap(getActivity());
     }
 
     private void initModeData() {
         BmobQuery<Mode> query = new BmobQuery<>();
+        query.order("createdAt");
         MyUser currentUser = MyUser.getCurrentUser(MyUser.class);
         query.addWhereEqualTo("author", new BmobPointer(currentUser));
 
@@ -92,30 +93,74 @@ public class ListModeFragment extends Fragment {
         // need to be tested and normalized
         private ModeView mModeView;
 
+        private Motion mPassMotion;
+
+        private String mPassModeName;
+
         public ModeHolder(View itemView) {
             super(itemView);
+
+            mPassMotion = new Motion();
 
             mModeView = (ModeView) itemView.findViewById(R.id.item_mode_view);
             mModeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
+                    // can pass motion json to edison
+                    Log.d(TAG, getJsonByMotion());
+
+                    // can pass mode name to edison
+                    Log.d(TAG, mPassModeName);
                 }
             });
         }
 
-        public void bindMode(Mode mode) {
-            int[] colors = new int[32];
-            //just for test
-            int[] colorArray = new int[]{Color.GREEN, Color.BLUE, Color.RED};
-            for (int i = 0; i < 32; i++) {
-                colors[i] = colorArray[i % colorArray.length];
-            }
+        public void bindMode(final Mode mode) {
 
-            // color doesn't work
-            mModeView.update(
-                    colors, mode.getModeName()
-            );
+            mPassModeName = mode.getModeName();
+
+            BmobQuery<NormalState> query = new BmobQuery<>();
+            query.addWhereEqualTo("mode", mode);
+
+            query.findObjects(new FindListener<NormalState>() {
+                @Override
+                public void done(List<NormalState> list, BmobException e) {
+                    if (e == null) {
+                        BmobQuery<Motion> queryMotion = new BmobQuery<Motion>();
+                        queryMotion.addWhereEqualTo("normalState", list.get(0));
+
+                        queryMotion.findObjects(new FindListener<Motion>() {
+                            @Override
+                            public void done(List<Motion> list, BmobException e) {
+                                if (e == null) {
+                                    Log.d("FindMotion ", "success");
+
+                                    Motion tempMotion = list.get(0);
+
+                                    mModeView.setColorAndName(
+                                            tempMotion.getIntColorList(),
+                                            mode.getModeName(),
+                                            mZhToEnMapUtil.getEnValueByZhKey(tempMotion.getPatternName())
+                                    );
+
+                                    mPassMotion = list.get(0);
+                                } else {
+                                    Log.d("FindMotionStateFailed ", e.getMessage());
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d("FindNormalStateFailed ", e.getMessage());
+                    }
+                }
+            });
+        }
+
+        private String getJsonByMotion() {
+            Gson gson = new Gson();
+            String json = gson.toJson(mPassMotion);
+            return json;
         }
     }
 
@@ -125,11 +170,6 @@ public class ListModeFragment extends Fragment {
 
         public ModeAdapter() {
             mModeList = new ArrayList<>();
-            for (int i = 0; i < mPlaceHoldModeNames.length; i++) {
-                Mode mode = new Mode();
-                mode.setModeName(mPlaceHoldModeNames[i]);
-                mModeList.add(mode);
-            }
         }
 
         public ModeAdapter(List<Mode> modeList) {

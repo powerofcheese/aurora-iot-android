@@ -28,6 +28,7 @@ public class StepCounterFragment extends Fragment {
     private static int mDataIndex_1;
 
     private static int step_goal = 10000;
+
     // need to be fetched by bluetooth
     public static int step_num = 5500;
 
