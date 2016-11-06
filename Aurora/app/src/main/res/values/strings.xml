@@ -95,4 +95,12 @@
     <string name="rotation_random_snake_en">RandomSnake</string>
     <string name="rotation_move_to_rotation_en">MoveToRotation</string>
     <string name="rotation_nothing_en">Nothing</string>
+
+    <string name="default_mode_1">wave</string>
+    <string name="default_mode_2">ball</string>
+    <string name="default_mode_3">star</string>
+    <string name="default_mode_4">go</string>
+    <string name="default_mode_5">fire</string>
+    <string name="default_mode_6">eye</string>
+    <string name="default_mode_7">charse</string>
 </resources>

@@ -70,6 +70,7 @@ public class ListModeFragment extends Fragment {
 
     private void initModeData() {
         BmobQuery<Mode> query = new BmobQuery<>();
+        query.order("createdAt");
         MyUser currentUser = MyUser.getCurrentUser(MyUser.class);
         query.addWhereEqualTo("author", new BmobPointer(currentUser));
 
@@ -94,6 +95,8 @@ public class ListModeFragment extends Fragment {
 
         private Motion mPassMotion;
 
+        private String mPassModeName;
+
         public ModeHolder(View itemView) {
             super(itemView);
 
@@ -104,14 +107,19 @@ public class ListModeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    Log.d(TAG, getJsonByMotion());
                     // can pass motion json to edison
+                    Log.d(TAG, getJsonByMotion());
 
+                    // can pass mode name to edison
+                    Log.d(TAG, mPassModeName);
                 }
             });
         }
 
         public void bindMode(final Mode mode) {
+
+            mPassModeName = mode.getModeName();
+
             BmobQuery<NormalState> query = new BmobQuery<>();
             query.addWhereEqualTo("mode", mode);
 
