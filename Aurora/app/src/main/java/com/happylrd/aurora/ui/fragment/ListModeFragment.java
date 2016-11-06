@@ -20,6 +20,9 @@ import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
 import com.happylrd.aurora.util.ZhToEnMapUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,8 +110,8 @@ public class ListModeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    // can pass motion json to edison
-                    Log.d(TAG, getJsonByMotion());
+                    // can pass dirty motion json to edison
+                    Log.d(TAG, getDirtyJsonByMotion());
 
                     // can pass mode name to edison
                     Log.d(TAG, mPassModeName);
@@ -157,6 +160,69 @@ public class ListModeFragment extends Fragment {
             });
         }
 
+        /**
+         * a dirty method due to some compromises
+         *
+         * @return
+         */
+        private String getDirtyJsonByMotion() {
+            String jsonStr = "";
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("patternName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getPatternName())
+                );
+                jsonObject.put("animationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getAnimationName())
+                );
+                jsonObject.put("rotationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getRotationName())
+                );
+                jsonObject.put("actionName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getActionName())
+                );
+
+                String colorListStr = getDirtyColorListStr();
+                jsonObject.put("intColorList", colorListStr);
+
+                jsonStr = jsonObject.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return jsonStr;
+        }
+
+        /**
+         * a dirty method due to some compromises
+         *
+         * @return
+         */
+        private String getDirtyColorListStr() {
+            List<String> strColors = new ArrayList<>();
+
+            List<Integer> intColors = mPassMotion.getIntColorList();
+            for (int i = 0; i < intColors.size(); i++) {
+                String argbHexStr = String.format("#%08X", intColors.get(i));
+                strColors.add(argbHexStr);
+            }
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < strColors.size(); i++) {
+                stringBuffer.append(strColors.get(i));
+                if (i != strColors.size() - 1) {
+                    stringBuffer.append(" ");
+                }
+            }
+
+            return stringBuffer.toString();
+        }
+
+        /**
+         * a normal method compared with the dirty method above
+         *
+         * @return
+         */
         private String getJsonByMotion() {
             Gson gson = new Gson();
             String json = gson.toJson(mPassMotion);
