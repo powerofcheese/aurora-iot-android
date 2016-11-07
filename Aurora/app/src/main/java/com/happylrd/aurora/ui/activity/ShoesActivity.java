@@ -289,6 +289,15 @@ public class ShoesActivity extends AppCompatActivity {
             );
         }
 
+        if (mMotion.getActionName() != null) {
+            // need to implement the function later
+
+        } else {
+            mMotion.setActionName(
+                    getString(R.string.action_nothing)
+            );
+        }
+
         mColorController.Control(mColorFolder);
     }
 

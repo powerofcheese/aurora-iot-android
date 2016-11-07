@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
 import com.happylrd.aurora.R;
+import com.happylrd.aurora.model.GestureState;
 import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
@@ -20,6 +20,7 @@ import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
 import com.happylrd.aurora.util.ZhToEnMapUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,9 +97,9 @@ public class ListModeFragment extends Fragment {
         // need to be tested and normalized
         private ModeView mModeView;
 
+        private Mode mPassMode;
         private Motion mPassMotion;
-
-        private String mPassModeName;
+        private List<GestureState> mGestureStateList;
 
         public ModeHolder(View itemView) {
             super(itemView);
@@ -110,18 +111,15 @@ public class ListModeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    // can pass dirty motion json to edison
-                    Log.d(TAG, getDirtyJsonByMotion());
-
-                    // can pass mode name to edison
-                    Log.d(TAG, mPassModeName);
+                    // can pass data to edison
+                    Log.d(TAG, getPassJson());
                 }
             });
         }
 
         public void bindMode(final Mode mode) {
 
-            mPassModeName = mode.getModeName();
+            mPassMode = mode;
 
             BmobQuery<NormalState> query = new BmobQuery<>();
             query.addWhereEqualTo("mode", mode);
@@ -158,39 +156,104 @@ public class ListModeFragment extends Fragment {
                     }
                 }
             });
+
+            findGestureStateByMode(mode);
         }
 
         /**
-         * a dirty method due to some compromises
+         * a method that query gestureState and set mGestureStateList
+         *
+         * @param mode
+         */
+        private void findGestureStateByMode(Mode mode) {
+            BmobQuery<GestureState> query = new BmobQuery<>();
+            query.addWhereEqualTo("mode", new BmobPointer(mode));
+            query.findObjects(new FindListener<GestureState>() {
+                @Override
+                public void done(List<GestureState> list, BmobException e) {
+                    if (e == null) {
+                        mGestureStateList = list;
+                    } else {
+                        Log.d(TAG, "find gestureState failed");
+                    }
+                }
+            });
+        }
+
+        /**
+         * can pass the full json data about mode
          *
          * @return
          */
-        private String getDirtyJsonByMotion() {
+        private String getPassJson() {
             String jsonStr = "";
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonModeObj = new JSONObject();
+
             try {
-                jsonObject.put("patternName", mZhToEnMapUtil.getEnValueByZhKey(
-                        mPassMotion.getPatternName())
-                );
-                jsonObject.put("animationName", mZhToEnMapUtil.getEnValueByZhKey(
-                        mPassMotion.getAnimationName())
-                );
-                jsonObject.put("rotationName", mZhToEnMapUtil.getEnValueByZhKey(
-                        mPassMotion.getRotationName())
-                );
-                jsonObject.put("actionName", mZhToEnMapUtil.getEnValueByZhKey(
-                        mPassMotion.getActionName())
-                );
+                jsonModeObj.put("modeName", mPassMode.getModeName());
 
-                String colorListStr = getDirtyColorListStr();
-                jsonObject.put("intColorList", colorListStr);
+                JSONObject jsonStateObj = new JSONObject();
 
-                jsonStr = jsonObject.toString();
+                JSONObject jsonNormalStateObj = new JSONObject();
+                JSONObject jsonMotionObj = getJsonObjByMotion();
+                jsonNormalStateObj.put("motion", jsonMotionObj);
+
+                Log.d("GestureStateList ", mGestureStateList.size() + "");
+
+                JSONArray jsonGestureStateList = new JSONArray();
+
+                for (int i = 0; i < mGestureStateList.size(); i++) {
+                    JSONObject jsonGestureStateObj = new JSONObject();
+
+                    jsonGestureStateObj.put("isToe", mGestureStateList.get(0).getToe());
+                    jsonGestureStateObj.put("isHeel", mGestureStateList.get(0).getHeel());
+                    jsonGestureStateObj.put("isStomp", mGestureStateList.get(0).getStomp());
+                    jsonGestureStateObj.put("isKickLow", mGestureStateList.get(0).getKickLow());
+                    jsonGestureStateObj.put("isKickMid", mGestureStateList.get(0).getKickMid());
+                    jsonGestureStateObj.put("isKickHigh", mGestureStateList.get(0).getKickHigh());
+
+                    JSONObject jsonGestureMotionObj = getJsonObjByMotion();
+                    jsonGestureStateObj.put("motion", jsonGestureMotionObj);
+
+                    jsonGestureStateList.put(jsonGestureStateObj);
+                }
+
+                jsonStateObj.put("normalState", jsonNormalStateObj);
+                jsonStateObj.put("gestureStateList", jsonGestureStateList);
+
+                jsonModeObj.put("state", jsonStateObj);
+
+                jsonStr = jsonModeObj.toString();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             return jsonStr;
+        }
+
+        private JSONObject getJsonObjByMotion() {
+            JSONObject jsonMotionObj = new JSONObject();
+            try {
+                jsonMotionObj.put("patternName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getPatternName())
+                );
+                jsonMotionObj.put("animationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getAnimationName())
+                );
+                jsonMotionObj.put("rotationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getRotationName())
+                );
+                jsonMotionObj.put("actionName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mPassMotion.getActionName())
+                );
+
+                String colorListStr = getDirtyColorListStr();
+                jsonMotionObj.put("intColorList", colorListStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonMotionObj;
         }
 
         /**
@@ -216,17 +279,6 @@ public class ListModeFragment extends Fragment {
             }
 
             return stringBuffer.toString();
-        }
-
-        /**
-         * a normal method compared with the dirty method above
-         *
-         * @return
-         */
-        private String getJsonByMotion() {
-            Gson gson = new Gson();
-            String json = gson.toJson(mPassMotion);
-            return json;
         }
     }
 

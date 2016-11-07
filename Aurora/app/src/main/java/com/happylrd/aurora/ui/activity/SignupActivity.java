@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.happylrd.aurora.R;
+import com.happylrd.aurora.model.GestureState;
 import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
@@ -176,8 +177,9 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void done(Mode mode, BmobException e) {
                 if (e == null) {
-                    // just save normal state
                     saveNormalState(mode, defaultColors);
+
+                    saveManyGestureState(mode, defaultColors, 2);
                 } else {
                     Log.d(TAG, "find mode failed");
                 }
@@ -200,6 +202,36 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    private void saveManyGestureState(Mode mode, final List<Integer> defaultColors, int size) {
+        for (int i = 0; i < size; i++) {
+            saveGestureState(mode, defaultColors);
+        }
+    }
+
+    private void saveGestureState(Mode mode, final List<Integer> defaultColors) {
+
+        GestureState gestureState = new GestureState();
+        gestureState.setToe(false);
+        gestureState.setHeel(false);
+        gestureState.setStomp(false);
+        gestureState.setKickLow(false);
+        gestureState.setKickMid(false);
+        gestureState.setKickHigh(false);
+
+        gestureState.setMode(mode);
+
+        gestureState.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId, BmobException e) {
+                if (e == null) {
+                    findGestureStateById(objectId, defaultColors);
+                } else {
+                    Log.d(TAG, "save gestureState failed");
+                }
+            }
+        });
+    }
+
     private void findNormalStateById(String objectId, final List<Integer> defaultColors) {
         BmobQuery<NormalState> queryNormalState = new BmobQuery<NormalState>();
         queryNormalState.getObject(objectId, new QueryListener<NormalState>() {
@@ -214,18 +246,55 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    private void findGestureStateById(String objectId, final List<Integer> defaultColors) {
+        BmobQuery<GestureState> queryGestureState = new BmobQuery<GestureState>();
+        queryGestureState.getObject(objectId, new QueryListener<GestureState>() {
+            @Override
+            public void done(GestureState gestureState, BmobException e) {
+                if (e == null) {
+                    saveMotionByGestureState(gestureState, defaultColors);
+                } else {
+                    Log.d(TAG, "find gestureState failed");
+                }
+            }
+        });
+    }
+
     private void saveMotionByNormalState(NormalState normalState, List<Integer> defaultColors) {
         Motion mMotion = new Motion();
 
         mMotion.setIntColorList(defaultColors);
         mMotion.setPatternName(getString(R.string.pattern_thin_stripe));
-
         mMotion.setAnimationName(getString(R.string.anim_ramp));
         mMotion.setRotationName(getString(R.string.rotation_float_left));
         mMotion.setActionName(getString(R.string.action_fade_in_out));
 
         mMotion.setNormalState(normalState);
         mMotion.setGestureState(null);
+
+        mMotion.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    // save motion success
+                } else {
+                    Log.d(TAG, "save motion failed");
+                }
+            }
+        });
+    }
+
+    private void saveMotionByGestureState(GestureState gestureState, List<Integer> defaultColors) {
+        Motion mMotion = new Motion();
+
+        mMotion.setIntColorList(defaultColors);
+        mMotion.setPatternName(getString(R.string.pattern_thin_stripe));
+        mMotion.setAnimationName(getString(R.string.anim_ramp));
+        mMotion.setRotationName(getString(R.string.rotation_float_left));
+        mMotion.setActionName(getString(R.string.action_fade_in_out));
+
+        mMotion.setGestureState(gestureState);
+        mMotion.setNormalState(null);
 
         mMotion.save(new SaveListener<String>() {
             @Override
