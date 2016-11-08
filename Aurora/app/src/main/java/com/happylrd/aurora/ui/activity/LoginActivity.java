@@ -20,7 +20,7 @@ import cn.bmob.v3.listener.SaveListener;
 public class LoginActivity extends AppCompatActivity {
 
     // need to be replaced with your application id
-    private static final String BMOB_APPLICATION_ID = "a9f26a378a05ea136f438ec25eee8686";
+    private static final String BMOB_APPLICATION_ID = "REPLACE_ME_WITH_A_REAL_ID";
 
     private Button btn_login;
     private Button btn_forget_password;

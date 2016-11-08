@@ -210,7 +210,10 @@ public class ShoesActivity extends AppCompatActivity {
             Intent intent = StateActivity.newIntent(ShoesActivity.this, mMotion);
             startActivity(intent);
 
-            mColorController.recover2init();
+            Log.d("ColorCtrl is null?", (mColorController == null)+"");
+            if(mColorController != null) {
+                mColorController.recover2init();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -286,6 +289,15 @@ public class ShoesActivity extends AppCompatActivity {
 
             mMotion.setRotationName(
                     getString(R.string.rotation_nothing)
+            );
+        }
+
+        if (mMotion.getActionName() != null) {
+            // need to implement the function later
+
+        } else {
+            mMotion.setActionName(
+                    getString(R.string.action_nothing)
             );
         }
 

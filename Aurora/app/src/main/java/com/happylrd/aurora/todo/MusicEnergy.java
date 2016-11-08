@@ -77,9 +77,9 @@ public class MusicEnergy extends SurfaceView implements SurfaceHolder.Callback {
         for (int i = 0; i < mVizData.length; i++) {
             c.drawPoint(i, mCenterY + mVizData[i], mPaint);
             c.drawLine(i, mCenterY, i, mCenterY + mVizData[i], mPaint);
-            if(i == 0 && BlueToothComunication.mService!= null){
+            if (i == 0 && BlueToothCommunication.mService != null) {
                 String send = "music " + mVizData[0];
-                BlueToothComunication.mService.write(send.getBytes());
+                BlueToothCommunication.mService.write(send.getBytes());
             }
         }
         c.restore();

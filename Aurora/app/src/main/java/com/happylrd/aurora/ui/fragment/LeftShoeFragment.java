@@ -13,14 +13,14 @@ import android.widget.Toast;
 
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.constant.Constants;
-import com.happylrd.aurora.todo.BlueToothComunication;
+import com.happylrd.aurora.todo.BlueToothCommunication;
 import com.happylrd.aurora.ui.view.ShoeView;
 
 public class LeftShoeFragment extends Fragment {
 
     private ShoeView mLeftShoe;
 
-    private BlueToothComunication blueToothComunication;
+    private BlueToothCommunication blueToothCommunication;
     private String send;
     private Handler handler = new Handler(){
         @Override
@@ -46,8 +46,8 @@ public class LeftShoeFragment extends Fragment {
 
         mLeftShoe = (ShoeView) view.findViewById(R.id.left_shoe);
 
-        blueToothComunication = new BlueToothComunication();
-        blueToothComunication.setHandler(handler);
+        blueToothCommunication = new BlueToothCommunication();
+        blueToothCommunication.setHandler(handler);
         send = "";
 
         mLeftShoe = (ShoeView) view.findViewById(R.id.left_shoe);
@@ -57,8 +57,8 @@ public class LeftShoeFragment extends Fragment {
                 if(event.getAction() == MotionEvent.ACTION_MOVE) {
                     int i = mLeftShoe.onTouch(event);
                     send = "custom " + mLeftShoe.colorToHexString(mLeftShoe.getTempColor()) + " " + i;
-                    if (blueToothComunication.mService != null) {
-                        blueToothComunication.write(send);
+                    if (blueToothCommunication.mService != null) {
+                        blueToothCommunication.write(send);
                     }
                 }
                 return true;

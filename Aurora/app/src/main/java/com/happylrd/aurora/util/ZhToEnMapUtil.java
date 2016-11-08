@@ -171,6 +171,32 @@ public class ZhToEnMapUtil {
                 context.getString(R.string.rotation_nothing),
                 context.getString(R.string.rotation_nothing_en)
         );
+
+        // action start from here
+        enMotionMap.put(
+                context.getString(R.string.action_fade_in_out),
+                context.getString(R.string.action_fade_in_out_en)
+        );
+
+        enMotionMap.put(
+                context.getString(R.string.action_quick_in_out),
+                context.getString(R.string.action_quick_in_out_en)
+        );
+
+        enMotionMap.put(
+                context.getString(R.string.action_power_slow),
+                context.getString(R.string.action_power_slow_en)
+        );
+
+        enMotionMap.put(
+                context.getString(R.string.action_power_quick),
+                context.getString(R.string.action_power_quick_en)
+        );
+
+        enMotionMap.put(
+                context.getString(R.string.action_nothing),
+                context.getString(R.string.action_nothing_en)
+        );
     }
 
     public String getEnValueByZhKey(String zhStr) {

@@ -150,7 +150,7 @@ public class BluetoothService {
                     // connectionLost();
                     Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                     Bundle bundle = new Bundle();
-                    bundle.putString("TOAST", "蓝牙连接异常！"  + e);
+                    bundle.putString("TOAST", "蓝牙连接异常！" + e);
                     msg.setData(bundle);
                     mHandler.sendMessage(msg);
                     break;

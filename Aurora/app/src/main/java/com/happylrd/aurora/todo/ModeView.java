@@ -48,12 +48,13 @@ public class ModeView extends View {
 
     /**
      * set color and name by patternName
+     *
      * @param colors
      * @param name
      * @param patternName
      */
-    public void setColorAndName(List<Integer> colors, String name, String patternName){
-        switch(patternName) {
+    public void setColorAndName(List<Integer> colors, String name, String patternName) {
+        switch (patternName) {
             case "Single":
                 Array_out = colorHelper.Single(colors);
                 break;
@@ -107,7 +108,7 @@ public class ModeView extends View {
         }
 
         mPaint.setStyle(Paint.Style.STROKE); //设置填充
-        canvas.drawColor(Color.argb(255,97,97,97));
+        canvas.drawColor(Color.argb(255, 97, 97, 97));
 
         RectF oval1 = new RectF(-(int) (mHeight * 0.3), 0,
                 (int) (0.5 * mHeight), (int) (mHeight * 0.8));
@@ -115,7 +116,7 @@ public class ModeView extends View {
                 (int) (mHeight * 0.1), (int) (mHeight * 0.5));
         RectF oval3 = new RectF(-(int) (mHeight * 0.55), -(int) (mHeight * 0.25),
                 (int) (mHeight * 0.75), (int) (mHeight * 1.05));
-        RectF oval4 = new RectF(-(float)(mHeight*0.32),(int)(mHeight*0.08),(int)(mHeight*0.32),(int)(mHeight*0.72));
+        RectF oval4 = new RectF(-(float) (mHeight * 0.32), (int) (mHeight * 0.08), (int) (mHeight * 0.32), (int) (mHeight * 0.72));
         int line1 = (int) (mHeight * 0.5);
         int line_string = mHeight / 60;
         mPaint.setStrokeWidth(line1);
@@ -201,12 +202,12 @@ public class ModeView extends View {
         invalidate();
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         mTextPaint = name;
         invalidate();
     }
 
-    public void setColorByArray(int[] c){
+    public void setColorByArray(int[] c) {
         Array_out = c;
         invalidate();
     }

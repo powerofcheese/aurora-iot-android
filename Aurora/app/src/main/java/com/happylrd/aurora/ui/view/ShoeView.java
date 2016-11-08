@@ -102,6 +102,7 @@ public class ShoeView extends View {
         }
         rbitmap = null;
         return i;
+
     }
 
     @Override
@@ -131,9 +132,9 @@ public class ShoeView extends View {
         return String.format("#%06X", 0xFFFFFFFF & color);
     }
 
-    public void updateColor(int[] color){
+    public void updateColor(int[] color) {
         for (int i = 0; i < NUM; i++) {
-            mDrawables.getDrawable(i).setColorFilter(color[i],PorterDuff.Mode.SRC_IN);
+            mDrawables.getDrawable(i).setColorFilter(color[i], PorterDuff.Mode.SRC_IN);
         }
     }
 }

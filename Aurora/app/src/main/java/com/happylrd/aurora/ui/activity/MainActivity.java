@@ -36,7 +36,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.happylrd.aurora.constant.Constants;
-import com.happylrd.aurora.todo.BlueToothComunication;
+import com.happylrd.aurora.todo.BlueToothCommunication;
 import com.happylrd.aurora.todo.MusicActivity;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
@@ -52,6 +52,8 @@ import cn.bmob.v3.BmobUser;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
@@ -73,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * just for bluetooth, but need structured
      */
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case Constants.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), msg.getData().getString("TOAST"),
                             Toast.LENGTH_SHORT).show();
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 fabMenu.collapse();
             }
         });
+
         fab_open_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -302,36 +305,40 @@ public class MainActivity extends AppCompatActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                Log.d("Vibrant is null", (vibrant == null) + "");
-                mHeadView.setBackgroundColor(vibrant.getRgb());
+                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                if (vibrantSwatch != null) {
+                    mHeadView.setBackgroundColor(vibrantSwatch.getRgb());
+                } else {
+                    Log.d(TAG, "getVibrantSwatch() is null");
+                    // need to deal with
+                }
             }
         });
     }
-    private void openBluetooth(){
+
+    private void openBluetooth() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled()) {
-            Log.d("BLUETOOTH","再未打开 蓝牙的基础上连接");
+            Log.d("BLUETOOTH", "再未打开 蓝牙的基础上连接");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent , Constants.REQUEST_OPEN_BT);
-        }
-        else {
-            BlueToothComunication blueToothComunication = new BlueToothComunication();
-            blueToothComunication.connect(handler);
+            startActivityForResult(enableIntent, Constants.REQUEST_OPEN_BT);
+        } else {
+            BlueToothCommunication blueToothCommunication = new BlueToothCommunication();
+            blueToothCommunication.connect(handler);
             Log.d("BLUETOOTH", "再打开 蓝牙的基础上连接");
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Constants.REQUEST_OPEN_BT){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == Constants.REQUEST_OPEN_BT) {
+            if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(this, "蓝牙打开成功！", Toast.LENGTH_SHORT).show();
-                BlueToothComunication blueToothComunication = new BlueToothComunication();
-                blueToothComunication.connect(handler);
-            }
-            else {
-                Toast.makeText(this,"请打开蓝牙,部分功能需要蓝牙！", Toast.LENGTH_LONG).show();
+                BlueToothCommunication blueToothCommunication = new BlueToothCommunication();
+                blueToothCommunication.connect(handler);
+            } else {
+                Toast.makeText(this, "请打开蓝牙,部分功能需要蓝牙！", Toast.LENGTH_LONG).show();
             }
         }
     }

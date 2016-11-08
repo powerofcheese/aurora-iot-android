@@ -60,6 +60,7 @@
     <string name="action_quick_in_out">快速进出</string>
     <string name="action_power_slow">缓慢蓄力</string>
     <string name="action_power_quick">快速蓄力</string>
+    <string name="action_nothing">无</string>
 
     <string name="pattern_single_color_en">Single</string>
     <string name="pattern_gradation_en">Gradation</string>
@@ -96,11 +97,17 @@
     <string name="rotation_move_to_rotation_en">MoveToRotation</string>
     <string name="rotation_nothing_en">Nothing</string>
 
-    <string name="default_mode_1_en">wave</string>
-    <string name="default_mode_2_en">ball</string>
-    <string name="default_mode_3_en">star</string>
-    <string name="default_mode_4_en">go</string>
-    <string name="default_mode_5_en">fire</string>
-    <string name="default_mode_6_en">eye</string>
-    <string name="default_mode_7_en">charse</string>
+    <string name="action_fade_in_out_en">FadeInOut</string>
+    <string name="action_quick_in_out_en">QuickInOut</string>
+    <string name="action_power_slow_en">PowerSlow</string>
+    <string name="action_power_quick_en">PowerQuick</string>
+    <string name="action_nothing_en">Nothing</string>
+
+    <string name="default_mode_1">wave</string>
+    <string name="default_mode_2">ball</string>
+    <string name="default_mode_3">star</string>
+    <string name="default_mode_4">go</string>
+    <string name="default_mode_5">fire</string>
+    <string name="default_mode_6">eye</string>
+    <string name="default_mode_7">charse</string>
 </resources>
