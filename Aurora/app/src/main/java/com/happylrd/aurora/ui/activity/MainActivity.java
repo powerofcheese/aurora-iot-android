@@ -1,9 +1,13 @@
 package com.happylrd.aurora.ui.activity;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,12 +28,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.happylrd.aurora.constant.Constants;
+import com.happylrd.aurora.todo.BlueToothComunication;
 import com.happylrd.aurora.todo.MusicActivity;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
@@ -46,8 +53,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private View mHeadView;
@@ -63,12 +68,22 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab_write_sth;
     private FloatingActionButton fab_wrap_shoes;
     private FloatingActionButton fab_open_music;
+    private FloatingActionButton fab_open_bluetooth;
 
     /**
      * just for bluetooth, but need structured
      */
-    public static final int MESSAGE_READ = 4;
-    public static final int MESSAGE_TOAST = 6;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case Constants.MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString("TOAST"),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -116,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         fab_write_sth = (FloatingActionButton) findViewById(R.id.fab_write_sth);
         fab_wrap_shoes = (FloatingActionButton) findViewById(R.id.fab_wrap_shoes);
         fab_open_music = (FloatingActionButton) findViewById(R.id.fab_open_music);
+        fab_open_bluetooth = (FloatingActionButton) findViewById(R.id.fab_open_bluetooth);
     }
 
     private void initListener() {
@@ -182,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
 
                 frameLayout.getBackground().setAlpha(0);
                 fabMenu.collapse();
+            }
+        });
+        fab_open_bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openBluetooth();
             }
         });
     }
@@ -280,15 +302,37 @@ public class MainActivity extends AppCompatActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                if (vibrantSwatch != null) {
-                    mHeadView.setBackgroundColor(vibrantSwatch.getRgb());
-                } else {
-                    Log.d(TAG, "getVibrantSwatch() is null");
-                    // need to deal with
-                }
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                Log.d("Vibrant is null", (vibrant == null) + "");
+                mHeadView.setBackgroundColor(vibrant.getRgb());
             }
         });
+    }
+    private void openBluetooth(){
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            Log.d("BLUETOOTH","再未打开 蓝牙的基础上连接");
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent , Constants.REQUEST_OPEN_BT);
+        }
+        else {
+            BlueToothComunication blueToothComunication = new BlueToothComunication();
+            blueToothComunication.connect(handler);
+            Log.d("BLUETOOTH", "再打开 蓝牙的基础上连接");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Constants.REQUEST_OPEN_BT){
+            if(resultCode == Activity.RESULT_OK){
+                Toast.makeText(this, "蓝牙打开成功！", Toast.LENGTH_SHORT).show();
+                BlueToothComunication blueToothComunication = new BlueToothComunication();
+                blueToothComunication.connect(handler);
+            }
+            else {
+                Toast.makeText(this,"请打开蓝牙,部分功能需要蓝牙！", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

@@ -371,19 +371,15 @@ public class PersonalInfoActivity extends BasePermissionActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
 
-                if (vibrantSwatch != null) {
-                    collapsingToolbarLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                    toolbar.setBackgroundColor(vibrantSwatch.getRgb());
+                Log.d(TAG, (vibrant == null)+"");
 
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        Window window = getWindow();
-                        window.setStatusBarColor(vibrantSwatch.getRgb());
-                    }
-                } else {
-                    Log.d(TAG, "getVibrantSwatch() is null");
-                    // need to deal with
+                collapsingToolbarLayout.setBackgroundColor(vibrant.getRgb());
+                toolbar.setBackgroundColor(vibrant.getRgb());
+                if (Build.VERSION.SDK_INT >= 21) {
+                    Window window = getWindow();
+                    window.setStatusBarColor(vibrant.getRgb());
                 }
             }
         });

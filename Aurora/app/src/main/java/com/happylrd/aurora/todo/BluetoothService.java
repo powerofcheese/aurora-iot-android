@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.happylrd.aurora.ui.activity.MainActivity;
+import com.happylrd.aurora.constant.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,21 +40,19 @@ public class BluetoothService {
 
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
-        private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
-            mmDevice = device;
 
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
-                Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+                Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
-                bundle.putString("TOAST", "createRfcommSocketToServiceRecord(MY_UUID)发生异常！");
+                bundle.putString("TOAST", "连接蓝牙失败！");
                 msg.setData(bundle);
                 mHandler.sendMessage(msg);
             }
@@ -62,9 +60,6 @@ public class BluetoothService {
         }
 
         public void run() {
-            // Cancel discovery because it will slow down the connection
-            //mBluetoothAdapter.cancelDiscovery();
-
             try {
                 // Connect the device through the socket. This will block
                 // until it succeeds or throws an exception
@@ -72,15 +67,15 @@ public class BluetoothService {
                     bluetoothAdapter.cancelDiscovery();
                 }
                 mmSocket.connect();
-                Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+                Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
                 bundle.putString("TOAST", "蓝牙连接成功！");
                 msg.setData(bundle);
                 mHandler.sendMessage(msg);
             } catch (IOException connectException) {
-                Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+                Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
-                bundle.putString("TOAST", " 执行mmSocket.connect();时发生异常！" + connectException);
+                bundle.putString("TOAST", " 连接蓝牙失败！");
                 msg.setData(bundle);
                 mHandler.sendMessage(msg);
                 try {
@@ -90,7 +85,6 @@ public class BluetoothService {
                 }
                 return;
             }
-
             // Do work to manage the connection (in a separate thread)
             manageConnectedSocket(mmSocket);
         }
@@ -150,13 +144,13 @@ public class BluetoothService {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     // connectionLost();
-                    Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+                    Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                     Bundle bundle = new Bundle();
-                    bundle.putString("TOAST", "蓝牙连接异常！");
+                    bundle.putString("TOAST", "蓝牙连接异常！"  + e);
                     msg.setData(bundle);
                     mHandler.sendMessage(msg);
                     break;
@@ -168,9 +162,9 @@ public class BluetoothService {
             try {
                 mmOutStream.write(bytes);
             } catch (IOException e) {
-                Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+                Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
-                bundle.putString("TOAST", "The Bluethooth isn't connected！");
+                bundle.putString("TOAST", "还未连接蓝牙！");
                 msg.setData(bundle);
                 mHandler.sendMessage(msg);
                 state = STATE_NONE;
@@ -192,11 +186,16 @@ public class BluetoothService {
         r.write(out);
     }
 
+
     public synchronized void setState(int s) {
         state = s;
     }
 
     public int getState() {
         return state;
+    }
+
+    public void setHandler(Handler mHandler) {
+        this.mHandler = mHandler;
     }
 }

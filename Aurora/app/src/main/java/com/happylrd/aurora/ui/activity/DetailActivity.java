@@ -39,8 +39,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "DetailActivity";
-
     public static final String EXTRA_WRITESTH_ID =
             "com.happylrd.aurora.writesth_id";
 
@@ -232,19 +230,12 @@ public class DetailActivity extends AppCompatActivity {
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                if (vibrantSwatch != null) {
-                    collapsingToolbarLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                    toolbar.setBackgroundColor(vibrantSwatch.getRgb());
-
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        Window window = getWindow();
-                        window.setStatusBarColor(vibrantSwatch.getRgb());
-                    }
-                } else {
-                    Log.d(TAG, "getVibrantSwatch() is null");
-                    // need to deal with
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                collapsingToolbarLayout.setBackgroundColor(vibrant.getRgb());
+                toolbar.setBackgroundColor(vibrant.getRgb());
+                if (Build.VERSION.SDK_INT >= 21) {
+                    Window window = getWindow();
+                    window.setStatusBarColor(vibrant.getRgb());
                 }
             }
         });

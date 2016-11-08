@@ -1,18 +1,38 @@
 package com.happylrd.aurora.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.happylrd.aurora.R;
+import com.happylrd.aurora.constant.Constants;
+import com.happylrd.aurora.todo.BlueToothComunication;
 import com.happylrd.aurora.ui.view.ShoeView;
 
 public class LeftShoeFragment extends Fragment {
 
     private ShoeView mLeftShoe;
+
+    private BlueToothComunication blueToothComunication;
+    private String send;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case Constants.MESSAGE_TOAST:
+                    Toast.makeText(getContext(), msg.getData().getString("TOAST"),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     public ShoeView getLeftShoe() {
         return mLeftShoe;
@@ -25,6 +45,25 @@ public class LeftShoeFragment extends Fragment {
                 .inflate(R.layout.fragment_left_shoe, container, false);
 
         mLeftShoe = (ShoeView) view.findViewById(R.id.left_shoe);
+
+        blueToothComunication = new BlueToothComunication();
+        blueToothComunication.setHandler(handler);
+        send = "";
+
+        mLeftShoe = (ShoeView) view.findViewById(R.id.left_shoe);
+        mLeftShoe.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_MOVE) {
+                    int i = mLeftShoe.onTouch(event);
+                    send = "custom " + mLeftShoe.colorToHexString(mLeftShoe.getTempColor()) + " " + i;
+                    if (blueToothComunication.mService != null) {
+                        blueToothComunication.write(send);
+                    }
+                }
+                return true;
+            }
+        });
 
         Log.d("ShoeView is null?", (mLeftShoe == null)+"");
 

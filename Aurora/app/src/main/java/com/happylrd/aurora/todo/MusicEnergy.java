@@ -10,8 +10,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import com.happylrd.aurora.todo.AudioCapture;
-
 import java.util.Arrays;
 
 public class MusicEnergy extends SurfaceView implements SurfaceHolder.Callback {
@@ -79,10 +77,10 @@ public class MusicEnergy extends SurfaceView implements SurfaceHolder.Callback {
         for (int i = 0; i < mVizData.length; i++) {
             c.drawPoint(i, mCenterY + mVizData[i], mPaint);
             c.drawLine(i, mCenterY, i, mCenterY + mVizData[i], mPaint);
-//            if(i == 0 && MainActivity.service != null){
-//                String send = "" + mVizData[0];
-//                MainActivity.service.write(send.getBytes());
-//            }
+            if(i == 0 && BlueToothComunication.mService!= null){
+                String send = "music " + mVizData[0];
+                BlueToothComunication.mService.write(send.getBytes());
+            }
         }
         c.restore();
     }

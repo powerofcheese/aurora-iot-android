@@ -18,12 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.happylrd.aurora.ui.activity.CommentActivity;
-import com.happylrd.aurora.ui.activity.DetailActivity;
 import com.happylrd.aurora.R;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.WriteSth;
-import com.sackcentury.shinebuttonlib.ShineButton;
+import com.happylrd.aurora.ui.activity.CommentActivity;
+import com.happylrd.aurora.ui.activity.DetailActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

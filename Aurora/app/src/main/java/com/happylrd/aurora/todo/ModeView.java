@@ -107,7 +107,7 @@ public class ModeView extends View {
         }
 
         mPaint.setStyle(Paint.Style.STROKE); //设置填充
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.argb(255,97,97,97));
 
         RectF oval1 = new RectF(-(int) (mHeight * 0.3), 0,
                 (int) (0.5 * mHeight), (int) (mHeight * 0.8));
@@ -133,16 +133,16 @@ public class ModeView extends View {
         canvas.drawLine(0, 4, mWidth, 4, mPaint);
         canvas.drawLine(0, mHeight - 4, mWidth, mHeight - 4, mPaint);
 
-        /** mPaint.setColor(Color.YELLOW);
-         mPaint.setStrokeWidth((float) (mHeight * 0.1));
-         canvas.drawArc(oval4, 0, 360, false, mPaint);
-         */
+        mPaint.setColor(Color.YELLOW);
+        mPaint.setStrokeWidth((float) (mHeight * 0.06));
+        canvas.drawArc(oval4, 0, 360, false, mPaint);
 
         mPaint.setColor(Color.BLACK);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setTextSize(line_string * 15);
         mPaint.setStrokeWidth(line_string / 2);
         canvas.drawText(mTextPaint, (float) (0.4 * mWidth), (float) (0.46 * mHeight), mPaint);
+
 
     }
 
