@@ -109,6 +109,9 @@ public class ListModeFragment extends Fragment {
         private Motion mPassMotion;
         private List<GestureState> mGestureStateList;
 
+        // just a toy
+        private Motion mGestureMotion;
+
         public ModeHolder(View itemView) {
             super(itemView);
 
@@ -120,13 +123,13 @@ public class ListModeFragment extends Fragment {
                 public void onClick(View v) {
 
                     if (blueToothCommunication.mService != null) {
+
                         if (isPreDefineForUser(mPassMode.getModeName())) {
                             blueToothCommunication.write(getPassJson());
                         } else {
 
                             blueToothCommunication.write(getPassJson());
                         }
-
                     }
 
                     // can pass mode name to edison
@@ -194,11 +197,29 @@ public class ListModeFragment extends Fragment {
                 public void done(List<GestureState> list, BmobException e) {
                     if (e == null) {
                         mGestureStateList = list;
+
+                        findGestureMotionByState(list.get(0));
                     } else {
                         Log.d(TAG, "find gestureState failed");
                     }
                 }
             });
+        }
+
+        private void findGestureMotionByState(GestureState gestureState){
+            BmobQuery<Motion> query = new BmobQuery<>();
+            query.addWhereEqualTo("gestureState", gestureState);
+            query.findObjects(new FindListener<Motion>() {
+                @Override
+                public void done(List<Motion> list, BmobException e) {
+                    if(e == null){
+                        mGestureMotion = list.get(0);
+                    }else{
+                        Log.d(TAG, "find GestureState failed");
+                    }
+                }
+            });
+
         }
 
         /**
@@ -233,7 +254,7 @@ public class ListModeFragment extends Fragment {
                     jsonGestureStateObj.put("isKickMid", mGestureStateList.get(0).getKickMid());
                     jsonGestureStateObj.put("isKickHigh", mGestureStateList.get(0).getKickHigh());
 
-                    JSONObject jsonGestureMotionObj = getJsonObjByMotion();
+                    JSONObject jsonGestureMotionObj = getJsonObjByGestureMotion();
                     jsonGestureStateObj.put("motion", jsonGestureMotionObj);
 
                     jsonGestureStateList.put(jsonGestureStateObj);
@@ -277,6 +298,31 @@ public class ListModeFragment extends Fragment {
             return jsonMotionObj;
         }
 
+
+        private JSONObject getJsonObjByGestureMotion() {
+            JSONObject jsonMotionObj = new JSONObject();
+            try {
+                jsonMotionObj.put("patternName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getPatternName())
+                );
+                jsonMotionObj.put("animationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getAnimationName())
+                );
+                jsonMotionObj.put("rotationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getRotationName())
+                );
+                jsonMotionObj.put("actionName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getActionName())
+                );
+
+                String colorListStr = getDirtyColorStrForGesture();
+                jsonMotionObj.put("intColorList", colorListStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonMotionObj;
+        }
+
         /**
          * a dirty method due to some compromises
          *
@@ -286,6 +332,26 @@ public class ListModeFragment extends Fragment {
             List<String> strColors = new ArrayList<>();
 
             List<Integer> intColors = mPassMotion.getIntColorList();
+            for (int i = 0; i < intColors.size(); i++) {
+                String argbHexStr = String.format("#%08X", intColors.get(i));
+                strColors.add(argbHexStr);
+            }
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < strColors.size(); i++) {
+                stringBuffer.append(strColors.get(i));
+                if (i != strColors.size() - 1) {
+                    stringBuffer.append(" ");
+                }
+            }
+
+            return stringBuffer.toString();
+        }
+
+        private String getDirtyColorStrForGesture() {
+            List<String> strColors = new ArrayList<>();
+
+            List<Integer> intColors = mGestureMotion.getIntColorList();
             for (int i = 0; i < intColors.size(); i++) {
                 String argbHexStr = String.format("#%08X", intColors.get(i));
                 strColors.add(argbHexStr);

@@ -41,8 +41,19 @@ public class StateActivity extends AppCompatActivity {
     private static final String TAG = "StateActivity";
     public static final String EXTRA_MOTION = "com.happylrd.aurora.motion";
 
+    public static final String EXTRA_RETURN_MOTION = "return.motion";
+    public static final Integer VALUE_RETURN_MOTION = 20;
+
+    public static final int REQUEST_GESTURE_MOTION = 1000;
+
+    public boolean isGestureMotion = false;
+
+    private Integer returnGestureInt;
+
     public Motion mMotion;
     public NormalState mNormalState;
+
+    public Motion mGestureMotion;
 
     private Toolbar mToolbar;
 
@@ -70,10 +81,19 @@ public class StateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_state);
 
-        mMotion = (Motion) getIntent().getSerializableExtra(EXTRA_MOTION);
+        returnGestureInt = (Integer) getIntent().getSerializableExtra(EXTRA_RETURN_MOTION);
 
-        if (mMotion == null) {
-            initMotion();
+        if (returnGestureInt != null) {
+
+            Log.d("IsGesture?", returnGestureInt.equals(VALUE_RETURN_MOTION) + "");
+        } else {
+
+            mMotion = (Motion) getIntent().getSerializableExtra(EXTRA_MOTION);
+            if (mMotion == null) {
+
+                Log.d(TAG, "NormalMotion is null");
+                initMotion();
+            }
         }
 
         initView();
@@ -106,7 +126,7 @@ public class StateActivity extends AppCompatActivity {
      */
     private void initData() {
         List<GestureState> tempGestureStateList = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             GestureState gestureState = new GestureState();
             gestureState.setToe(false);
             gestureState.setHeel(false);
@@ -124,6 +144,9 @@ public class StateActivity extends AppCompatActivity {
         cv_current_state.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                isGestureMotion = false;
+
                 Intent intent = ShoesActivity.newIntent(StateActivity.this);
                 startActivity(intent);
             }
@@ -132,8 +155,7 @@ public class StateActivity extends AppCompatActivity {
         cv_pre_state.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ShoesActivity.newIntent(StateActivity.this);
-                startActivity(intent);
+                // need to process
             }
         });
 
@@ -172,6 +194,13 @@ public class StateActivity extends AppCompatActivity {
                                     ToastUtil.showInputNotNullToast(StateActivity.this);
                                 } else {
                                     String modeName = editText.getText().toString();
+
+
+                                    // mMotion == null
+                                    Log.d("SaveNormalMotion1 ", mMotion.getPatternName());
+
+                                    Log.d("SaveGestureMotion1 ", mGestureMotion.getPatternName());
+
                                     saveMode(modeName);
                                 }
                             }
@@ -201,7 +230,9 @@ public class StateActivity extends AppCompatActivity {
             @Override
             public void done(String objectId, BmobException e) {
                 if (e == null) {
+
                     findModeById(objectId);
+
                     ToastUtil.showSaveSuccessToast(StateActivity.this);
                 } else {
                     ToastUtil.showSaveFailToast(StateActivity.this);
@@ -222,10 +253,24 @@ public class StateActivity extends AppCompatActivity {
             @Override
             public void done(Mode mode, BmobException e) {
                 if (e == null) {
-                    saveNormalState(mode);
 
-                    saveManyGestureState(mode);
+                    // replace the condition
+                    if (!isGestureMotion) {
+
+                        Log.d("Just save normal state", returnGestureInt + "");
+                        saveNormalState(mode);
+
+                    } else {
+
+                        Log.d("Motion is null?", (mMotion != null) + "");
+                        saveNormalState(mode);
+
+                        saveManyGestureState(mode);
+                    }
                 } else {
+                    Log.d(TAG, e.toString());
+
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "find mode failed");
                 }
             }
@@ -246,6 +291,7 @@ public class StateActivity extends AppCompatActivity {
                 if (e == null) {
                     findNormalStateById(objectId);
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "save normalState failed");
                 }
             }
@@ -279,6 +325,7 @@ public class StateActivity extends AppCompatActivity {
                 if (e == null) {
                     findGestureStateById(objectId);
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "save gestureState failed");
                 }
             }
@@ -298,6 +345,7 @@ public class StateActivity extends AppCompatActivity {
                 if (e == null) {
                     saveMotionByNormalState(normalState);
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "find normalState failed");
                 }
             }
@@ -317,6 +365,7 @@ public class StateActivity extends AppCompatActivity {
                 if (e == null) {
                     saveMotionByGestureState(gestureState);
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "find gestureState failed");
                 }
             }
@@ -329,8 +378,8 @@ public class StateActivity extends AppCompatActivity {
      * @param normalState
      */
     private void saveMotionByNormalState(NormalState normalState) {
-        mMotion.setNormalState(normalState);
 
+        mMotion.setNormalState(normalState);
         mMotion.setGestureState(null);
 
         mMotion.save(new SaveListener<String>() {
@@ -338,7 +387,9 @@ public class StateActivity extends AppCompatActivity {
             public void done(String s, BmobException e) {
                 if (e == null) {
                     // save motion success
+                    Log.d(TAG, "save motion success");
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "save motion failed");
                 }
             }
@@ -346,21 +397,22 @@ public class StateActivity extends AppCompatActivity {
     }
 
     /**
-     * save Motion by GestureState
+     * a toy method, need to be modified
      *
      * @param gestureState
      */
     private void saveMotionByGestureState(GestureState gestureState) {
-        mMotion.setGestureState(gestureState);
 
-        mMotion.setNormalState(null);
+        mGestureMotion.setNormalState(null);
+        mGestureMotion.setGestureState(gestureState);
 
-        mMotion.save(new SaveListener<String>() {
+        mGestureMotion.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    // save motion success
+                    Log.d(TAG, "save gestureState success");
                 } else {
+                    Log.d(TAG, e.getMessage());
                     Log.d(TAG, "save motion failed");
                 }
             }
@@ -397,16 +449,24 @@ public class StateActivity extends AppCompatActivity {
             cv_item_light.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    // save data into sharePreference
+
                     Intent intent = ShoesActivity.newIntent(StateActivity.this);
-                    startActivity(intent);
+
+                    intent.putExtra(
+                            ShoesActivity.EXTRA_GESTURE_STATE_MOTION,
+                            ShoesActivity.VALUE_GESTURE
+                    );
+
+                    startActivityForResult(intent, REQUEST_GESTURE_MOTION);
                 }
             });
 
             cv_item_sound.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = ShoesActivity.newIntent(StateActivity.this);
-                    startActivity(intent);
+                    // need to process
                 }
             });
 
@@ -560,6 +620,23 @@ public class StateActivity extends AppCompatActivity {
             mGestureStateList.addAll(gestureStates);
             Log.d("gestureStateList: ", mGestureStateList.size() + "");
             notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_GESTURE_MOTION && resultCode == RESULT_OK) {
+            mGestureMotion = (Motion) data.getSerializableExtra(StateActivity.EXTRA_RETURN_MOTION);
+
+            Log.d("GestureMotion is null?", (mGestureMotion == null) + "");
+            Log.d("Motion is null?", (mMotion == null) + "");
+
+
+            Log.d("NormalMotionPattern ", mMotion.getPatternName());
+            Log.d("GestureMotionPattern ", mGestureMotion.getPatternName());
+
+            isGestureMotion = true;
         }
     }
 }

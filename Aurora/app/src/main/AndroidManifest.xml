@@ -60,7 +60,7 @@
 
         <activity
             android:name=".ui.activity.ShoesActivity"
-            android:parentActivityName=".ui.activity.MainActivity">
+            android:parentActivityName=".ui.activity.StateActivity">
 
         </activity>
 

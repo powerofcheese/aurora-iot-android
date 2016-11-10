@@ -179,7 +179,7 @@ public class SignupActivity extends AppCompatActivity {
                 if (e == null) {
                     saveNormalState(mode, defaultColors);
 
-                    saveManyGestureState(mode, defaultColors, 2);
+                    saveManyGestureState(mode, defaultColors, 1);
                 } else {
                     Log.d(TAG, "find mode failed");
                 }
