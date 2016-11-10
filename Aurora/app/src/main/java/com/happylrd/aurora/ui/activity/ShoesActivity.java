@@ -43,6 +43,9 @@ public class ShoesActivity extends AppCompatActivity {
 
     private static final String TAG = "ShoesActivity";
 
+    public static final String EXTRA_GESTURE_STATE_MOTION = "com.happylrd.aurora.gesture.state.motion";
+    public static final String VALUE_GESTURE = "Gesture";
+
     private Motion mMotion = new Motion();
 
     private Toolbar toolbar;
@@ -66,6 +69,8 @@ public class ShoesActivity extends AppCompatActivity {
 
     private ZhToEnMapUtil mZhToEnMapUtil;
 
+    private String whoStartMe;
+
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ShoesActivity.class);
         return intent;
@@ -75,6 +80,11 @@ public class ShoesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shoes);
+
+        whoStartMe = (String) getIntent().getSerializableExtra(EXTRA_GESTURE_STATE_MOTION);
+        if (whoStartMe == null) {
+            whoStartMe = "normal";
+        }
 
         initView();
         initListener();
@@ -207,10 +217,22 @@ public class ShoesActivity extends AppCompatActivity {
         }
 
         if (id == R.id.menu_item_done) {
-            Intent intent = StateActivity.newIntent(ShoesActivity.this, mMotion);
-            startActivity(intent);
+            if (whoStartMe.equals(VALUE_GESTURE)) {
 
-            mColorController.recover2init();
+                Intent intent = new Intent();
+                intent.putExtra(StateActivity.EXTRA_RETURN_MOTION, mMotion);
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+
+                Intent intent = StateActivity.newIntent(ShoesActivity.this, mMotion);
+                startActivity(intent);
+            }
+
+            Log.d("ColorCtrl is null?", (mColorController == null) + "");
+            if (mColorController != null) {
+                mColorController.recover2init();
+            }
         }
 
         return super.onOptionsItemSelected(item);

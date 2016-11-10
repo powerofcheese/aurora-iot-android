@@ -5,7 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.happylrd.aurora.todo.colorMode.ColorHelper;
@@ -13,6 +15,8 @@ import com.happylrd.aurora.todo.colorMode.ColorHelper;
 import java.util.List;
 
 public class ModeView extends View {
+
+    private static final String TAG = "ModeView";
 
     public final static int MY_NUM = 32;
 
@@ -24,6 +28,7 @@ public class ModeView extends View {
     private int mWidth;
     private int mHeight;
     private ColorHelper colorHelper;
+    private Typeface mTypeface;
 
     public ModeView(Context context) {
         super(context);
@@ -44,16 +49,22 @@ public class ModeView extends View {
             Array_out[i] = Color.CYAN;
         }
         colorHelper = new ColorHelper();
+        mTypeface = Typeface.SANS_SERIF;
+        mPaint.setTextAlign(Paint.Align.CENTER);
     }
 
     /**
      * set color and name by patternName
+     *
      * @param colors
      * @param name
      * @param patternName
      */
-    public void setColorAndName(List<Integer> colors, String name, String patternName){
-        switch(patternName) {
+    public void setColorAndName(List<Integer> colors, String name, String patternName) {
+
+//        Log.d(TAG, "setColorAndName() called");
+
+        switch (patternName) {
             case "Single":
                 Array_out = colorHelper.Single(colors);
                 break;
@@ -102,47 +113,47 @@ public class ModeView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+//        Log.d(TAG, "onDraw() called");
+
         if (mPaint == null) {
             mPaint = new Paint();
         }
 
-        mPaint.setStyle(Paint.Style.STROKE); //设置填充
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.argb(255, 80, 80, 80));
+        mPaint.setColor(Color.argb(255, 60, 60, 60));
+        canvas.drawRect(0, 0, mWidth, (float) (0.5 * mHeight), mPaint);
 
-        RectF oval1 = new RectF(-(int) (mHeight * 0.3), 0,
-                (int) (0.5 * mHeight), (int) (mHeight * 0.8));
-        RectF oval2 = new RectF(-(int) (mHeight * 0.1), (int) (mHeight * 0.3),
-                (int) (mHeight * 0.1), (int) (mHeight * 0.5));
-        RectF oval3 = new RectF(-(int) (mHeight * 0.55), -(int) (mHeight * 0.25),
-                (int) (mHeight * 0.75), (int) (mHeight * 1.05));
-        RectF oval4 = new RectF(-(float)(mHeight*0.32),(int)(mHeight*0.08),(int)(mHeight*0.32),(int)(mHeight*0.72));
-        int line1 = (int) (mHeight * 0.5);
+        mPaint.setStyle(Paint.Style.STROKE); //设置填充
+        RectF oval1 = new RectF(-(int) (mHeight * 0.6), -(int) (mHeight * 1.2),
+                (int) (1.8 * mHeight), (int) (mHeight * 1.2));
+        int line1 = (int) (mHeight * 0.6);
         int line_string = mHeight / 60;
         mPaint.setStrokeWidth(line1);
         for (int i = 0; i < MY_NUM; i++) {
             mPaint.setColor(Array_out[i]);
-            canvas.drawArc(oval1, (float) (-120 + i * 7.5), (float) 7.3, false, mPaint);
+            canvas.drawArc(oval1, (float) (i * 5.625), (float) 5.5, false, mPaint);
         }
 
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth((float) (line1 * 0.8));
-        canvas.drawArc(oval2, 0, 360, false, mPaint);
+        mPaint.setColor(Color.YELLOW);
+        mPaint.setStrokeWidth((float) (mHeight * 0.06));
+        canvas.drawCircle((int) (0.6 * mHeight), 0, (int) (0.85 * mHeight), mPaint);
 
-        mPaint.setStrokeWidth(line_string);
-        canvas.drawArc(oval3, 0, 360, false, mPaint);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setStrokeWidth((float) (line_string * 1.5));
+        canvas.drawCircle((int) (0.6 * mHeight), 0, (int) (1.5 * mHeight), mPaint);
+        canvas.drawCircle((int) (0.6 * mHeight), 0, (int) (0.8 * mHeight), mPaint);
         canvas.drawLine(0, 4, mWidth, 4, mPaint);
         canvas.drawLine(0, mHeight - 4, mWidth, mHeight - 4, mPaint);
+        canvas.drawLine((float) (0.9 * mWidth), (float) (0.8 * mHeight), (float) (0.95 * mWidth), (float) (0.8 * mHeight), mPaint);
+        canvas.drawLine((float) (0.9 * mWidth), (float) (0.85 * mHeight), (float) (0.95 * mWidth), (float) (0.85 * mHeight), mPaint);
+        canvas.drawLine((float) (0.9 * mWidth), (float) (0.9 * mHeight), (float) (0.95 * mWidth), (float) (0.9 * mHeight), mPaint);
 
-        /** mPaint.setColor(Color.YELLOW);
-         mPaint.setStrokeWidth((float) (mHeight * 0.1));
-         canvas.drawArc(oval4, 0, 360, false, mPaint);
-         */
-
-        mPaint.setColor(Color.BLACK);
+        mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setTextSize(line_string * 15);
-        mPaint.setStrokeWidth(line_string / 2);
-        canvas.drawText(mTextPaint, (float) (0.4 * mWidth), (float) (0.46 * mHeight), mPaint);
+        mPaint.setTypeface(mTypeface);
+        mPaint.setTextSize(line_string * 12);
+        mPaint.setStrokeWidth(line_string / 6);
+        canvas.drawText(mTextPaint, (float) (0.7 * mHeight), (float) (0.3 * mHeight), mPaint);
 
     }
 
@@ -198,15 +209,16 @@ public class ModeView extends View {
     public void update(int[] c, String s) {
         Array_out = c;
         mTextPaint = s;
+
         invalidate();
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         mTextPaint = name;
         invalidate();
     }
 
-    public void setColorByArray(int[] c){
+    public void setColorByArray(int[] c) {
         Array_out = c;
         invalidate();
     }

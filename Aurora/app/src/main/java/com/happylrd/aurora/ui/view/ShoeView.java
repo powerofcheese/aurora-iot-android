@@ -32,8 +32,7 @@ public class ShoeView extends View {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public int onTouch(MotionEvent event) {
         Drawable drawable = null;
         Bitmap bitmap = null;
         Bitmap rbitmap = null;
@@ -69,14 +68,14 @@ public class ShoeView extends View {
         }
         if (hit == 1) {
             if (temp == i)
-                return true;
+                return temp;
             drawable.setColorFilter(tempColor, PorterDuff.Mode.SRC_IN);
             String HexColor = colorToHexString(tempColor);
             LC[i] = HexColor;
             rbitmap = null;
 
             temp = i;
-            return true;
+            return temp;
         }
         i = NUM - 1;
         for (; i >= 0; i--) {
@@ -102,7 +101,7 @@ public class ShoeView extends View {
 
         }
         rbitmap = null;
-        return true;
+        return i;
 
     }
 
@@ -129,13 +128,13 @@ public class ShoeView extends View {
         Log.i("Color Set Success", "设置颜色成功！");
     }
 
-    private static String colorToHexString(int color) {
+    public static String colorToHexString(int color) {
         return String.format("#%06X", 0xFFFFFFFF & color);
     }
 
-    public void updateColor(int[] color){
+    public void updateColor(int[] color) {
         for (int i = 0; i < NUM; i++) {
-            mDrawables.getDrawable(i).setColorFilter(color[i],PorterDuff.Mode.SRC_IN);
+            mDrawables.getDrawable(i).setColorFilter(color[i], PorterDuff.Mode.SRC_IN);
         }
     }
 }

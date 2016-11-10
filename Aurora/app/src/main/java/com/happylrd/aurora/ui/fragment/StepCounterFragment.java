@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.happylrd.aurora.R;
+import com.happylrd.aurora.todo.BlueToothCommunication;
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
@@ -26,6 +27,7 @@ public class StepCounterFragment extends Fragment {
 
     private int mBackIndex;
     private static int mDataIndex_1;
+    private BlueToothCommunication blueToothCommunication;
 
     private static int step_goal = 10000;
 
@@ -52,6 +54,11 @@ public class StepCounterFragment extends Fragment {
         });
 
         iv_running = (ImageView) view.findViewById(R.id.iv_running);
+
+        blueToothCommunication = new BlueToothCommunication();
+        if(blueToothCommunication.mService != null){
+            blueToothCommunication.write("step");
+        }
 
         createBackSeries();
 

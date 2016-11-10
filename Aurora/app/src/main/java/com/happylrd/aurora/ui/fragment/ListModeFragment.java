@@ -16,6 +16,7 @@ import com.happylrd.aurora.model.Mode;
 import com.happylrd.aurora.model.Motion;
 import com.happylrd.aurora.model.MyUser;
 import com.happylrd.aurora.model.NormalState;
+import com.happylrd.aurora.todo.BlueToothCommunication;
 import com.happylrd.aurora.todo.ModeView;
 import com.happylrd.aurora.util.ToastUtil;
 import com.happylrd.aurora.util.ZhToEnMapUtil;
@@ -40,10 +41,12 @@ public class ListModeFragment extends Fragment {
     private RecyclerView recyclerView;
     private ModeAdapter mModeAdapter;
 
+    private BlueToothCommunication blueToothCommunication;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recycler_view, container, false);
+        View view = inflater.inflate(R.layout.mode_recycler_view, container, false);
 
         initView(view);
         initListener();
@@ -70,6 +73,11 @@ public class ListModeFragment extends Fragment {
 
         mZhToEnMapUtil = new ZhToEnMapUtil();
         mZhToEnMapUtil.initMap(getActivity());
+
+        blueToothCommunication = new BlueToothCommunication();
+        if (blueToothCommunication.mService != null) {
+            blueToothCommunication.write("step");
+        }
     }
 
     private void initModeData() {
@@ -101,6 +109,9 @@ public class ListModeFragment extends Fragment {
         private Motion mPassMotion;
         private List<GestureState> mGestureStateList;
 
+        // just a toy
+        private Motion mGestureMotion;
+
         public ModeHolder(View itemView) {
             super(itemView);
 
@@ -110,6 +121,19 @@ public class ListModeFragment extends Fragment {
             mModeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if (blueToothCommunication.mService != null) {
+
+                        if (isPreDefineForUser(mPassMode.getModeName())) {
+                            blueToothCommunication.write(getPassJson());
+                        } else {
+
+                            blueToothCommunication.write(getPassJson());
+                        }
+                    }
+
+                    // can pass mode name to edison
+                    Log.d(TAG, mPassMode.getModeName());
 
                     // can pass data to edison
                     Log.d(TAG, getPassJson());
@@ -173,11 +197,29 @@ public class ListModeFragment extends Fragment {
                 public void done(List<GestureState> list, BmobException e) {
                     if (e == null) {
                         mGestureStateList = list;
+
+                        findGestureMotionByState(list.get(0));
                     } else {
                         Log.d(TAG, "find gestureState failed");
                     }
                 }
             });
+        }
+
+        private void findGestureMotionByState(GestureState gestureState){
+            BmobQuery<Motion> query = new BmobQuery<>();
+            query.addWhereEqualTo("gestureState", gestureState);
+            query.findObjects(new FindListener<Motion>() {
+                @Override
+                public void done(List<Motion> list, BmobException e) {
+                    if(e == null){
+                        mGestureMotion = list.get(0);
+                    }else{
+                        Log.d(TAG, "find GestureState failed");
+                    }
+                }
+            });
+
         }
 
         /**
@@ -212,7 +254,7 @@ public class ListModeFragment extends Fragment {
                     jsonGestureStateObj.put("isKickMid", mGestureStateList.get(0).getKickMid());
                     jsonGestureStateObj.put("isKickHigh", mGestureStateList.get(0).getKickHigh());
 
-                    JSONObject jsonGestureMotionObj = getJsonObjByMotion();
+                    JSONObject jsonGestureMotionObj = getJsonObjByGestureMotion();
                     jsonGestureStateObj.put("motion", jsonGestureMotionObj);
 
                     jsonGestureStateList.put(jsonGestureStateObj);
@@ -256,6 +298,31 @@ public class ListModeFragment extends Fragment {
             return jsonMotionObj;
         }
 
+
+        private JSONObject getJsonObjByGestureMotion() {
+            JSONObject jsonMotionObj = new JSONObject();
+            try {
+                jsonMotionObj.put("patternName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getPatternName())
+                );
+                jsonMotionObj.put("animationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getAnimationName())
+                );
+                jsonMotionObj.put("rotationName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getRotationName())
+                );
+                jsonMotionObj.put("actionName", mZhToEnMapUtil.getEnValueByZhKey(
+                        mGestureMotion.getActionName())
+                );
+
+                String colorListStr = getDirtyColorStrForGesture();
+                jsonMotionObj.put("intColorList", colorListStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonMotionObj;
+        }
+
         /**
          * a dirty method due to some compromises
          *
@@ -279,6 +346,47 @@ public class ListModeFragment extends Fragment {
             }
 
             return stringBuffer.toString();
+        }
+
+        private String getDirtyColorStrForGesture() {
+            List<String> strColors = new ArrayList<>();
+
+            List<Integer> intColors = mGestureMotion.getIntColorList();
+            for (int i = 0; i < intColors.size(); i++) {
+                String argbHexStr = String.format("#%08X", intColors.get(i));
+                strColors.add(argbHexStr);
+            }
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < strColors.size(); i++) {
+                stringBuffer.append(strColors.get(i));
+                if (i != strColors.size() - 1) {
+                    stringBuffer.append(" ");
+                }
+            }
+
+            return stringBuffer.toString();
+        }
+
+        /**
+         * need to be modified
+         * @param s
+         * @return
+         */
+        private boolean isPreDefineForUser(String s) {
+            boolean result = false;
+            if (s.equals(getString(R.string.default_mode_1)) ||
+                    s.equals(getString(R.string.default_mode_2)) ||
+                    s.equals(getString(R.string.default_mode_3)) ||
+                    s.equals(getString(R.string.default_mode_4)) ||
+                    s.equals(getString(R.string.default_mode_5)) ||
+                    s.equals(getString(R.string.default_mode_6)) ||
+                    s.equals(getString(R.string.default_mode_7))) {
+                result = true;
+            }
+
+            Log.d("isPredefineMode ", result + "");
+            return result;
         }
     }
 

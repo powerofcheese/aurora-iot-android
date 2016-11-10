@@ -55,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
     private CircleImageView civ_head_portrait_bg;
     private CircleImageView civ_head_portrait;
     private TextView tv_nick_name;
+    private TextView tv_date;
     private TextView tv_text_content;
     private ImageButton ibtn_comment;
 
@@ -88,6 +89,7 @@ public class DetailActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.rv_pics);
         tv_nick_name = (TextView) findViewById(R.id.tv_nick_name);
+        tv_date = (TextView) findViewById(R.id.tv_date);
         tv_text_content = (TextView) findViewById(R.id.tv_text_content);
         civ_head_portrait_bg = (CircleImageView) findViewById(R.id.civ_head_portrait_bg);
         civ_head_portrait = (CircleImageView) findViewById(R.id.civ_head_portrait);
@@ -113,6 +115,9 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void done(WriteSth writeSth, BmobException e) {
                 if (e == null) {
+
+                    tv_date.setText(writeSth.getCreatedAt());
+
                     Log.d("TV C is equalsZero", (writeSth.getTextContent().equals("")) + "");
                     if (!writeSth.getTextContent().equals("")) {
                         tv_text_content.setText(writeSth.getTextContent());

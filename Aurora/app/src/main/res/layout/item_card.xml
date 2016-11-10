@@ -52,7 +52,7 @@
             android:layout_toRightOf="@id/civ_head_portrait"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="时间"
+            tools:text="2016-10-02 09:30:00"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@color/grey_medium"
             android:textSize="@dimen/list_body" />
