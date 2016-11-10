@@ -62,7 +62,7 @@ public class ModeView extends View {
      */
     public void setColorAndName(List<Integer> colors, String name, String patternName) {
 
-        Log.d(TAG, "setColorAndName() called");
+//        Log.d(TAG, "setColorAndName() called");
 
         switch (patternName) {
             case "Single":
@@ -113,7 +113,7 @@ public class ModeView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Log.d(TAG, "onDraw() called");
+//        Log.d(TAG, "onDraw() called");
 
         if (mPaint == null) {
             mPaint = new Paint();
