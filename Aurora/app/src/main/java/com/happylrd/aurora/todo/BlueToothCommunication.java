@@ -30,12 +30,10 @@ public class BlueToothCommunication {
                     String readByBluetooth = buffer.toString();
                     if (isNumeric(readByBluetooth)) {
                         StepCounterFragment.step_num = Integer.parseInt(readByBluetooth);
-                        //StepCounterFragment.setUI();
+                        // StepCounterFragment.setUI();
                         Log.d("MESSAGE_READ", readByBluetooth);
                     } else {
-                        //查询蓝牙发过来的指定动作所对应的参数
-                        String send = readByBluetooth;
-                        write(send);
+                        //
                     }
                     break;
             }

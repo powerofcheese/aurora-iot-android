@@ -109,7 +109,7 @@ public class ColorController {
         }
         handler_child2parent.sendEmptyMessage(Constants.MESSAGE_UPDATE_SHOE);
 
-        if (data_j.getAnimation() == "Nothing") {
+        if (data_j.getAnimation().equals("Nothing")) {
             handleRotation(data_j);
         } else {
             handleRotation(data_j);

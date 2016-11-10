@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.happylrd.aurora.todo.colorMode.ColorHelper;
@@ -14,6 +15,8 @@ import com.happylrd.aurora.todo.colorMode.ColorHelper;
 import java.util.List;
 
 public class ModeView extends View {
+
+    private static final String TAG = "ModeView";
 
     public final static int MY_NUM = 32;
 
@@ -38,7 +41,6 @@ public class ModeView extends View {
     }
 
     private void init() {
-//        setWillNotDraw(false);
         mPaint = new Paint();
 
         /**设置数组的初始填充颜色*/
@@ -49,7 +51,6 @@ public class ModeView extends View {
         colorHelper = new ColorHelper();
         mTypeface = Typeface.SANS_SERIF;
         mPaint.setTextAlign(Paint.Align.CENTER);
-//        setWillNotDraw(false);
     }
 
     /**
@@ -60,6 +61,9 @@ public class ModeView extends View {
      * @param patternName
      */
     public void setColorAndName(List<Integer> colors, String name, String patternName) {
+
+        Log.d(TAG, "setColorAndName() called");
+
         switch (patternName) {
             case "Single":
                 Array_out = colorHelper.Single(colors);
@@ -108,6 +112,8 @@ public class ModeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        Log.d(TAG, "onDraw() called");
 
         if (mPaint == null) {
             mPaint = new Paint();

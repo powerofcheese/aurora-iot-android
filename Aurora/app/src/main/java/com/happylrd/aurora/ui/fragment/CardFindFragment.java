@@ -99,6 +99,7 @@ public class CardFindFragment extends Fragment {
         private WriteSth mWriteSth;
 
         private TextView tv_nick_name;
+        private TextView tv_date;
         private CircleImageView civ_head_portrait;
         private TextView tv_text_content;
         private ImageButton ibtn_praise;
@@ -121,6 +122,7 @@ public class CardFindFragment extends Fragment {
             });
 
             tv_nick_name = (TextView) itemView.findViewById(R.id.tv_nick_name);
+            tv_date = (TextView) itemView.findViewById(R.id.tv_date);
             civ_head_portrait = (CircleImageView) itemView.findViewById(R.id.civ_head_portrait);
             tv_text_content = (TextView) itemView.findViewById(R.id.tv_text_content);
 
@@ -154,6 +156,7 @@ public class CardFindFragment extends Fragment {
 
         public void bindWriteSth(WriteSth writeSth) {
             mWriteSth = writeSth;
+            tv_date.setText(mWriteSth.getCreatedAt());
 
             BmobQuery<MyUser> query = new BmobQuery<>();
             query.getObject(mWriteSth.getAuthor().getObjectId(),

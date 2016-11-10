@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 app:cv_backgroundColorValue="@color/white"
                 app:cv_fillColor="@color/black_shallow"
-                app:cv_strokeColorValue="@color/yellow"
+                app:cv_strokeColorValue="@color/cyan_light"
                 app:cv_strokeWidthSize="40"
                 app:cv_subtitleSize="0dp"
                 app:cv_titleColor="@color/white"

@@ -153,6 +153,7 @@ public class BluetoothService {
                     bundle.putString("TOAST", "蓝牙连接异常！" + e);
                     msg.setData(bundle);
                     mHandler.sendMessage(msg);
+//                    cancel();
                     break;
                 }
             }
