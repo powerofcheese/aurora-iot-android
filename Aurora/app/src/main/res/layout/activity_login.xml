@@ -3,33 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_login"
+    android:background="@mipmap/bg_in"
     android:orientation="vertical">
-
-    <View
-        android:id="@+id/transparent_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:alpha="0.5"
-        android:background="#000000" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_avatar"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/default_head_portrait"
-        app:civ_border_color="#FFFFFFFF"
-        app:civ_border_width="6dp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/civ_avatar"
-        android:layout_margin="@dimen/md_keylines">
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:layout_marginTop="372dp">
 
         <EditText
             android:id="@+id/et_user_name"
@@ -48,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/til_user_name"
-        android:layout_margin="@dimen/md_keylines">
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines">
 
         <EditText
             android:id="@+id/et_password"
@@ -66,16 +50,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/til_password"
-        android:layout_margin="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:layout_marginTop="2dp"
         android:text="登录"
         android:textColor="@color/white"
-        android:theme="@style/btn_login_and_signup"/>
+        android:theme="@style/btn_login_and_signup" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_login"
-        android:layout_margin="@dimen/md_keylines">
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:layout_marginTop="2dp">
 
         <Button
             android:id="@+id/btn_forget_password"
@@ -85,7 +74,7 @@
             android:layout_alignParentLeft="true"
             android:text="忘记密码？"
             android:textColor="@color/white"
-            android:theme="@style/btn_dialog_color_picker"/>
+            android:theme="@style/btn_dialog_color_picker" />
 
         <Button
             android:id="@+id/btn_goto_signup"
@@ -93,8 +82,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="前去注册？"
+            android:text="前去注册"
             android:textColor="@color/white"
-            android:theme="@style/btn_dialog_color_picker"/>
+            android:theme="@style/btn_dialog_color_picker" />
     </RelativeLayout>
 </RelativeLayout>
