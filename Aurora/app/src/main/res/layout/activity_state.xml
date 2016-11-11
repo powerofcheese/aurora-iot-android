@@ -50,7 +50,7 @@
                 app:cv_subtitleSize="0dp"
                 app:cv_titleColor="@color/white"
                 app:cv_titleSize="12dp"
-                app:cv_titleText="Schema" />
+                app:cv_titleText="Light" />
 
             <com.github.pavlospt.CircleView
                 android:id="@+id/cv_pre_state"
@@ -63,7 +63,7 @@
                 app:cv_subtitleSize="0dp"
                 app:cv_titleColor="@color/white"
                 app:cv_titleSize="12dp"
-                app:cv_titleText="Schema" />
+                app:cv_titleText="Sound" />
         </LinearLayout>
 
         <TextView

@@ -127,7 +127,6 @@ public class ListModeFragment extends Fragment {
                         if (isPreDefineForUser(mPassMode.getModeName())) {
                             blueToothCommunication.write(getPassJson());
                         } else {
-
                             blueToothCommunication.write(getPassJson());
                         }
                     }

@@ -20,14 +20,4 @@
         app:cv_titleColor="@color/white"
         app:cv_titleSize="12dp"
         app:cv_titleText="Schema" />
-
-    <TextView
-        android:id="@+id/tv_item_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_marginTop="@dimen/md_keylines"
-        android:text="blah blah blah blah blah blah"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
 </LinearLayout>

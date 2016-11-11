@@ -195,11 +195,9 @@ public class StateActivity extends AppCompatActivity {
                                 } else {
                                     String modeName = editText.getText().toString();
 
-
                                     // mMotion == null
-                                    Log.d("SaveNormalMotion1 ", mMotion.getPatternName());
-
-                                    Log.d("SaveGestureMotion1 ", mGestureMotion.getPatternName());
+//                                    Log.d("SaveNormalMotion1 ", mMotion.getPatternName());
+//                                    Log.d("SaveGestureMotion1 ", mGestureMotion.getPatternName());
 
                                     saveMode(modeName);
                                 }

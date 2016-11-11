@@ -19,14 +19,4 @@
         app:cv_titleColor="@color/white"
         app:cv_titleSize="12dp"
         app:cv_titleText="模式概括" />
-
-    <TextView
-        android:id="@+id/tv_pattern_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_marginBottom="@dimen/md_keylines"
-        android:text="模式描述blahblahblah"
-        android:textColor="@color/white"
-        android:textSize="20sp"/>
 </LinearLayout>
